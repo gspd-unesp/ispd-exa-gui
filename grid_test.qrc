@@ -1,0 +1,7 @@
+<RCC>
+    <qresource prefix="/">
+        <file>icons/head.png</file>
+        <file>icons/folder-new.svg</file>
+        <file>icons/machine.png</file>
+    </qresource>
+</RCC>
