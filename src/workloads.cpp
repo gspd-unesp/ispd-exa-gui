@@ -1,4 +1,4 @@
-#include "../include/workloads.h"
+#include "workloads.h"
 #include "ui_workloads.h"
 
 Workloads::Workloads(QWidget *parent)

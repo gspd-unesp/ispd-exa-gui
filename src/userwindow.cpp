@@ -1,4 +1,4 @@
-#include "../include/userwindow.h"
+#include "userwindow.h"
 #include "ui_userwindow.h"
 
 UserWindow::UserWindow(QWidget *parent)

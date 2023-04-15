@@ -1,19 +1,26 @@
 SOURCES += \
+  src/griditem.cpp \
+  src/gridscene.cpp \
+  src/gridview.cpp \
   src/main.cpp \
   src/mainwindow.cpp \
   src/userwindow.cpp \
   src/workloads.cpp
 
 HEADERS += \
-  include/mainwindow.h \
-  include/userwindow.h \
-  include/workloads.h
+  src/griditem.h \
+  src/mainwindow.h \
+  src/userwindow.h \
+  src/workloads.h \
+  src/gridscene.h \
+  src/gridview.h
 
 QT += widgets
 
 CONFIG += c++17
+
 RESOURCES += \
-  grid_test.qrc
+  ispd-exa-gui.qrc
 
 FORMS += \
   forms/userwindow.ui \

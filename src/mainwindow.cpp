@@ -1,4 +1,4 @@
-#include "../include/mainwindow.h"
+#include "mainwindow.h"
 #include "qgraphicsview.h"
 
 #include "ui_mainwindow.h"
@@ -12,24 +12,17 @@
 #include <QPen>
 #include <QPushButton>
 #include <QPixmap>
+#include "griditem.h"
 
 MainWindow::MainWindow(QWidget *parent) : QMainWindow{parent}, ui(new Ui::MainWindow){
-    ui->setupUi(this);
-    this->scene = new QGraphicsScene();
+    this->ui->setupUi(this);
+    this->scene = new GridScene();
     this->ui->grid->setScene(scene);
+    this->scene->setSceneRect(0, 0, 200, 200);
     this->ui->grid->fitInView(scene->sceneRect(),Qt::KeepAspectRatio);
-    this->head =  new QImage(":icons/head.png");
+    this->head =  new QImage(":icons/machine.png");
+//    this->scene->mouseGrabberItem()
 }
-
-
-void MainWindow::on_button_a_clicked()
-{
-    auto new_item = new QGraphicsPixmapItem(QPixmap::fromImage(*head));
-    new_item->setFlag(QGraphicsItem::ItemIsMovable);
-    scene->addItem(new_item);
-    this->ui->grid->show();
-}
-
 
 void MainWindow::on_button_b_clicked()
 {
@@ -44,3 +37,11 @@ void MainWindow::on_button_c_clicked()
     this->workloadsWindow->show();
 }
 
+
+void MainWindow::on_buttonA_clicked()
+{
+    auto new_item = new GridItem(QPixmap::fromImage(*head));
+    new_item->setFlag(QGraphicsItem::ItemIsMovable);
+    scene->addItem(new_item);
+    this->ui->grid->show();
+}

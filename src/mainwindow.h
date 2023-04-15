@@ -9,6 +9,8 @@
 #include <QMainWindow>
 #include <QVBoxLayout>
 
+#include <src/gridscene.h>
+
 namespace Ui {
     class MainWindow;
 }
@@ -21,17 +23,16 @@ public:
 
 private:
   Ui::MainWindow *ui;
-  QGraphicsScene *scene;
+  GridScene *scene;
   QImage *head;
-  QGraphicsPixmapItem *item;
 
   UserWindow *userWindow;
   Workloads *workloadsWindow;
 signals:
 private slots:
-  void on_button_a_clicked();
   void on_button_b_clicked();
   void on_button_c_clicked();
+  void on_buttonA_clicked();
 };
 
 #endif // MAINWINDOW_H

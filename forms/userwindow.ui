@@ -44,7 +44,7 @@
      </spacer>
     </item>
     <item row="1" column="1">
-     <widget class="QFrame" name="">
+     <widget class="QFrame" name="frame">
       <layout class="QVBoxLayout" name="verticalLayout_3">
        <item>
         <layout class="QHBoxLayout" name="horizontalLayout_4">
@@ -204,10 +204,10 @@
              </palette>
             </property>
             <property name="frameShape">
-             <enum>QFrame::Panel</enum>
+             <enum>QFrame::NoFrame</enum>
             </property>
             <property name="frameShadow">
-             <enum>QFrame::Raised</enum>
+             <enum>QFrame::Plain</enum>
             </property>
             <property name="text">
              <string>Limite de consumo (Porcentagem)</string>
@@ -215,8 +215,7 @@
            </widget>
           </item>
           <item row="1" column="0" colspan="2">
-           <widget class="QListView" name="listView">
-           </widget>
+           <widget class="QListView" name="listView"/>
           </item>
           <item row="0" column="0">
            <widget class="QLabel" name="label">
