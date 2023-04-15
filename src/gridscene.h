@@ -6,7 +6,7 @@
 
 class GridScene : public QGraphicsScene
 {
-public:
+  public:
     explicit GridScene(QObject *parent = nullptr);
 };
 

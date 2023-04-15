@@ -1,10 +1,12 @@
 #include "gridscene.h"
-#include <iostream>
-#include <QMouseEvent>
-#include <QGraphicsSceneMouseEvent>
 #include <QGraphicsItem>
+#include <QGraphicsSceneMouseEvent>
+#include <QMouseEvent>
+#include <iostream>
 
-GridScene::GridScene(QObject* parent)
-  : QGraphicsScene{ parent }
+/*
+ * Create the scene following the QGraphicsScene constructor
+ */
+GridScene::GridScene(QObject *parent) : QGraphicsScene{parent}
 {
 }

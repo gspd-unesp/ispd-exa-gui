@@ -1,6 +1,7 @@
 #include "mainwindow.h"
 #include "qgraphicsview.h"
 
+#include "griditem.h"
 #include "ui_mainwindow.h"
 #include <QBrush>
 #include <QColor>
@@ -10,18 +11,17 @@
 #include <QGraphicsView>
 #include <QLineEdit>
 #include <QPen>
-#include <QPushButton>
 #include <QPixmap>
-#include "griditem.h"
+#include <QPushButton>
 
-MainWindow::MainWindow(QWidget *parent) : QMainWindow{parent}, ui(new Ui::MainWindow){
+MainWindow::MainWindow(QWidget *parent) : QMainWindow{parent}, ui(new Ui::MainWindow)
+{
     this->ui->setupUi(this);
     this->scene = new GridScene();
     this->ui->grid->setScene(scene);
     this->scene->setSceneRect(0, 0, 200, 200);
-    this->ui->grid->fitInView(scene->sceneRect(),Qt::KeepAspectRatio);
-    this->head =  new QImage(":icons/machine.png");
-//    this->scene->mouseGrabberItem()
+    this->ui->grid->fitInView(scene->sceneRect(), Qt::KeepAspectRatio);
+    this->head = new QImage(":icons/machine.png");
 }
 
 void MainWindow::on_button_b_clicked()
@@ -30,13 +30,11 @@ void MainWindow::on_button_b_clicked()
     this->userWindow->show();
 }
 
-
 void MainWindow::on_button_c_clicked()
 {
     this->workloadsWindow = new Workloads();
     this->workloadsWindow->show();
 }
-
 
 void MainWindow::on_buttonA_clicked()
 {
