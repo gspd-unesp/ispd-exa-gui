@@ -5,7 +5,8 @@ SOURCES += \
   src/main.cpp \
   src/mainwindow.cpp \
   src/userwindow.cpp \
-  src/workloads.cpp
+  src/workloads.cpp \
+  src/settingswindow.cpp
 
 HEADERS += \
   src/griditem.h \
@@ -13,7 +14,8 @@ HEADERS += \
   src/userwindow.h \
   src/workloads.h \
   src/gridscene.h \
-  src/gridview.h
+  src/gridview.h \
+  src/settingswindow.h
 
 QT += widgets
 
@@ -25,4 +27,5 @@ RESOURCES += \
 FORMS += \
   forms/userwindow.ui \
   forms/workloads.ui \
-  forms/mainwindow.ui
+  forms/mainwindow.ui \
+  forms/settingswindow.ui
