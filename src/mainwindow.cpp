@@ -19,8 +19,6 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow{parent}, ui(new Ui::MainWi
     this->ui->setupUi(this);
     this->scene = new GridScene();
     this->ui->grid->setScene(scene);
-    this->scene->setSceneRect(0, 0, 200, 200);
-    this->ui->grid->fitInView(scene->sceneRect(), Qt::KeepAspectRatio);
     this->head = new QImage(":icons/machine.png");
 }
 

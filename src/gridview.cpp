@@ -8,6 +8,7 @@
  */
 GridView::GridView(QWidget *parent) : QGraphicsView{parent}
 {
+    setAlignment(Qt::AlignTop | Qt::AlignLeft);
 }
 
 /*
@@ -23,6 +24,7 @@ void GridView::mousePressEvent(QMouseEvent *event)
     {
         qDebug() << "Custom view clicked with right.";
     }
+
     if (event->button() == Qt::LeftButton)
     {
         qDebug() << "Custom view clicked with left.";
