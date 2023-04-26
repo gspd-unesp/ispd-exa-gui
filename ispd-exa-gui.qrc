@@ -3,5 +3,7 @@
         <file>icons/head.png</file>
         <file>icons/folder-new.svg</file>
         <file>icons/machine.png</file>
+        <file>icons/x_button.png</file>
+        <file>icons/add_icon.png</file>
     </qresource>
 </RCC>

@@ -17,5 +17,7 @@ class UserWindow : public QMainWindow
 
   private:
     Ui::UserWindow *ui;
+    QImage *fecharImg;
+    QImage *addIcon;
 };
 #endif // USERWINDOW_H

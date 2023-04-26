@@ -29,3 +29,5 @@ FORMS += \
   forms/workloads.ui \
   forms/mainwindow.ui \
   forms/settingswindow.ui
+
+DISTFILES +=
