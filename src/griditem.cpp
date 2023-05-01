@@ -1,4 +1,5 @@
 #include "griditem.h"
+#include <QGraphicsSceneMouseEvent>
 
 /*
  * Create the item following the QGraphicsPixmapItem constructor
@@ -17,6 +18,9 @@ void GridItem::mousePressEvent(QGraphicsSceneMouseEvent *event)
     qDebug() << "(" << this->pos().x() << " , " << this->pos().y() << ")"
              << "\n";
     QGraphicsItem::mousePressEvent(event);
+    QGraphicsPixmapItem::mousePressEvent(event);
+    emit itemClicked();
+
 }
 
 /*

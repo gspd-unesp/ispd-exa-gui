@@ -6,8 +6,14 @@
 
 class GridScene : public QGraphicsScene
 {
+    Q_OBJECT
+
   public:
     explicit GridScene(QObject *parent = nullptr);
+
+
+  signals:
+    void clicked(QPointF position);
 };
 
 #endif // GRIDSCENE_H

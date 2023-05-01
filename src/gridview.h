@@ -6,6 +6,7 @@
 
 class GridView : public QGraphicsView
 {
+    Q_OBJECT
   protected:
     void mousePressEvent(QMouseEvent *event);
 

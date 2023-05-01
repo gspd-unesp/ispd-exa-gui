@@ -5,5 +5,8 @@
         <file>icons/machine.png</file>
         <file>icons/x_button.png</file>
         <file>icons/add_icon.png</file>
+        <file>icons/pc.png</file>
+        <file>icons/torre.png</file>
+        <file>icons/cluster.png</file>
     </qresource>
 </RCC>

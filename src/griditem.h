@@ -4,16 +4,22 @@
 #include <QDebug>
 #include <QGraphicsPixmapItem>
 #include <QGraphicsScene>
+#include <QGraphicsItem>
 #include <QWidget>
+#include <QObject>
 
-class GridItem : public QGraphicsPixmapItem
+class GridItem : public QObject, public QGraphicsPixmapItem
 {
-  protected:
-    void mousePressEvent(QGraphicsSceneMouseEvent *event);
-    void mouseReleaseEvent(QGraphicsSceneMouseEvent *event);
-
+    Q_OBJECT
   public:
-    explicit GridItem(const QPixmap &pixmap, QGraphicsItem *parent = nullptr);
+    GridItem(const QPixmap &pixmap, QGraphicsItem *parent = nullptr);
+
+  signals:
+    void itemClicked();
+
+  protected:
+    void mouseReleaseEvent(QGraphicsSceneMouseEvent *event) override;
+    void mousePressEvent(QGraphicsSceneMouseEvent *event) override;
 };
 
 #endif // GRIDITEM_H

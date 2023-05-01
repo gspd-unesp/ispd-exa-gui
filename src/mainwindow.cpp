@@ -1,8 +1,11 @@
 #include "mainwindow.h"
-#include "qgraphicsview.h"
+#include "ui_mainwindow.h"
 
 #include "griditem.h"
-#include "ui_mainwindow.h"
+#include "gridscene.h"
+#include "userwindow.h"
+#include "workloads.h"
+
 #include <QBrush>
 #include <QColor>
 #include <QFormLayout>
@@ -19,7 +22,16 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow{parent}, ui(new Ui::MainWi
     this->ui->setupUi(this);
     this->scene = new GridScene();
     this->ui->grid->setScene(scene);
-    this->head = new QImage(":icons/machine.png");
+    QImage pcImg(":icons/pc.png");
+    QImage npcImg = pcImg.scaled(QSize(70, 70), Qt::KeepAspectRatio);
+    this->head = new QImage(npcImg);
+    this->current_item = nullptr;
+
+}
+
+MainWindow::~MainWindow()
+{
+    delete ui;
 }
 
 void MainWindow::on_button_b_clicked()
@@ -36,8 +48,17 @@ void MainWindow::on_button_c_clicked()
 
 void MainWindow::on_buttonA_clicked()
 {
-    auto new_item = new GridItem(QPixmap::fromImage(*head));
-    new_item->setFlag(QGraphicsItem::ItemIsMovable);
-    scene->addItem(new_item);
+    this->current_item = new GridItem(QPixmap::fromImage(*head));
+    this->current_item->setFlag(QGraphicsItem::ItemIsMovable);
+    scene->addItem(this->current_item);
     this->ui->grid->show();
+
+    connect(this->current_item, &GridItem::itemClicked, this, &MainWindow::updateposition);
+}
+
+void MainWindow::updateposition()
+{
+    QPointF pos = current_item->pos();
+    QString pos_string = QString("Position: %1, %2").arg(pos.x()).arg(pos.y());
+    ui->position->setText(pos_string);
 }

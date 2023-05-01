@@ -3,6 +3,7 @@
 
 #include "userwindow.h"
 #include "workloads.h"
+#include "griditem.h"
 
 #include <QGraphicsScene>
 #include <QHBoxLayout>
@@ -21,11 +22,13 @@ class MainWindow : public QMainWindow
     Q_OBJECT
   public:
     explicit MainWindow(QWidget *parent = nullptr);
+    ~MainWindow();
 
   private:
     Ui::MainWindow *ui;
     GridScene *scene;
     QImage *head;
+    GridItem *current_item;
 
     UserWindow *userWindow;
     Workloads *workloadsWindow;
@@ -34,6 +37,7 @@ class MainWindow : public QMainWindow
     void on_button_b_clicked();
     void on_button_c_clicked();
     void on_buttonA_clicked();
+    void updateposition();
 };
 
 #endif // MAINWINDOW_H

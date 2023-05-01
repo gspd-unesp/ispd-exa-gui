@@ -1,6 +1,9 @@
 #ifndef USERWINDOW_H
 #define USERWINDOW_H
 #include <QMainWindow>
+#include "settingswindow.h"
+#include <QHBoxLayout>
+#include <QVBoxLayout>
 
 namespace Ui
 {
@@ -19,5 +22,11 @@ class UserWindow : public QMainWindow
     Ui::UserWindow *ui;
     QImage *fecharImg;
     QImage *addIcon;
+    SettingsWindow *settingswindow;
+  private slots:
+    void on_addButton_clicked();
+    void updatePositionLabel(const QPointF &pos);
+  signals:
+    void itemMoved(const QPointF &pos);
 };
 #endif // USERWINDOW_H

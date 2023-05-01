@@ -1,5 +1,6 @@
 #include "userwindow.h"
 #include "ui_userwindow.h"
+#include <QPushButton>
 
 UserWindow::UserWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui::UserWindow)
 {
@@ -20,6 +21,12 @@ UserWindow::UserWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui::UserWi
     this->ui->addButton->setFixedSize(50, 22);
     this->ui->addButton->setIconSize(QSize(12, 12));
 
+}
+
+void UserWindow::on_addButton_clicked()
+{
+    this->settingswindow = new SettingsWindow();
+    this->settingswindow->show();
 }
 
 UserWindow::~UserWindow()
