@@ -48,17 +48,11 @@ void MainWindow::on_button_c_clicked()
 
 void MainWindow::on_buttonA_clicked()
 {
-    this->current_item = new GridItem(QPixmap::fromImage(*head));
+    this->current_item = new GridItem(QPixmap::fromImage(*head), ui);
     this->current_item->setFlag(QGraphicsItem::ItemIsMovable);
     scene->addItem(this->current_item);
     this->ui->grid->show();
-
-    connect(this->current_item, &GridItem::itemClicked, this, &MainWindow::updateposition);
 }
 
-void MainWindow::updateposition()
-{
-    QPointF pos = current_item->pos();
-    QString pos_string = QString("Position: %1, %2").arg(pos.x()).arg(pos.y());
-    ui->position->setText(pos_string);
-}
+
+

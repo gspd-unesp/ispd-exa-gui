@@ -25,7 +25,6 @@ class UserWindow : public QMainWindow
     SettingsWindow *settingswindow;
   private slots:
     void on_addButton_clicked();
-    void updatePositionLabel(const QPointF &pos);
   signals:
     void itemMoved(const QPointF &pos);
 };

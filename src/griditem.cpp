@@ -1,10 +1,11 @@
 #include "griditem.h"
 #include <QGraphicsSceneMouseEvent>
+#include "ui_mainwindow.h"
 
 /*
  * Create the item following the QGraphicsPixmapItem constructor
  */
-GridItem::GridItem(const QPixmap &pixmap, QGraphicsItem *parent) : QGraphicsPixmapItem{pixmap, parent}
+GridItem::GridItem(const QPixmap &pixmap, Ui::MainWindow *ui, QGraphicsItem *parent) : QGraphicsPixmapItem{pixmap, parent}, ui{ui}
 {
 }
 
@@ -14,13 +15,12 @@ GridItem::GridItem(const QPixmap &pixmap, QGraphicsItem *parent) : QGraphicsPixm
  */
 void GridItem::mousePressEvent(QGraphicsSceneMouseEvent *event)
 {
-
     qDebug() << "(" << this->pos().x() << " , " << this->pos().y() << ")"
              << "\n";
     QGraphicsItem::mousePressEvent(event);
     QGraphicsPixmapItem::mousePressEvent(event);
-    emit itemClicked();
-
+    QString pos_string = QString("Position: %1, %2").arg(this->pos().x()).arg(this->pos().y());
+    ui->position->setText(pos_string);
 }
 
 /*

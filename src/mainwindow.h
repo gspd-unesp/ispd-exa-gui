@@ -37,7 +37,6 @@ class MainWindow : public QMainWindow
     void on_button_b_clicked();
     void on_button_c_clicked();
     void on_buttonA_clicked();
-    void updateposition();
 };
 
 #endif // MAINWINDOW_H
