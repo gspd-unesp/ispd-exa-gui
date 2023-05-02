@@ -27,16 +27,24 @@ class MainWindow : public QMainWindow
   private:
     Ui::MainWindow *ui;
     GridScene *scene;
-    QImage *head;
+    QImage *headp;
+    QImage *headc;
     GridItem *current_item;
 
     UserWindow *userWindow;
     Workloads *workloadsWindow;
+
+    QImage *buttonPCIcon;
+    QImage *buttonClusterIcon;
+    QImage *buttonBicon;
+    QImage *buttonCicon;
   signals:
   private slots:
-    void on_button_b_clicked();
-    void on_button_c_clicked();
-    void on_buttonA_clicked();
+    void on_buttonPC_clicked();
+    void on_buttonCluster_clicked();
+    void on_buttonB_clicked();
+    void on_buttonC_clicked();
+
 };
 
 #endif // MAINWINDOW_H

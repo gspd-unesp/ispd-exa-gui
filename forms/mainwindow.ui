@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>701</width>
-    <height>443</height>
+    <width>963</width>
+    <height>583</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -151,7 +151,7 @@
            <widget class="QFrame" name="frame">
             <layout class="QHBoxLayout" name="horizontalLayout">
              <item>
-              <widget class="QPushButton" name="buttonA">
+              <widget class="QPushButton" name="buttonPC">
                <property name="sizePolicy">
                 <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
                  <horstretch>0</horstretch>
@@ -165,12 +165,19 @@
                 </size>
                </property>
                <property name="text">
-                <string>A</string>
+                <string/>
                </property>
               </widget>
              </item>
              <item>
-              <widget class="QPushButton" name="button_b">
+              <widget class="QPushButton" name="buttonCluster">
+               <property name="text">
+                <string/>
+               </property>
+              </widget>
+             </item>
+             <item>
+              <widget class="QPushButton" name="buttonB">
                <property name="sizePolicy">
                 <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
                  <horstretch>0</horstretch>
@@ -189,7 +196,7 @@
               </widget>
              </item>
              <item>
-              <widget class="QPushButton" name="button_c">
+              <widget class="QPushButton" name="buttonC">
                <property name="sizePolicy">
                 <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
                  <horstretch>0</horstretch>
@@ -243,7 +250,7 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>701</width>
+     <width>963</width>
      <height>25</height>
     </rect>
    </property>
