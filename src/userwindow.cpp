@@ -23,12 +23,6 @@ UserWindow::UserWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui::UserWi
 
 }
 
-void UserWindow::on_addButton_clicked()
-{
-    this->settingswindow = new SettingsWindow();
-    this->settingswindow->show();
-}
-
 UserWindow::~UserWindow()
 {
     delete ui;

@@ -22,9 +22,6 @@ class UserWindow : public QMainWindow
     Ui::UserWindow *ui;
     QImage *fecharImg;
     QImage *addIcon;
-    SettingsWindow *settingswindow;
-  private slots:
-    void on_addButton_clicked();
   signals:
     void itemMoved(const QPointF &pos);
 };
