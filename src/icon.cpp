@@ -1,28 +1,19 @@
-#include "griditem.h"
-#include "qgraphicsitem.h"
-#include "qnamespace.h"
-#include <QGraphicsSceneMouseEvent>
+#include "icon.h"
 
-GridItem::GridItem(QPixmap pixmap, QGraphicsItem *parent)
-    : QGraphicsPixmapItem{pixmap, parent}
-{}
+#include <QDebug>
+#include "gridscene.h"
 
-/*
- * Create the item following the QGraphicsPixmapItem constructor
- */
-// GridItem::GridItem(const QPixmap &pixmap, Ui::MainWindow *ui, QGraphicsItem
-// *parent) : QGraphicsPixmapItem{pixmap, parent}, ui{ui}
-GridItem *GridItem::fromPath(const char *iconPath, std::string *name, QGraphicsItem *parent)
+Icon::Icon(const char *name, QGraphicsItem *parent) : QGraphicsPixmapItem{parent}
 {
-    auto pixmap = QPixmap::fromImage(QImage(iconPath)).scaled(QSize(70, 70));
-    return new GridItem(pixmap, parent);
+    this->name = new std::string(name);
+
 }
 
 /*
  * Configure the event of clicking the item to print the position of it.
  * Useful for DEBUG.
  */
-void GridItem::mousePressEvent(QGraphicsSceneMouseEvent *event)
+void Icon::mousePressEvent(QGraphicsSceneMouseEvent *event)
 {
     qDebug() << "(" << this->pos().x() << " , " << this->pos().y() << ")"
              << "\n";
@@ -37,7 +28,7 @@ void GridItem::mousePressEvent(QGraphicsSceneMouseEvent *event)
  * Configure the event of releasing the mouse to check if the item is
  * inside its scene, if it's not, move it inside.
  */
-void GridItem::mouseReleaseEvent(QGraphicsSceneMouseEvent *event)
+void Icon::mouseReleaseEvent(QGraphicsSceneMouseEvent *event)
 {
     QGraphicsItem::mouseReleaseEvent(event);
     auto pos    = this->pos();

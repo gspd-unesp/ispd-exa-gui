@@ -14,7 +14,9 @@ class GridItem : public QObject, public QGraphicsPixmapItem
 {
     Q_OBJECT
   public:
-    GridItem(const QPixmap &pixmap, Ui::MainWindow *ui, QGraphicsItem *parent = nullptr);
+    //GridItem(const QPixmap &pixmap, Ui::MainWindow *ui, QGraphicsItem *parent = nullptr);
+    explicit GridItem(QPixmap pixmap, QGraphicsItem *parent = nullptr);
+    static GridItem *fromPath(const char *iconPath, QGraphicsItem *parent = nullptr);
 
   protected:
     void mouseReleaseEvent(QGraphicsSceneMouseEvent *event) override;
@@ -22,6 +24,7 @@ class GridItem : public QObject, public QGraphicsPixmapItem
   private:
     QString positionString;
     Ui::MainWindow *ui;
+    std::string name;
 };
 
 #endif // GRIDITEM_H
