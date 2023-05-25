@@ -1,12 +1,12 @@
 #include "icon.h"
 
 #include <QDebug>
-#include "gridscene.h"
+#include <QGraphicsScene>
 
-Icon::Icon(const char *name, QGraphicsItem *parent) : QGraphicsPixmapItem{parent}
+Icon::Icon(const char *name, QGraphicsItem *parent)
+    : QGraphicsPixmapItem{parent}
 {
     this->name = new std::string(name);
-
 }
 
 /*
@@ -21,7 +21,6 @@ void Icon::mousePressEvent(QGraphicsSceneMouseEvent *event)
     QGraphicsPixmapItem::mousePressEvent(event);
     QString pos_string =
         QString("Position: %1, %2").arg(this->pos().x()).arg(this->pos().y());
-    //ui->position->setText(pos_string);
 }
 
 /*

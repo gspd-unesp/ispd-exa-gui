@@ -13,11 +13,11 @@ class SettingsWindow : public QMainWindow
 {
     Q_OBJECT
 
-  public:
+public:
     explicit SettingsWindow(QWidget *parent = nullptr);
     ~SettingsWindow();
 
-  private:
+private:
     Ui::SettingsWindow *ui;
 };
 
