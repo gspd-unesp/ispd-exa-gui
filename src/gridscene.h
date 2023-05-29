@@ -6,7 +6,8 @@
 #include <QGraphicsScene>
 #include <QWidget>
 
-typedef enum PICK_OP {
+typedef enum PICK_OP
+{
     NONE,
     PC,
     CLUSTER,
@@ -19,14 +20,19 @@ class GridScene : public QGraphicsScene
     Q_OBJECT
 
 protected:
-        void mousePressEvent(QGraphicsSceneMouseEvent *event) override;
+    void mousePressEvent(QGraphicsSceneMouseEvent *event) override;
 
 public:
     explicit GridScene(QObject *parent = nullptr);
     QVector<Icon *> *items;
     void             addIcon(Icon *icon, QPointF pos = QPointF(0, 0));
     void             drawBackgroundLines();
-    PICK_OP pickOp;
+    PICK_OP          pickOp;
+    QLabel           *machineDescriptionLabel;
+
+private:
+    void addLink(Icon *a, Icon *b);
+    Icon *whichMachine(QPointF pos);
 
 signals:
     void clicked(QPointF position);

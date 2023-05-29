@@ -1,5 +1,6 @@
 #include "gridscene.h"
 #include "clustericon.h"
+#include "link.h"
 #include "machineicon.h"
 #include <QGraphicsItem>
 #include <QGraphicsSceneMouseEvent>
@@ -21,8 +22,17 @@ void GridScene::addIcon(Icon *icon, QPointF pos)
 {
     icon->setPos(pos);
     icon->setFlag(QGraphicsItem::ItemIsMovable);
+    icon->setOutputLabel(machineDescriptionLabel);
+
     this->items->append(icon);
     this->addItem(icon);
+}
+
+void GridScene::addLink(Icon *a, Icon *b)
+{
+    auto newLink = new Link(a, b);
+
+    this->addPolygon(*(newLink->line));
 }
 
 void GridScene::mousePressEvent(QGraphicsSceneMouseEvent *event)
@@ -38,6 +48,7 @@ void GridScene::mousePressEvent(QGraphicsSceneMouseEvent *event)
     }
     case CLUSTER: {
         this->addIcon(new ClusterIcon("test"), event->scenePos());
+        this->addLink(this->items->at(0), this->items->at(1));
         break;
     }
     case LINK: {
@@ -59,4 +70,14 @@ void GridScene::drawBackgroundLines()
         auto line = new QLine(i, 0, i, rect.height());
         addLine(*line);
     }
+}
+
+Icon *GridScene::whichMachine(QPointF pos) {
+    for (auto i = this->items->begin(); i != this->items->end(); i++) {
+        if ((*i)->contains(pos)) {
+            return *i;
+        }
+    }
+
+    return nullptr;
 }

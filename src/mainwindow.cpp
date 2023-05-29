@@ -21,7 +21,9 @@ MainWindow::MainWindow(QWidget *parent)
 {
     this->ui->setupUi(this);
     this->scene = new GridScene();
+    this->scene->machineDescriptionLabel = ui->position;
     this->ui->grid->setGScene(scene);
+
     // Button PC Icon
     this->bPcIcon = new QImage(":/icons/pc.png");
     this->ui->bPc->setIcon(QIcon(QPixmap::fromImage(*bPcIcon)));

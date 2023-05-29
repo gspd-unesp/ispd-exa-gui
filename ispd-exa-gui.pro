@@ -8,7 +8,8 @@ SOURCES += \
   src/settingswindow.cpp \
   src/machineicon.cpp \
   src/clustericon.cpp \
-  src/icon.cpp
+  src/icon.cpp \
+  src/link.cpp
 
 HEADERS += \
   src/mainwindow.h \
@@ -19,7 +20,8 @@ HEADERS += \
   src/settingswindow.h \
   src/machineicon.h \
   src/clustericon.h \
-  src/icon.h
+  src/icon.h \
+  src/link.h
 
 QT += widgets
 

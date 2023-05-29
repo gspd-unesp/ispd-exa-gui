@@ -1,7 +1,7 @@
 #ifndef ICON_H
 #define ICON_H
 
-#include <QObject>
+#include <QLabel>
 #include <QGraphicsItem>
 #include <QObject>
 #include <string>
@@ -12,7 +12,7 @@ class Icon : public QObject, public QGraphicsPixmapItem
 public:
     Icon(const char *name, QGraphicsItem *parent = nullptr);
     Icon(QPixmap pixmap, QGraphicsItem *parent = nullptr);
-    // static Icon *fromPath(const char *name, QGraphicsItem *parent = nullptr);
+    void setOutputLabel(QLabel *label);
 
     const char *iconPath;
 
@@ -21,9 +21,11 @@ protected:
     void mousePressEvent(QGraphicsSceneMouseEvent *event) override;
 
 private:
-    QString         positionString;
+    void updatePosition();
+    QString positionString;
+    QLabel  *outputLabel;
     // Ui::MainWindow *ui;
-    std::string    *name;
+    std::string *name;
 
 signals:
 };

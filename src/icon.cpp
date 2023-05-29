@@ -19,8 +19,22 @@ void Icon::mousePressEvent(QGraphicsSceneMouseEvent *event)
              << "\n";
     QGraphicsItem::mousePressEvent(event);
     QGraphicsPixmapItem::mousePressEvent(event);
+    
+    this->updatePosition();
+}
+
+void Icon::updatePosition() {
     QString pos_string =
         QString("Position: %1, %2").arg(this->pos().x()).arg(this->pos().y());
+
+    if (outputLabel) {
+        outputLabel->setText(pos_string);
+    }
+}
+
+void Icon::setOutputLabel(QLabel *label)
+{
+    this->outputLabel = label;
 }
 
 /*
@@ -49,4 +63,6 @@ void Icon::mouseReleaseEvent(QGraphicsSceneMouseEvent *event)
     if (pos.y() > height) {
         this->moveBy(0, -(pos.y() - height));
     }
+
+    updatePosition();
 }
