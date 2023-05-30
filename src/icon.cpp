@@ -1,17 +1,19 @@
 #include "icon.h"
 
+#include "link.h"
 #include <QDebug>
 #include <QGraphicsScene>
 
 Icon::Icon(const char *name, QGraphicsItem *parent)
     : QGraphicsPixmapItem{parent}
 {
+    this->setFlag(QGraphicsItem::ItemIsMovable);
     this->name = new std::string(name);
+    this->links = new QVector<Link *>();
 }
 
 /*
  * Configure the event of clicking the item to print the position of it.
- * Useful for DEBUG.
  */
 void Icon::mousePressEvent(QGraphicsSceneMouseEvent *event)
 {
@@ -65,4 +67,11 @@ void Icon::mouseReleaseEvent(QGraphicsSceneMouseEvent *event)
     }
 
     updatePosition();
+    for (auto link = links->begin(); link != links->end(); link++) {
+        (*link)->updatePositions();
+    }
+}
+
+std::string *Icon::getName() {
+    return this->name;
 }

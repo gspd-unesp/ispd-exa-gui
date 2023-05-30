@@ -70,3 +70,7 @@ void MainWindow::on_bNone_clicked() {
 void MainWindow::on_bCluster_clicked() {
     this->scene->pickOp = CLUSTER;
 }
+
+void MainWindow::on_bLink_clicked() {
+    this->scene->pickOp = LINK;
+}

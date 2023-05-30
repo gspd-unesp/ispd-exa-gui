@@ -2,10 +2,12 @@
 #include "clustericon.h"
 #include "link.h"
 #include "machineicon.h"
+#include "qdebug.h"
 #include <QGraphicsItem>
 #include <QGraphicsSceneMouseEvent>
 #include <QMouseEvent>
 #include <iostream>
+#include <string>
 
 /*
  * Create the scene following the QGraphicsScene constructor
@@ -14,6 +16,11 @@ GridScene::GridScene(QObject *parent) : QGraphicsScene{parent}
 {
     this->items = new QVector<Icon *>();
 
+    this->lBegin = nullptr;
+    this->lEnd   = nullptr;
+    this->pickOp = NONE;
+    this->pIndex = this->cIndex = this->lIndex = 0;
+
     setSceneRect(0, 0, 2000, 2000);
     drawBackgroundLines();
 }
@@ -21,18 +28,15 @@ GridScene::GridScene(QObject *parent) : QGraphicsScene{parent}
 void GridScene::addIcon(Icon *icon, QPointF pos)
 {
     icon->setPos(pos);
-    icon->setFlag(QGraphicsItem::ItemIsMovable);
     icon->setOutputLabel(machineDescriptionLabel);
-
     this->items->append(icon);
     this->addItem(icon);
 }
 
 void GridScene::addLink(Icon *a, Icon *b)
 {
-    auto newLink = new Link(a, b);
-
-    this->addPolygon(*(newLink->line));
+    auto newLink = new Link(getNewLinkName().c_str(), a, b);
+    this->addItem(newLink);
 }
 
 void GridScene::mousePressEvent(QGraphicsSceneMouseEvent *event)
@@ -43,15 +47,33 @@ void GridScene::mousePressEvent(QGraphicsSceneMouseEvent *event)
         break;
     }
     case PC: {
-        this->addIcon(new MachineIcon("test"), event->scenePos());
+        auto newMachine = new MachineIcon(getNewMachineName().c_str());
+        this->addIcon(newMachine, event->scenePos());
         break;
     }
     case CLUSTER: {
-        this->addIcon(new ClusterIcon("test"), event->scenePos());
-        this->addLink(this->items->at(0), this->items->at(1));
+        auto newCluster = new ClusterIcon(getNewClusterName().c_str());
+        this->addIcon(newCluster, event->scenePos());
         break;
     }
     case LINK: {
+        if (this->lBegin == nullptr) {
+            qDebug() << "Primeira máquina\n";
+            this->lBegin = whichMachine(event->scenePos());
+        }
+        else {
+            qDebug() << "Segunda máquina\n";
+
+            if (whichMachine(event->scenePos()) == this->lBegin) {
+                break;
+            }
+            this->lEnd = whichMachine(event->scenePos());
+
+            this->addLink(this->lBegin, this->lEnd);
+
+            this->lBegin = nullptr;
+            this->lEnd   = nullptr;
+        }
         break;
     }
     }
@@ -72,12 +94,44 @@ void GridScene::drawBackgroundLines()
     }
 }
 
-Icon *GridScene::whichMachine(QPointF pos) {
+Icon *GridScene::whichMachine(QPointF pos)
+{
     for (auto i = this->items->begin(); i != this->items->end(); i++) {
-        if ((*i)->contains(pos)) {
+
+        qDebug() << pos << " Está em "
+                 << (*i)->sceneBoundingRect().contains(pos) << "?\n";
+        if ((*i)->sceneBoundingRect().contains(pos)) {
+            qDebug() << "Consegui achar " << (*i)->getName()->c_str() << "\n";
             return *i;
         }
     }
 
     return nullptr;
+}
+
+std::string GridScene::getNewMachineName()
+{
+    std::string newMachineName("Machine");
+
+    newMachineName.append(std::to_string(this->pIndex++));
+
+    return newMachineName;
+}
+
+std::string GridScene::getNewClusterName()
+{
+    std::string newClusterMachine("Cluster");
+
+    newClusterMachine.append(std::to_string(this->cIndex++));
+
+    return newClusterMachine;
+}
+
+std::string GridScene::getNewLinkName()
+{
+    std::string newLinkMachine("Link");
+
+    newLinkMachine.append(std::to_string(this->lIndex++));
+
+    return newLinkMachine;
 }

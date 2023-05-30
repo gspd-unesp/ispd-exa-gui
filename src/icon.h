@@ -1,10 +1,13 @@
 #ifndef ICON_H
 #define ICON_H
 
+#include <QVector>
 #include <QLabel>
 #include <QGraphicsItem>
 #include <QObject>
 #include <string>
+
+class Link;
 
 class Icon : public QObject, public QGraphicsPixmapItem
 {
@@ -13,6 +16,9 @@ public:
     Icon(const char *name, QGraphicsItem *parent = nullptr);
     Icon(QPixmap pixmap, QGraphicsItem *parent = nullptr);
     void setOutputLabel(QLabel *label);
+    QVector<Link *> *links;
+    std::string *getName();
+    
 
     const char *iconPath;
 
@@ -30,4 +36,4 @@ private:
 signals:
 };
 
-#endif // ICON_H
+#endif
