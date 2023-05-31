@@ -20,7 +20,7 @@ MainWindow::MainWindow(QWidget *parent)
     : QMainWindow{parent}, ui(new Ui::MainWindow)
 {
     this->ui->setupUi(this);
-    this->scene = new GridScene();
+    this->scene                          = new GridScene();
     this->scene->machineDescriptionLabel = ui->position;
     this->ui->grid->setGScene(scene);
 
@@ -31,11 +31,12 @@ MainWindow::MainWindow(QWidget *parent)
     // Button Cluster Icon
     //
     this->bClusterIcon = new QImage(":/icons/cluster.png");
-    this->ui->bCluster->setIcon(
-        QIcon(QPixmap::fromImage(*bClusterIcon)));
+    this->ui->bCluster->setIcon(QIcon(QPixmap::fromImage(*bClusterIcon)));
 
     this->bNoneIcon = new QImage(":/icons/cursor.png");
     this->ui->bNone->setIcon(QIcon(QPixmap::fromImage(*bNoneIcon)));
+    this->ui->bNone->click();
+
     this->ui->bNone->setIconSize(QSize(35, 35));
     this->ui->bPc->setIconSize(QSize(35, 35));
     this->ui->bCluster->setIconSize(QSize(35, 35));
@@ -63,14 +64,17 @@ void MainWindow::on_bPc_clicked()
     this->scene->pickOp = PC;
 }
 
-void MainWindow::on_bNone_clicked() {
+void MainWindow::on_bNone_clicked()
+{
     this->scene->pickOp = NONE;
 }
 
-void MainWindow::on_bCluster_clicked() {
+void MainWindow::on_bCluster_clicked()
+{
     this->scene->pickOp = CLUSTER;
 }
 
-void MainWindow::on_bLink_clicked() {
+void MainWindow::on_bLink_clicked()
+{
     this->scene->pickOp = LINK;
 }

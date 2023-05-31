@@ -1,5 +1,4 @@
 #include "icon.h"
-
 #include "link.h"
 #include <QDebug>
 #include <QGraphicsScene>
@@ -8,7 +7,7 @@ Icon::Icon(const char *name, QGraphicsItem *parent)
     : QGraphicsPixmapItem{parent}
 {
     this->setFlag(QGraphicsItem::ItemIsMovable);
-    this->name = new std::string(name);
+    this->name  = new std::string(name);
     this->links = new QVector<Link *>();
 }
 
@@ -21,11 +20,12 @@ void Icon::mousePressEvent(QGraphicsSceneMouseEvent *event)
              << "\n";
     QGraphicsItem::mousePressEvent(event);
     QGraphicsPixmapItem::mousePressEvent(event);
-    
+
     this->updatePosition();
 }
 
-void Icon::updatePosition() {
+void Icon::updatePosition()
+{
     QString pos_string =
         QString("Position: %1, %2").arg(this->pos().x()).arg(this->pos().y());
 
@@ -72,6 +72,7 @@ void Icon::mouseReleaseEvent(QGraphicsSceneMouseEvent *event)
     }
 }
 
-std::string *Icon::getName() {
+std::string *Icon::getName()
+{
     return this->name;
 }
