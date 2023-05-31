@@ -1,17 +1,18 @@
 #include "icon.h"
-
+#include "link.h"
 #include <QDebug>
 #include <QGraphicsScene>
 
 Icon::Icon(const char *name, QGraphicsItem *parent)
     : QGraphicsPixmapItem{parent}
 {
-    this->name = new std::string(name);
+    this->setFlag(QGraphicsItem::ItemIsMovable);
+    this->name  = new std::string(name);
+    this->links = new QVector<Link *>();
 }
 
 /*
  * Configure the event of clicking the item to print the position of it.
- * Useful for DEBUG.
  */
 void Icon::mousePressEvent(QGraphicsSceneMouseEvent *event)
 {
@@ -19,8 +20,23 @@ void Icon::mousePressEvent(QGraphicsSceneMouseEvent *event)
              << "\n";
     QGraphicsItem::mousePressEvent(event);
     QGraphicsPixmapItem::mousePressEvent(event);
+
+    this->updatePosition();
+}
+
+void Icon::updatePosition()
+{
     QString pos_string =
         QString("Position: %1, %2").arg(this->pos().x()).arg(this->pos().y());
+
+    if (outputLabel) {
+        outputLabel->setText(pos_string);
+    }
+}
+
+void Icon::setOutputLabel(QLabel *label)
+{
+    this->outputLabel = label;
 }
 
 /*
@@ -49,4 +65,14 @@ void Icon::mouseReleaseEvent(QGraphicsSceneMouseEvent *event)
     if (pos.y() > height) {
         this->moveBy(0, -(pos.y() - height));
     }
+
+    updatePosition();
+    for (auto link = links->begin(); link != links->end(); link++) {
+        (*link)->updatePositions();
+    }
+}
+
+std::string *Icon::getName()
+{
+    return this->name;
 }

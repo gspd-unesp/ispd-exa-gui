@@ -45,6 +45,7 @@ private slots:
     void on_buttonC_clicked();
     void on_bPc_clicked();
     void on_bCluster_clicked();
+    void on_bLink_clicked();
     void on_bNone_clicked();
 };
 

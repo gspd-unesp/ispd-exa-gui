@@ -11,6 +11,7 @@
 GridView::GridView(QWidget *parent) : QGraphicsView{parent}
 {
     setAlignment(Qt::AlignTop | Qt::AlignLeft);
+    this->setRenderHints(QPainter::Antialiasing | QPainter::SmoothPixmapTransform);
 }
 
 void GridView::setGScene(GridScene *scene) {
