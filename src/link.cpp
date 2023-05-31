@@ -1,6 +1,7 @@
 #include "link.h"
 #include "icon.h"
 #include "qgraphicsitem.h"
+#include "qpen.h"
 
 ///
 /// Helper function to get the middle point of an icon
@@ -33,6 +34,13 @@ Link::Link(char const *name, Icon *b, Icon *e) : QGraphicsPolygonItem()
 
     b->links->append(this);
     e->links->append(this);
+
+    QPen pen;
+    pen.setWidth(1);
+    pen.setColor(QColor(255,85,59, 124));
+    pen.setCapStyle(Qt::RoundCap);
+    pen.setJoinStyle(Qt::RoundJoin);
+    this->setPen(pen);
 
     QPolygonF newLine;
     newLine << getMiddleOfIcon(this->begin) << getMiddleOfIcon(this->end);

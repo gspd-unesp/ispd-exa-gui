@@ -82,15 +82,22 @@ void GridScene::mousePressEvent(QGraphicsSceneMouseEvent *event)
 void GridScene::drawBackgroundLines()
 {
     auto rect = sceneRect();
+    QPen pen; // creates a default pen
+
+    pen.setStyle(Qt::SolidLine);
+    pen.setWidth(1);
+    pen.setColor(QColor(211, 211, 211, 255));
+    pen.setCapStyle(Qt::RoundCap);
+    pen.setJoinStyle(Qt::RoundJoin);
 
     for (qreal i = 40; i <= rect.height(); i += 40) {
         auto line = new QLine(0, i, rect.width(), i);
-        addLine(*line);
+        addLine(*line, pen);
     }
 
     for (qreal i = 40; i <= rect.width(); i += 40) {
         auto line = new QLine(i, 0, i, rect.height());
-        addLine(*line);
+        addLine(*line, pen);
     }
 }
 
