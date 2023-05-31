@@ -1,6 +1,4 @@
 #include "mainwindow.h"
-#include "clustericon.h"
-#include "machineicon.h"
 
 #include "gridscene.h"
 #include "userwindow.h"
@@ -22,28 +20,26 @@ MainWindow::MainWindow(QWidget *parent)
     : QMainWindow{parent}, ui(new Ui::MainWindow)
 {
     this->ui->setupUi(this);
-    this->scene = new GridScene();
-    this->ui->grid->setScene(scene);
+    this->scene                          = new GridScene();
+    this->scene->machineDescriptionLabel = ui->position;
+    this->ui->grid->setGScene(scene);
+
     // Button PC Icon
-    this->buttonPCIcon = new QImage(":/icons/pc.png");
-    // this->ui->buttonA->setCursor(Qt::PointingHandCursor);
-    this->ui->buttonPC->setIcon(QIcon(QPixmap::fromImage(*buttonPCIcon)));
-    // this->ui->buttonA->setStyleSheet("QPushButton {background-color: #2bc48a;
-    // border-radius: 3px;}""QPushButton:hover { border-color: #4A69BD;
-    // border-width: 1px; border-style:inset; background-color: #29bc78}");
-    this->ui->buttonPC->setFixedSize(50, 40);
-    this->ui->buttonPC->setIconSize(QSize(35, 35));
+    this->bPcIcon = new QImage(":/icons/pc.png");
+    this->ui->bPc->setIcon(QIcon(QPixmap::fromImage(*bPcIcon)));
 
     // Button Cluster Icon
-    this->buttonClusterIcon = new QImage(":/icons/cluster.png");
-    // this->ui->buttonA->setCursor(Qt::PointingHandCursor);
-    this->ui->buttonCluster->setIcon(
-        QIcon(QPixmap::fromImage(*buttonClusterIcon)));
-    // this->ui->buttonA->setStyleSheet("QPushButton {background-color: #2bc48a;
-    // border-radius: 3px;}""QPushButton:hover { border-color: #4A69BD;
-    // border-width: 1px; border-style:inset; background-color: #29bc78}");
-    this->ui->buttonCluster->setFixedSize(50, 40);
-    this->ui->buttonCluster->setIconSize(QSize(35, 35));
+    //
+    this->bClusterIcon = new QImage(":/icons/cluster.png");
+    this->ui->bCluster->setIcon(QIcon(QPixmap::fromImage(*bClusterIcon)));
+
+    this->bNoneIcon = new QImage(":/icons/cursor.png");
+    this->ui->bNone->setIcon(QIcon(QPixmap::fromImage(*bNoneIcon)));
+    this->ui->bNone->click();
+
+    this->ui->bNone->setIconSize(QSize(35, 35));
+    this->ui->bPc->setIconSize(QSize(35, 35));
+    this->ui->bCluster->setIconSize(QSize(35, 35));
 }
 
 MainWindow::~MainWindow()
@@ -63,14 +59,22 @@ void MainWindow::on_buttonC_clicked()
     this->workloadsWindow->show();
 }
 
-void MainWindow::on_buttonPC_clicked()
+void MainWindow::on_bPc_clicked()
 {
-    scene->addIcon(new MachineIcon("hello"));
-    this->ui->grid->show();
+    this->scene->pickOp = PC;
 }
 
-void MainWindow::on_buttonCluster_clicked()
+void MainWindow::on_bNone_clicked()
 {
-    scene->addIcon(new ClusterIcon("hello"));
-    this->ui->grid->show();
+    this->scene->pickOp = NONE;
+}
+
+void MainWindow::on_bCluster_clicked()
+{
+    this->scene->pickOp = CLUSTER;
+}
+
+void MainWindow::on_bLink_clicked()
+{
+    this->scene->pickOp = LINK;
 }

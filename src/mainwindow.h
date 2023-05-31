@@ -12,6 +12,7 @@
 
 #include <src/gridscene.h>
 
+
 namespace Ui
 {
 class MainWindow;
@@ -33,16 +34,19 @@ private:
     UserWindow *userWindow;
     Workloads  *workloadsWindow;
 
-    QImage *buttonPCIcon;
-    QImage *buttonClusterIcon;
+    QImage *bPcIcon;
+    QImage *bNoneIcon;
+    QImage *bClusterIcon;
     QImage *buttonBicon;
     QImage *buttonCicon;
 signals:
 private slots:
-    void on_buttonPC_clicked();
-    void on_buttonCluster_clicked();
     void on_buttonB_clicked();
     void on_buttonC_clicked();
+    void on_bPc_clicked();
+    void on_bCluster_clicked();
+    void on_bLink_clicked();
+    void on_bNone_clicked();
 };
 
 #endif // MAINWINDOW_H

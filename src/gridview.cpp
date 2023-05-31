@@ -1,6 +1,8 @@
 #include "gridview.h"
+#include "src/gridscene.h"
 #include <QDebug>
 #include <QGraphicsView>
+#include "gridscene.h"
 #include <QMouseEvent>
 
 /*
@@ -9,6 +11,12 @@
 GridView::GridView(QWidget *parent) : QGraphicsView{parent}
 {
     setAlignment(Qt::AlignTop | Qt::AlignLeft);
+    this->setRenderHints(QPainter::Antialiasing | QPainter::SmoothPixmapTransform);
+}
+
+void GridView::setGScene(GridScene *scene) {
+    this->setScene(scene);
+    this->gScene = scene;
 }
 
 /*
@@ -17,6 +25,7 @@ GridView::GridView(QWidget *parent) : QGraphicsView{parent}
  */
 void GridView::mousePressEvent(QMouseEvent *event)
 {
+
     qDebug() << event->pos().x();
     qDebug() << event->pos().y();
 

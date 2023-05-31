@@ -8,5 +8,6 @@
         <file>icons/pc.png</file>
         <file>icons/torre.png</file>
         <file>icons/cluster.png</file>
+        <file>icons/cursor.png</file>
     </qresource>
 </RCC>

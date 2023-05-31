@@ -8,7 +8,8 @@ SOURCES += \
   src/settingswindow.cpp \
   src/machineicon.cpp \
   src/clustericon.cpp \
-  src/icon.cpp
+  src/icon.cpp \
+  src/link.cpp
 
 HEADERS += \
   src/mainwindow.h \
@@ -19,7 +20,8 @@ HEADERS += \
   src/settingswindow.h \
   src/machineicon.h \
   src/clustericon.h \
-  src/icon.h
+  src/icon.h \
+  src/link.h
 
 QT += widgets
 
@@ -34,4 +36,15 @@ FORMS += \
   forms/mainwindow.ui \
   forms/settingswindow.ui
 
-DISTFILES +=
+CONFIG(debug, debug|release) {
+    DESTDIR = build/debug
+}
+CONFIG(release, debug|release) {
+    DESTDIR = build/release
+}
+
+OBJECTS_DIR = $$DESTDIR/.obj
+MOC_DIR = $$DESTDIR/.moc
+RCC_DIR = $$DESTDIR/.qrc
+UI_DIR = $$DESTDIR/.u
+
