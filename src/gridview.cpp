@@ -1,5 +1,5 @@
 #include "gridview.h"
-#include "src/gridscene.h"
+#include "gridscene.h"
 #include <QDebug>
 #include <QGraphicsView>
 #include "gridscene.h"

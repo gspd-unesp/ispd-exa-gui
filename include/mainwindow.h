@@ -10,7 +10,7 @@
 #include <QMainWindow>
 #include <QVBoxLayout>
 
-#include <src/gridscene.h>
+#include <gridscene.h>
 
 
 namespace Ui

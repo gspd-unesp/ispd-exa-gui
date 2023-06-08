@@ -1,4 +1,4 @@
-#include "src/clustericon.h"
+#include "clustericon.h"
 #include "qgraphicsitem.h"
 
 ClusterIcon::ClusterIcon(const char *name, QGraphicsItem *parent)
