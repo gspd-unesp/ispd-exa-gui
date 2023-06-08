@@ -1,4 +1,4 @@
-#include "src/machineicon.h"
+#include "machineicon.h"
 #include "qgraphicsitem.h"
 
 MachineIcon::MachineIcon(const char *name, QGraphicsItem *parent)

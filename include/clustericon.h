@@ -1,7 +1,7 @@
 #pragma once
 
 #include "qgraphicsitem.h"
-#include "src/icon.h"
+#include "icon.h"
 #include <QObject>
 #include <string>
 

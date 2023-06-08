@@ -11,17 +11,18 @@ SOURCES += \
   src/icon.cpp \
   src/link.cpp
 
+INCLUDEPATH += include/
 HEADERS += \
-  src/mainwindow.h \
-  src/userwindow.h \
-  src/workloads.h \
-  src/gridscene.h \
-  src/gridview.h \
-  src/settingswindow.h \
-  src/machineicon.h \
-  src/clustericon.h \
-  src/icon.h \
-  src/link.h
+  include/mainwindow.h \
+  include/userwindow.h \
+  include/workloads.h \
+  include/gridscene.h \
+  include/gridview.h \
+  include/settingswindow.h \
+  include/machineicon.h \
+  include/clustericon.h \
+  include/icon.h \
+  include/link.h
 
 QT += widgets
 

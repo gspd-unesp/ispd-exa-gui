@@ -1,6 +1,6 @@
 #pragma once
 
-#include "src/icon.h"
+#include "icon.h"
 #include <QObject>
 #include <string>
 

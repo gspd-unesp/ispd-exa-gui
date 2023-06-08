@@ -263,7 +263,7 @@
   <customwidget>
    <class>GridView</class>
    <extends>QGraphicsView</extends>
-   <header>src/gridview.h</header>
+   <header>gridview.h</header>
   </customwidget>
  </customwidgets>
  <resources/>

@@ -1,0 +1,23 @@
+# Build folders
+build/
+
+# Clangd configuration
+compile_commands.json
+
+# Qmake output
+ispd-exa-gui.pro.user
+Makefile
+.qmake.stash
+
+# Output binary
+ispd-exa-gui
+
+# Gimp files of icons
+*.xcf
+
+# Random things
+.cache
+
+# Not usable for now
+documentation
+.gitmodules
