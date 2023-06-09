@@ -11,13 +11,13 @@ class Workloads;
 }
 QT_END_NAMESPACE
 
-class Workloads : public QMainWindow
+class WorkloadsWindow : public QMainWindow
 {
     Q_OBJECT
 
   public:
-    Workloads(QWidget *parent = nullptr);
-    ~Workloads();
+    WorkloadsWindow(QWidget *parent = nullptr);
+    ~WorkloadsWindow();
 
   private slots:
     void on_pushButton_clicked();

@@ -233,7 +233,7 @@
            </widget>
           </item>
           <item>
-           <widget class="GridView" name="grid">
+           <widget class="View" name="grid">
             <property name="styleSheet">
              <string notr="true">background-color: 'white'</string>
             </property>
@@ -261,9 +261,9 @@
  </widget>
  <customwidgets>
   <customwidget>
-   <class>GridView</class>
+   <class>View</class>
    <extends>QGraphicsView</extends>
-   <header>gridview.h</header>
+   <header>drawingtable/view.h</header>
   </customwidget>
  </customwidgets>
  <resources/>

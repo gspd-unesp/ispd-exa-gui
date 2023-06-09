@@ -1,17 +1,15 @@
 #ifndef MAINWINDOW_H
 #define MAINWINDOW_H
 
-#include "userwindow.h"
-#include "workloads.h"
+#include "window/users.h"
+#include "window/workloads.h"
+#include "drawingtable/scene.h"
 #include "ui_mainwindow.h"
 
 #include <QGraphicsScene>
 #include <QHBoxLayout>
 #include <QMainWindow>
 #include <QVBoxLayout>
-
-#include <gridscene.h>
-
 
 namespace Ui
 {
@@ -27,12 +25,12 @@ public:
 
 private:
     Ui::MainWindow *ui;
-    GridScene      *scene;
+    Scene      *scene;
     QImage         *headp;
     QImage         *headc;
 
     UserWindow *userWindow;
-    Workloads  *workloadsWindow;
+    WorkloadsWindow  *workloadsWindow;
 
     QImage *bPcIcon;
     QImage *bNoneIcon;

@@ -1,14 +1,14 @@
-#include "link.h"
-#include "icon.h"
-#include "qgraphicsitem.h"
-#include "qpen.h"
+#include "item/link.h"
+#include "item/icon.h"
+#include <QGraphicsItem>
+#include <QPen>
 
 ///
 /// Helper function to get the middle point of an icon
 ///
-/// @param a a pointer to an Icon 
+/// @param a a pointer to an Icon
 ///
-/// @returns the point at the middle of the Icon 
+/// @returns the point at the middle of the Icon
 ///
 QPointF getMiddleOfIcon(Icon *a)
 {
@@ -37,7 +37,7 @@ Link::Link(char const *name, Icon *b, Icon *e) : QGraphicsPolygonItem()
 
     QPen pen;
     pen.setWidth(1);
-    pen.setColor(QColor(255,85,59, 124));
+    pen.setColor(QColor(255, 85, 59, 124));
     pen.setCapStyle(Qt::RoundCap);
     pen.setJoinStyle(Qt::RoundJoin);
     this->setPen(pen);
@@ -49,7 +49,7 @@ Link::Link(char const *name, Icon *b, Icon *e) : QGraphicsPolygonItem()
 }
 
 ///
-/// @brief Update the position of the Link, suppose to be used when moving 
+/// @brief Update the position of the Link, suppose to be used when moving
 ///        an Icon that the Link is connected.
 ///
 void Link::updatePositions()

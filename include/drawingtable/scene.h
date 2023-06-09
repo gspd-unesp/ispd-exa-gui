@@ -1,9 +1,9 @@
-#ifndef GRIDSCENE_H
-#define GRIDSCENE_H
+#ifndef SCENE_H
+#define SCENE_H
 
 #include "qglobal.h"
 #include "qvector.h"
-#include "icon.h"
+#include "item/icon.h"
 #include <QGraphicsScene>
 #include <QWidget>
 
@@ -15,7 +15,7 @@ typedef enum PICK_OP
     LINK
 } PICK_OP;
 
-class GridScene : public QGraphicsScene
+class Scene : public QGraphicsScene
 {
 
     Q_OBJECT
@@ -24,7 +24,7 @@ protected:
     void mousePressEvent(QGraphicsSceneMouseEvent *event) override;
 
 public:
-    explicit GridScene(QObject *parent = nullptr);
+    explicit Scene(QObject *parent = nullptr);
     QVector<Icon *> *items;
     void             addIcon(Icon *icon, QPointF pos = QPointF(0, 0));
     void             drawBackgroundLines();
@@ -47,4 +47,4 @@ signals:
     void clicked(QPointF position);
 };
 
-#endif // GRIDSCENE_H
+#endif

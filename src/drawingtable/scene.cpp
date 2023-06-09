@@ -1,8 +1,8 @@
-#include "gridscene.h"
-#include "clustericon.h"
-#include "link.h"
-#include "machineicon.h"
-#include "qdebug.h"
+#include "drawingtable/scene.h"
+#include "item/clustericon.h"
+#include "item/link.h"
+#include "item/machineicon.h"
+#include <QDebug>
 #include <QGraphicsItem>
 #include <QGraphicsSceneMouseEvent>
 #include <QMouseEvent>
@@ -12,7 +12,7 @@
 /*
  * Create the scene following the QGraphicsScene constructor
  */
-GridScene::GridScene(QObject *parent) : QGraphicsScene{parent}
+Scene::Scene(QObject *parent) : QGraphicsScene{parent}
 {
     this->items = new QVector<Icon *>();
 
@@ -25,7 +25,7 @@ GridScene::GridScene(QObject *parent) : QGraphicsScene{parent}
     drawBackgroundLines();
 }
 
-void GridScene::addIcon(Icon *icon, QPointF pos)
+void Scene::addIcon(Icon *icon, QPointF pos)
 {
     icon->setPos(pos);
     icon->setOutputLabel(machineDescriptionLabel);
@@ -33,13 +33,13 @@ void GridScene::addIcon(Icon *icon, QPointF pos)
     this->addItem(icon);
 }
 
-void GridScene::addLink(Icon *a, Icon *b)
+void Scene::addLink(Icon *a, Icon *b)
 {
     auto newLink = new Link(getNewLinkName().c_str(), a, b);
     this->addItem(newLink);
 }
 
-void GridScene::mousePressEvent(QGraphicsSceneMouseEvent *event)
+void Scene::mousePressEvent(QGraphicsSceneMouseEvent *event)
 {
     switch (this->pickOp) {
     case NONE: {
@@ -79,7 +79,7 @@ void GridScene::mousePressEvent(QGraphicsSceneMouseEvent *event)
     }
 }
 
-void GridScene::drawBackgroundLines()
+void Scene::drawBackgroundLines()
 {
     auto rect = sceneRect();
     QPen pen; // creates a default pen
@@ -101,7 +101,7 @@ void GridScene::drawBackgroundLines()
     }
 }
 
-Icon *GridScene::whichMachine(QPointF pos)
+Icon *Scene::whichMachine(QPointF pos)
 {
     for (auto i = this->items->begin(); i != this->items->end(); i++) {
 
@@ -116,7 +116,7 @@ Icon *GridScene::whichMachine(QPointF pos)
     return nullptr;
 }
 
-std::string GridScene::getNewMachineName()
+std::string Scene::getNewMachineName()
 {
     std::string newMachineName("Machine");
 
@@ -125,7 +125,7 @@ std::string GridScene::getNewMachineName()
     return newMachineName;
 }
 
-std::string GridScene::getNewClusterName()
+std::string Scene::getNewClusterName()
 {
     std::string newClusterMachine("Cluster");
 
@@ -134,7 +134,7 @@ std::string GridScene::getNewClusterName()
     return newClusterMachine;
 }
 
-std::string GridScene::getNewLinkName()
+std::string Scene::getNewLinkName()
 {
     std::string newLinkMachine("Link");
 
