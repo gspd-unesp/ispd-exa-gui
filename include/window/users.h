@@ -1,7 +1,6 @@
 #ifndef USERWINDOW_H
 #define USERWINDOW_H
 #include <QMainWindow>
-#include "settingswindow.h"
 #include <QHBoxLayout>
 #include <QVBoxLayout>
 

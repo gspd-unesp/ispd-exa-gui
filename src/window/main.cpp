@@ -1,8 +1,8 @@
-#include "mainwindow.h"
+#include "window/main.h"
+#include "window/users.h"
+#include "window/workloads.h"
 
-#include "gridscene.h"
-#include "userwindow.h"
-#include "workloads.h"
+#include "drawingtable/scene.h"
 
 #include <QBrush>
 #include <QColor>
@@ -20,7 +20,7 @@ MainWindow::MainWindow(QWidget *parent)
     : QMainWindow{parent}, ui(new Ui::MainWindow)
 {
     this->ui->setupUi(this);
-    this->scene                          = new GridScene();
+    this->scene                          = new Scene();
     this->scene->machineDescriptionLabel = ui->position;
     this->ui->grid->setGScene(scene);
 
@@ -55,7 +55,7 @@ void MainWindow::on_buttonB_clicked()
 
 void MainWindow::on_buttonC_clicked()
 {
-    this->workloadsWindow = new Workloads();
+    this->workloadsWindow = new WorkloadsWindow();
     this->workloadsWindow->show();
 }
 

@@ -1,20 +1,21 @@
-#include "gridview.h"
-#include "gridscene.h"
+#include "drawingtable/view.h"
+#include "drawingtable/scene.h"
 #include <QDebug>
 #include <QGraphicsView>
-#include "gridscene.h"
 #include <QMouseEvent>
 
 /*
  * Create the item following the QGraphicsView constructor
  */
-GridView::GridView(QWidget *parent) : QGraphicsView{parent}
+View::View(QWidget *parent) : QGraphicsView{parent}
 {
     setAlignment(Qt::AlignTop | Qt::AlignLeft);
-    this->setRenderHints(QPainter::Antialiasing | QPainter::SmoothPixmapTransform);
+    this->setRenderHints(QPainter::Antialiasing |
+                         QPainter::SmoothPixmapTransform);
 }
 
-void GridView::setGScene(GridScene *scene) {
+void View::setGScene(Scene *scene)
+{
     this->setScene(scene);
     this->gScene = scene;
 }
@@ -23,7 +24,7 @@ void GridView::setGScene(GridScene *scene) {
  * Configure the event of clicking the View to print the location
  * of the mouse at the moment.
  */
-void GridView::mousePressEvent(QMouseEvent *event)
+void View::mousePressEvent(QMouseEvent *event)
 {
 
     qDebug() << event->pos().x();

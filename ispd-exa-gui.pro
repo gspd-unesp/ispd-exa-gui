@@ -1,28 +1,28 @@
 SOURCES += \
-  src/gridscene.cpp \
-  src/gridview.cpp \
-  src/main.cpp \
-  src/mainwindow.cpp \
-  src/userwindow.cpp \
-  src/workloads.cpp \
-  src/settingswindow.cpp \
-  src/machineicon.cpp \
-  src/clustericon.cpp \
-  src/icon.cpp \
-  src/link.cpp
+  src/ispd-exa-gui.cpp \
+  src/window/main.cpp \
+  src/window/users.cpp \
+  src/window/workloads.cpp \
+  src/window/settings.cpp \
+  src/item/machineicon.cpp \
+  src/item/clustericon.cpp \
+  src/item/icon.cpp \
+  src/item/link.cpp \ 
+  src/drawingtable/scene.cpp \
+  src/drawingtable/view.cpp
 
 INCLUDEPATH += include/
 HEADERS += \
-  include/mainwindow.h \
-  include/userwindow.h \
-  include/workloads.h \
-  include/gridscene.h \
-  include/gridview.h \
-  include/settingswindow.h \
-  include/machineicon.h \
-  include/clustericon.h \
-  include/icon.h \
-  include/link.h
+  include/window/main.h \
+  include/window/users.h \
+  include/window/workloads.h \
+  include/window/settings.h \
+  include/drawingtable/scene.h \
+  include/drawingtable/view.h \
+  include/item/machineicon.h \
+  include/item/clustericon.h \
+  include/item/icon.h \
+  include/item/link.h
 
 QT += widgets
 
