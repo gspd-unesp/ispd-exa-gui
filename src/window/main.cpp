@@ -37,7 +37,7 @@ MainWindow::MainWindow(QWidget *parent)
     this->ui->bNone->setIcon(QIcon(QPixmap::fromImage(*bNoneIcon)));
     this->ui->bNone->click();
 
-    this->ui->bNone->setIconSize(QSize(35, 35));
+    this->ui->bNone->setIconSize(QSize(25, 25));
     this->ui->bPc->setIconSize(QSize(35, 35));
     this->ui->bCluster->setIconSize(QSize(35, 35));
 }
