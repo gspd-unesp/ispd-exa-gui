@@ -1,5 +1,6 @@
 #include "item/icon.h"
 #include "item/link.h"
+#include "drawingtable/scene.h"
 #include <QDebug>
 #include <QGraphicsScene>
 
@@ -12,7 +13,7 @@ Icon::Icon(const char *name, QGraphicsItem *parent)
 }
 
 /*
- * Configure the event of clicking the item to print the position of it.
+ * Configure the event of clicking the item to print the position of it and select it.
  */
 void Icon::mousePressEvent(QGraphicsSceneMouseEvent *event)
 {
@@ -76,3 +77,4 @@ std::string *Icon::getName()
 {
     return this->name;
 }
+

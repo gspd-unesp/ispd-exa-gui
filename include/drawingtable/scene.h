@@ -22,13 +22,16 @@ class Scene : public QGraphicsScene
 
 protected:
     void mousePressEvent(QGraphicsSceneMouseEvent *event) override;
+    void keyPressEvent(QKeyEvent *event) override;
 
 public:
     explicit Scene(QObject *parent = nullptr);
     QVector<Icon *> *items;
     void             addIcon(Icon *icon, QPointF pos = QPointF(0, 0));
     void             drawBackgroundLines();
+
     PICK_OP          pickOp;
+
     QLabel           *machineDescriptionLabel;
 
 private:
@@ -42,7 +45,6 @@ private:
     std::string getNewMachineName();
     std::string getNewLinkName();
     std::string getNewClusterName();
-
 signals:
     void clicked(QPointF position);
 };

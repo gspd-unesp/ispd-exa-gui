@@ -29,7 +29,6 @@ MainWindow::MainWindow(QWidget *parent)
     this->ui->bPc->setIcon(QIcon(QPixmap::fromImage(*bPcIcon)));
 
     // Button Cluster Icon
-    //
     this->bClusterIcon = new QImage(":/icons/cluster.png");
     this->ui->bCluster->setIcon(QIcon(QPixmap::fromImage(*bClusterIcon)));
 

@@ -18,9 +18,10 @@ public:
     void setOutputLabel(QLabel *label);
     QVector<Link *> *links;
     std::string *getName();
-    
+    bool isSelected;
 
     const char *iconPath;
+    const char *iconPathSelected;
 
 protected:
     void mouseReleaseEvent(QGraphicsSceneMouseEvent *event) override;
@@ -32,6 +33,7 @@ private:
     QLabel  *outputLabel;
     // Ui::MainWindow *ui;
     std::string *name;
+
 
 signals:
 };
