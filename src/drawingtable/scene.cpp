@@ -32,7 +32,6 @@ void Scene::addIcon(Icon *icon, QPointF pos)
 {
     icon->setPos(pos);
     icon->setOutputLabel(machineDescriptionLabel);
-    // icon->setFlag(QGraphicsItem::ItemIsMovable, true);
     this->items->append(icon);
     this->addItem(icon);
     icon->isSelected;
@@ -47,28 +46,22 @@ void Scene::addLink(Icon *a, Icon *b)
 void Scene::keyPressEvent(QKeyEvent *event)
 {
     if (event->key() == Qt::Key_Delete) {
-        QList<QGraphicsItem*> itemList = QGraphicsScene::items(); // Obtém a lista de itens da cena
-
-        // Cria uma lista para armazenar os itens selecionados a serem removidos
+        QList<QGraphicsItem*> itemList = QGraphicsScene::items();
         QList<Icon*> itemsToRemove;
 
-        // Itera sobre a lista de itens
         for (QGraphicsItem* item : itemList) {
-            // Verifica se o item é um ícone selecionável
             Icon* icon = dynamic_cast<Icon*>(item);
             if (icon && icon->isSelected) {
                 itemsToRemove.append(icon);
             }
         }
 
-        // Remove todos os itens selecionados da cena
         for (Icon* icon : itemsToRemove) {
             removeItem(icon);
             items->removeAll(icon);
             delete icon;
         }
     }
-
     QGraphicsScene::keyPressEvent(event);
 }
 

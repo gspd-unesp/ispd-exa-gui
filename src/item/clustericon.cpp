@@ -15,7 +15,7 @@ ClusterIcon::ClusterIcon(const char *name, QGraphicsItem *parent)
 void ClusterIcon::mousePressEvent(QGraphicsSceneMouseEvent *event)
 {
     Icon::mousePressEvent(event);
-    select(); // Chama a função select() da classe base Icon
+    select();
 }
 
 void ClusterIcon::select()

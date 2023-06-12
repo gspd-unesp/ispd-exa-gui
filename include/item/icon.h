@@ -31,7 +31,6 @@ private:
     void updatePosition();
     QString positionString;
     QLabel  *outputLabel;
-    // Ui::MainWindow *ui;
     std::string *name;
 
 
