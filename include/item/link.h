@@ -22,8 +22,13 @@ public:
 
     void updatePositions();
 
+protected:
+    void updateArrow();
+    void paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget);
+
 private:
     std::string *name; ///< the name of the \link Link \endlink
+    QGraphicsPolygonItem* arrow;
 };
 
 #endif

@@ -1,7 +1,11 @@
 #include "item/link.h"
 #include "item/icon.h"
 #include <QGraphicsItem>
+#include <QGraphicsDropShadowEffect>
+#include <QGraphicsEffect>
 #include <QPen>
+#include <QPainter>
+#include <cmath>
 
 ///
 /// Helper function to get the middle point of an icon
@@ -36,10 +40,18 @@ Link::Link(char const *name, Icon *b, Icon *e) : QGraphicsPolygonItem()
     e->links->append(this);
 
     QPen pen;
-    pen.setWidth(1);
-    pen.setColor(QColor(255, 85, 59, 124));
+    pen.setWidth(2);
+    pen.setColor(QColor(9, 132, 227));
     pen.setCapStyle(Qt::RoundCap);
     pen.setJoinStyle(Qt::RoundJoin);
+    pen.setCosmetic(true); // Suaviza as bordas da linha
+
+    QGraphicsDropShadowEffect* shadowEffect = new QGraphicsDropShadowEffect();
+    shadowEffect->setColor(QColor(0, 0, 0, 100)); // Cor e transparência da sombra
+    shadowEffect->setBlurRadius(4); // Raio do efeito de sombreamento
+    shadowEffect->setOffset(2); // Deslocamento da sombra em relação à linha
+    this->setGraphicsEffect(shadowEffect);
+
     this->setPen(pen);
 
     QPolygonF newLine;
@@ -58,3 +70,20 @@ void Link::updatePositions()
     newLine << getMiddleOfIcon(this->begin) << getMiddleOfIcon(this->end);
     this->setPolygon(newLine);
 }
+
+void Link::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget)
+{
+    QGraphicsPolygonItem::paint(painter, option, widget);
+
+    QLineF line(getMiddleOfIcon(begin), getMiddleOfIcon(end));
+    QLineF norm = line.normalVector().unitVector();
+
+    qreal arrowSize = 5;
+    qreal angle = std::atan2(-norm.dy(), norm.dx());
+    QPointF arrowP1 = line.p2() - QPointF(sin(angle - M_PI / 3) * arrowSize, cos(angle - M_PI / 3) * arrowSize);
+    QPointF arrowP2 = line.p2() - QPointF(sin(angle + M_PI / 3) * arrowSize, cos(angle + M_PI / 3) * arrowSize);
+
+    painter->setBrush(QColor(9, 132, 227));
+    painter->drawPolygon(QPolygonF() << line.p2() << arrowP1 << arrowP2);
+}
+
