@@ -10,6 +10,7 @@ Icon::Icon(const char *name, QGraphicsItem *parent)
     this->setFlag(QGraphicsItem::ItemIsMovable);
     this->name  = new std::string(name);
     this->links = new QVector<Link *>();
+    this->isSelected = false;
 }
 
 /*

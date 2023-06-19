@@ -45,6 +45,7 @@ private:
     std::string getNewMachineName();
     std::string getNewLinkName();
     std::string getNewClusterName();
+    QGraphicsScene* scene;
 signals:
     void clicked(QPointF position);
 };

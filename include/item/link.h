@@ -2,6 +2,8 @@
 #define LINK_H
 #include "icon.h"
 #include "qgraphicsitem.h"
+#include <QPen>
+
 
 class Icon;
 
@@ -19,16 +21,18 @@ public:
 
     Icon *begin; ///< the \link Icon \endlink that the link comes from
     Icon *end;   ///< the \link Icon \endlink that the link goes to
-
+    void mousePressEvent(QGraphicsSceneMouseEvent *event) override;
     void updatePositions();
 
 protected:
     void updateArrow();
     void paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget);
 
+    void select();
 private:
     std::string *name; ///< the name of the \link Link \endlink
     QGraphicsPolygonItem* arrow;
+    QPen linkPen;
 };
 
 #endif

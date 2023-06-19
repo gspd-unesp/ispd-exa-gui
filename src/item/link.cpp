@@ -33,18 +33,26 @@ QPointF getMiddleOfIcon(Icon *a)
 Link::Link(char const *name, Icon *b, Icon *e) : QGraphicsPolygonItem()
 {
     this->name  = new std::string(name);
+
+    b->isSelected = false;
+    e->isSelected = false;
+
     this->begin = b;
     this->end   = e;
+
+
+    begin->isSelected = false;
+    end->isSelected = false;
 
     b->links->append(this);
     e->links->append(this);
 
-    QPen pen;
-    pen.setWidth(2);
-    pen.setColor(QColor(9, 132, 227));
-    pen.setCapStyle(Qt::RoundCap);
-    pen.setJoinStyle(Qt::RoundJoin);
-    pen.setCosmetic(true); // Suaviza as bordas da linha
+    // QPen pen;
+    linkPen.setWidth(2);
+    linkPen.setColor(QColor(9, 132, 227));
+    linkPen.setCapStyle(Qt::RoundCap);
+    linkPen.setJoinStyle(Qt::RoundJoin);
+    linkPen.setCosmetic(true); // Suaviza as bordas da linha
 
     QGraphicsDropShadowEffect* shadowEffect = new QGraphicsDropShadowEffect();
     shadowEffect->setColor(QColor(0, 0, 0, 100)); // Cor e transparência da sombra
@@ -52,7 +60,7 @@ Link::Link(char const *name, Icon *b, Icon *e) : QGraphicsPolygonItem()
     shadowEffect->setOffset(2); // Deslocamento da sombra em relação à linha
     this->setGraphicsEffect(shadowEffect);
 
-    this->setPen(pen);
+    this->setPen(linkPen);
 
     QPolygonF newLine;
     newLine << getMiddleOfIcon(this->begin) << getMiddleOfIcon(this->end);
@@ -87,3 +95,22 @@ void Link::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWid
     painter->drawPolygon(QPolygonF() << line.p2() << arrowP1 << arrowP2);
 }
 
+void Link::mousePressEvent(QGraphicsSceneMouseEvent *event)
+{
+    select(); // Call the select function to toggle the color
+    QGraphicsPolygonItem::mousePressEvent(event);
+}
+
+void Link::select() {
+    if (begin->isSelected == false) {
+        begin->isSelected = true;
+        end->isSelected = true;
+        linkPen.setColor(QColor(9, 132, 227));
+        this->setPen(linkPen);
+    } else {
+        begin->isSelected = false;
+        end->isSelected = false;
+        linkPen.setColor(QColor(245, 69, 55));
+        this->setPen(linkPen);
+    }
+}

@@ -32,8 +32,6 @@ private:
     QString positionString;
     QLabel  *outputLabel;
     std::string *name;
-
-
 signals:
 };
 
