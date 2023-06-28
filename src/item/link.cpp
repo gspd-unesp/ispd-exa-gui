@@ -114,3 +114,7 @@ void Link::select() {
         this->setPen(linkPen);
     }
 }
+
+std::string *Link::getName() {
+    return name;
+}

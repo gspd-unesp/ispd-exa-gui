@@ -20,8 +20,8 @@ public:
     std::string *getName();
     bool isSelected;
 
-    const char *iconPath;
-    const char *iconPathSelected;
+    std::string iconPath;
+    std::string iconPathSelected;
 
 protected:
     void mouseReleaseEvent(QGraphicsSceneMouseEvent *event) override;
@@ -29,6 +29,7 @@ protected:
 
 private:
     void updatePosition();
+    void select();
     QString positionString;
     QLabel  *outputLabel;
     std::string *name;

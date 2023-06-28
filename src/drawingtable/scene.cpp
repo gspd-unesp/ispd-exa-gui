@@ -17,7 +17,8 @@
  */
 Scene::Scene(QObject *parent) : QGraphicsScene{parent}
 {
-    this->items = new QVector<Icon *>();
+    this->icons  = new QVector<Icon *>();
+    this->links  = new QVector<Link *>();
     this->lBegin = nullptr;
     this->lEnd   = nullptr;
     this->pickOp = NONE;
@@ -31,82 +32,63 @@ void Scene::addIcon(Icon *icon, QPointF pos)
 {
     icon->setPos(pos);
     icon->setOutputLabel(machineDescriptionLabel);
-    this->items->append(icon);
     this->addItem(icon);
-    icon->isSelected;
+    this->icons->append(icon);
 }
 
 void Scene::addLink(Icon *a, Icon *b)
 {
     auto newLink = new Link(getNewLinkName().c_str(), a, b);
+
     this->addItem(newLink);
+    // this->links->append(newLink);
 }
 
 void Scene::keyPressEvent(QKeyEvent *event)
 {
     if (event->key() == Qt::Key_Delete) {
-        QList<QGraphicsItem*> itemList = QGraphicsScene::items();
-        QList<Icon*> itemsToRemove;
-        QList<Link*> linksToRemove;
+        QList<Icon *> iconsToRemove;
+        QList<Link *> linksToRemove;
 
-        bool linkSelected = false;
+        for (auto *icon : *icons) {
+            if (icon->isSelected) {
+                qDebug() << "Deletando ícone " << icon->getName()->c_str()
+                         << "\n";
 
-        for (QGraphicsItem* item : itemList) {
-            Icon* icon = dynamic_cast<Icon*>(item);
-            Link* linkitem = dynamic_cast<Link*>(item);
+                iconsToRemove.append(icon);
 
-            if (icon && icon->isSelected) {
-                qDebug() << "Entrou if";
-                itemsToRemove.append(icon);
-
-                for (Link* link : *icon->links) {
+                for (auto *link : *icon->links) {
+                    qDebug() << "Deletando link " << link->getName()->c_str()
+                             << "\n";
                     linksToRemove.append(link);
 
-                    // Remove o link do outro ícone
-                    Icon* otherIcon = (link->begin == icon) ? link->end : link->begin;
+                    auto *otherIcon =
+                        (link->begin == icon) ? link->end : link->begin;
                     otherIcon->links->removeOne(link);
                 }
-
-                // Limpa a lista de links do ícone
                 icon->links->clear();
-            } else if (linkitem && (linkitem->begin->isSelected || linkitem->end->isSelected)) {
-                qDebug() << "Entrou no else if";
-                linksToRemove.append(linkitem);
-                linkSelected = true;
             }
         }
-
-        if (linkSelected) {
-            for (Link* link : linksToRemove) {
+        for (Icon *icon : iconsToRemove) {
+            // Remove os links associados ao ícone da cena e os deleta
+            for (Link *link : *icon->links) {
                 removeItem(link);
                 delete link;
             }
+
+            removeItem(icon);
+            icons->removeAll(icon);
+            delete icon;
         }
-        else {
-            for (Icon* icon : itemsToRemove) {
-                // Remove os links associados ao ícone da cena e os deleta
-                for (Link* link : *icon->links) {
-                    removeItem(link);
-                    delete link;
-                }
 
-                removeItem(icon);
-                items->removeAll(icon);
-                delete icon;
-            }
-
-            // Remove os links da cena
-            for (Link* link : linksToRemove) {
-                removeItem(link);
-                delete link;
-            }
+        // Remove os links da cena
+        for (Link *link : linksToRemove) {
+            removeItem(link);
+            delete link;
         }
     }
     QGraphicsScene::keyPressEvent(event);
 }
-
-
-
 
 void Scene::mousePressEvent(QGraphicsSceneMouseEvent *event)
 {
@@ -128,12 +110,12 @@ void Scene::mousePressEvent(QGraphicsSceneMouseEvent *event)
     case LINK: {
         if (this->lBegin == nullptr) {
             qDebug() << "Primeira máquina\n";
-                        this->lBegin = whichMachine(event->scenePos());
+            this->lBegin = whichMachine(event->scenePos());
         }
-        else if  (this->lEnd == nullptr){
+        else if (this->lEnd == nullptr) {
             qDebug() << "Segunda máquina\n";
 
-                if (whichMachine(event->scenePos()) == this->lBegin) {
+            if (whichMachine(event->scenePos()) == this->lBegin) {
                 break;
             }
             this->lEnd = whichMachine(event->scenePos());
@@ -172,7 +154,7 @@ void Scene::drawBackgroundLines()
 
 Icon *Scene::whichMachine(QPointF pos)
 {
-    for (auto i = this->items->begin(); i != this->items->end(); i++) {
+    for (auto i = this->icons->begin(); i != this->icons->end(); i++) {
 
         qDebug() << pos << " Está em "
                  << (*i)->sceneBoundingRect().contains(pos) << "?\n";

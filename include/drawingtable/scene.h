@@ -26,7 +26,9 @@ protected:
 
 public:
     explicit Scene(QObject *parent = nullptr);
-    QVector<Icon *> *items;
+    QVector<Icon *> *icons;
+    QVector<Link *> *links;
+
     void             addIcon(Icon *icon, QPointF pos = QPointF(0, 0));
     void             drawBackgroundLines();
 

@@ -1,6 +1,6 @@
 #include "item/icon.h"
 #include "item/link.h"
-#include "drawingtable/scene.h"
+#include "utils/iconSize.h"
 #include <QDebug>
 #include <QGraphicsScene>
 
@@ -20,8 +20,10 @@ void Icon::mousePressEvent(QGraphicsSceneMouseEvent *event)
 {
     qDebug() << "(" << this->pos().x() << " , " << this->pos().y() << ")"
              << "\n";
-    QGraphicsItem::mousePressEvent(event);
+
     QGraphicsPixmapItem::mousePressEvent(event);
+
+    select();
 
     this->updatePosition();
 }
@@ -79,3 +81,17 @@ std::string *Icon::getName()
     return this->name;
 }
 
+void Icon::select() {
+    if (!isSelected) {
+        isSelected = true;
+
+        auto pixmap =
+            QPixmap::fromImage(QImage(this->iconPathSelected.c_str())).scaled(iconSelectSize);
+        this->setPixmap(pixmap);
+    } else {
+        isSelected = false;
+        auto pixmap =
+            QPixmap::fromImage(QImage(this->iconPath.c_str())).scaled(iconSize);
+        this->setPixmap(pixmap);
+    }
+}

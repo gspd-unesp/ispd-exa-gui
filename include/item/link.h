@@ -23,6 +23,7 @@ public:
     Icon *end;   ///< the \link Icon \endlink that the link goes to
     void mousePressEvent(QGraphicsSceneMouseEvent *event) override;
     void updatePositions();
+    std::string *getName();
 
 protected:
     void updateArrow();
