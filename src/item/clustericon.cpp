@@ -1,6 +1,7 @@
 #include "item/clustericon.h"
-#include <QGraphicsItem>
 #include "utils/iconSize.h"
+#include "window/cluster.h"
+#include <QGraphicsItem>
 
 ClusterIcon::ClusterIcon(const char *name, QGraphicsItem *parent)
     : Icon{name, parent}
@@ -12,4 +13,10 @@ ClusterIcon::ClusterIcon(const char *name, QGraphicsItem *parent)
         QPixmap::fromImage(QImage(this->iconPath.c_str())).scaled(iconSize);
 
     this->setPixmap(pixmap);
+}
+
+void ClusterIcon::mouseDoubleClickEvent(QGraphicsSceneMouseEvent *event)
+{
+    new ClusterWindow();
+    Icon::mouseDoubleClickEvent(event);
 }

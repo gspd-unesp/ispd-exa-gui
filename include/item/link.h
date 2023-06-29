@@ -2,6 +2,7 @@
 #define LINK_H
 #include "icon.h"
 #include "qgraphicsitem.h"
+#include "load/linkload.h"
 #include <QPen>
 
 
@@ -34,6 +35,8 @@ private:
     std::string *name; ///< the name of the \link Link \endlink
     QGraphicsPolygonItem* arrow;
     QPen linkPen;
+
+    LinkLoad load;
 };
 
 #endif
