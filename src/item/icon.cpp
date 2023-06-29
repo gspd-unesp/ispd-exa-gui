@@ -8,13 +8,43 @@ Icon::Icon(const char *name, QGraphicsItem *parent)
     : QGraphicsPixmapItem{parent}
 {
     this->setFlag(QGraphicsItem::ItemIsMovable);
-    this->name  = new std::string(name);
-    this->links = new QVector<Link *>();
+    this->name       = new std::string(name);
+    this->links      = new QVector<Link *>();
     this->isSelected = false;
 }
 
 /*
- * Configure the event of clicking the item to print the position of it and select it.
+ * @brief Update dinamically the Icon's links position when moving it.
+ *
+ * @see   Scene
+ * @param event the mouse event from the icon's scene
+ */
+void Icon::mouseMoveEvent(QGraphicsSceneMouseEvent *event)
+{
+    QGraphicsPixmapItem::mouseMoveEvent(event);
+    updatePosition();
+}
+
+/*
+ * @brief Helper function to update Icon's position and its Links
+ */
+void Icon::updatePosition()
+{
+    QString pos_string =
+        QString("Position: %1, %2").arg(this->pos().x()).arg(this->pos().y());
+
+    if (outputLabel) {
+        outputLabel->setText(pos_string);
+    }
+
+    for (auto link = links->begin(); link != links->end(); link++) {
+        (*link)->updatePositions();
+    }
+}
+
+/*
+ * Configure the event of clicking the item to print the position of it and
+ * select it.
  */
 void Icon::mousePressEvent(QGraphicsSceneMouseEvent *event)
 {
@@ -26,16 +56,6 @@ void Icon::mousePressEvent(QGraphicsSceneMouseEvent *event)
     select();
 
     this->updatePosition();
-}
-
-void Icon::updatePosition()
-{
-    QString pos_string =
-        QString("Position: %1, %2").arg(this->pos().x()).arg(this->pos().y());
-
-    if (outputLabel) {
-        outputLabel->setText(pos_string);
-    }
 }
 
 void Icon::setOutputLabel(QLabel *label)
@@ -71,9 +91,6 @@ void Icon::mouseReleaseEvent(QGraphicsSceneMouseEvent *event)
     }
 
     updatePosition();
-    for (auto link = links->begin(); link != links->end(); link++) {
-        (*link)->updatePositions();
-    }
 }
 
 std::string *Icon::getName()
@@ -81,14 +98,16 @@ std::string *Icon::getName()
     return this->name;
 }
 
-void Icon::select() {
+void Icon::select()
+{
     if (!isSelected) {
         isSelected = true;
 
-        auto pixmap =
-            QPixmap::fromImage(QImage(this->iconPathSelected.c_str())).scaled(iconSelectSize);
+        auto pixmap = QPixmap::fromImage(QImage(this->iconPathSelected.c_str()))
+                          .scaled(iconSelectSize);
         this->setPixmap(pixmap);
-    } else {
+    }
+    else {
         isSelected = false;
         auto pixmap =
             QPixmap::fromImage(QImage(this->iconPath.c_str())).scaled(iconSize);
