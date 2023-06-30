@@ -116,9 +116,15 @@ void Scene::mousePressEvent(QGraphicsSceneMouseEvent *event)
         break;
     }
     case LINK: {
+        auto *machine = whichMachine(event->scenePos());
+
+        if (!machine) {
+            return;
+        }
+
         if (this->lBegin == nullptr) {
             qDebug() << "Primeira máquina\n";
-            this->lBegin = whichMachine(event->scenePos());
+            this->lBegin = machine;
         }
         else if (this->lEnd == nullptr) {
             qDebug() << "Segunda máquina\n";
@@ -126,7 +132,7 @@ void Scene::mousePressEvent(QGraphicsSceneMouseEvent *event)
             if (whichMachine(event->scenePos()) == this->lBegin) {
                 break;
             }
-            this->lEnd = whichMachine(event->scenePos());
+            this->lEnd = machine;
 
             auto *newLink = ((DrawingTable *) this->parent())->addLink();
             qDebug() << "Antes de enfia link na scene.";
