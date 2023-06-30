@@ -11,7 +11,7 @@ typedef enum PICK_OP
 {
     NONE,
     PC,
-    SCHEME,
+    SCHEMA,
     LINK
 } PICK_OP;
 

@@ -3,9 +3,8 @@
 class Link;
 class LinkLoad
 {
-private:
-    unsigned id;
 public:
+    unsigned id;
     Link *line;
     LinkLoad(unsigned id);
 };
