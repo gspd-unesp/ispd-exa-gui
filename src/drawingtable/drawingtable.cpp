@@ -99,26 +99,41 @@ Link *DrawingTable::addLink()
     return schema->links->at(linkId)->line;
 }
 
+/*
+ * @brief  set the scene operator to the PC insert mode
+ */
 void DrawingTable::pcButtonClicked()
 {
     this->scene->pickOp = PC;
 }
 
+/*
+ * @brief  set the scene operator to the click mode
+ */
 void DrawingTable::noneButtonClicked()
 {
     this->scene->pickOp = NONE;
 }
 
+/*
+ * @brief  set the scene operator to the link insert mode
+ */
 void DrawingTable::linkButtonClicked()
 {
     this->scene->pickOp = LINK;
 }
 
+/*
+ * @brief  set the scene operator to the schema insert mode
+ */
 void DrawingTable::schemaButtonClicked()
 {
-    this->scene->pickOp = SCHEME;
+    this->scene->pickOp = SCHEMA;
 }
 
+/*
+ * @brief  prints the DrawingTable's Schema and its components
+ */
 void printSchema(Schema *schema)
 {
     for (auto machine = schema->machines->begin();

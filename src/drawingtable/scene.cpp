@@ -105,7 +105,7 @@ void Scene::mousePressEvent(QGraphicsSceneMouseEvent *event)
         this->addIcon(newMachine, event->scenePos());
         break;
     }
-    case SCHEME: {
+    case SCHEMA: {
         auto newSchema = ((DrawingTable *) this->parent())->addSchema();
         this->addIcon(newSchema, event->scenePos());
         if (newSchema->owner) {

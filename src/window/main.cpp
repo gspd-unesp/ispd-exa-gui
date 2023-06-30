@@ -52,7 +52,7 @@ void MainWindow::on_bNone_clicked()
 
 void MainWindow::on_bCluster_clicked()
 {
-    this->scene->pickOp = SCHEME;
+    this->scene->pickOp = SCHEMA;
 }
 
 void MainWindow::on_bLink_clicked()
