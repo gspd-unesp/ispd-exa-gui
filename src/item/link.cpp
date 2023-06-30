@@ -81,6 +81,7 @@ void Link::draw(Icon *b, Icon *e)
     newLine << getMiddleOfIcon(this->begin) << getMiddleOfIcon(this->end);
 
     this->setPolygon(newLine);
+    this->setZValue(-1);
 }
 
 ///

@@ -3,6 +3,7 @@
 #include "item/link.h"
 #include "item/machineicon.h"
 #include "drawingtable/drawingtable.h"
+#include "qgraphicsitem.h"
 #include <QDebug>
 #include <QGraphicsItem>
 #include <QGraphicsSceneMouseEvent>
@@ -158,13 +159,17 @@ void Scene::drawBackgroundLines()
     pen.setJoinStyle(Qt::RoundJoin);
 
     for (qreal i = 40; i <= rect.height(); i += 40) {
-        auto line = new QLine(0, i, rect.width(), i);
-        addLine(*line, pen);
+        auto line = new QGraphicsLineItem(0, i, rect.width(), i);
+        line->setPen(pen);
+        line->setZValue(-2);
+        addItem(line);
     }
 
     for (qreal i = 40; i <= rect.width(); i += 40) {
-        auto line = new QLine(i, 0, i, rect.height());
-        addLine(*line, pen);
+        auto line = new QGraphicsLineItem(i, 0, i, rect.height());
+        line->setPen(pen);
+        line->setZValue(-2);
+        addItem(line);
     }
 }
 
