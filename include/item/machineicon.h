@@ -3,7 +3,6 @@
 #include "icon.h"
 #include <QObject>
 #include <string>
-#include "load/machineload.h"
 
 class MachineIcon : public Icon
 {
@@ -12,5 +11,4 @@ public:
     MachineIcon(const char *name, QGraphicsItem *parent = nullptr);
 
 private:
-    MachineLoad load;
 };

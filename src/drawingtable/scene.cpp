@@ -1,7 +1,8 @@
 #include "drawingtable/scene.h"
-#include "item/clustericon.h"
+#include "item/schemaicon.h"
 #include "item/link.h"
 #include "item/machineicon.h"
+#include "drawingtable/drawingtable.h"
 #include <QDebug>
 #include <QGraphicsItem>
 #include <QGraphicsSceneMouseEvent>
@@ -36,12 +37,13 @@ void Scene::addIcon(Icon *icon, QPointF pos)
     this->icons->append(icon);
 }
 
-void Scene::addLink(Icon *a, Icon *b)
+void Scene::addLink(Link *link, Icon *a, Icon *b)
 {
-    auto newLink = new Link(getNewLinkName().c_str(), a, b);
-
-    this->addItem(newLink);
-    // this->links->append(newLink);
+    qDebug() << "Antes de desenharr.";
+    link->draw(a, b);
+    qDebug() << "Antes de adicionar na scene.";
+    this->addItem(link);
+    qDebug() << "Depois de adicionar a scene";
 }
 
 void Scene::keyPressEvent(QKeyEvent *event)
@@ -98,13 +100,19 @@ void Scene::mousePressEvent(QGraphicsSceneMouseEvent *event)
         break;
     }
     case PC: {
-        auto newMachine = new MachineIcon(getNewMachineName().c_str());
+        // auto newMachine = new MachineIcon(getNewMachineName().c_str());
+        auto newMachine = ((DrawingTable *) this->parent())->addMachine();
         this->addIcon(newMachine, event->scenePos());
         break;
     }
-    case CLUSTER: {
-        auto newCluster = new ClusterIcon(getNewClusterName().c_str());
-        this->addIcon(newCluster, event->scenePos());
+    case SCHEME: {
+        auto newSchema = ((DrawingTable *) this->parent())->addSchema();
+        this->addIcon(newSchema, event->scenePos());
+        if (newSchema->owner) {
+            qDebug() << "Owner of schema exists";
+            break;
+        }
+            qDebug() << "Owner of schema exists";
         break;
     }
     case LINK: {
@@ -120,7 +128,9 @@ void Scene::mousePressEvent(QGraphicsSceneMouseEvent *event)
             }
             this->lEnd = whichMachine(event->scenePos());
 
-            this->addLink(this->lBegin, this->lEnd);
+            auto *newLink = ((DrawingTable *) this->parent())->addLink();
+            qDebug() << "Antes de enfia link na scene.";
+            this->addLink(newLink, this->lBegin, this->lEnd);
 
             this->lBegin = nullptr;
             this->lEnd   = nullptr;

@@ -1,4 +1,5 @@
+#include "load/machineload.h"
 
-class MachineLoad {
-
+MachineLoad::MachineLoad(unsigned id) {
+    this->id = id;
 }

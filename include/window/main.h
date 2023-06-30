@@ -1,10 +1,11 @@
 #ifndef MAINWINDOW_H
 #define MAINWINDOW_H
 
-#include "window/users.h"
-#include "window/workloads.h"
+#include "drawingtable/drawingtable.h"
 #include "drawingtable/scene.h"
 #include "ui_mainwindow.h"
+#include "window/users.h"
+#include "window/workloads.h"
 
 #include <QGraphicsScene>
 #include <QHBoxLayout>
@@ -24,13 +25,14 @@ public:
     ~MainWindow();
 
 private:
+    DrawingTable   *drawingTable;
     Ui::MainWindow *ui;
-    Scene      *scene;
+    Scene          *scene;
     QImage         *headp;
     QImage         *headc;
 
-    UserWindow *userWindow;
-    WorkloadsWindow  *workloadsWindow;
+    UserWindow      *userWindow;
+    WorkloadsWindow *workloadsWindow;
 
     QImage *bPcIcon;
     QImage *bNoneIcon;

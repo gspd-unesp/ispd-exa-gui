@@ -11,7 +11,7 @@ typedef enum PICK_OP
 {
     NONE,
     PC,
-    CLUSTER,
+    SCHEME,
     LINK
 } PICK_OP;
 
@@ -42,12 +42,13 @@ private:
     int lIndex;
     Icon *lBegin;
     Icon *lEnd;
-    void addLink(Icon *a, Icon *b);
+    void addLink(Link *link, Icon *a, Icon *b);
     Icon *whichMachine(QPointF pos);
     std::string getNewMachineName();
     std::string getNewLinkName();
     std::string getNewClusterName();
     QGraphicsScene* scene;
+
 signals:
     void clicked(QPointF position);
 };

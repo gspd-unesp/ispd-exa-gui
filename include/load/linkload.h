@@ -1,5 +1,11 @@
-#pragma once 
+#pragma once
 
-class LinkLoad {
-    int a;
+class Link;
+class LinkLoad
+{
+private:
+    unsigned id;
+public:
+    Link *line;
+    LinkLoad(unsigned id);
 };

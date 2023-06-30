@@ -4,14 +4,17 @@ SOURCES += \
   src/window/users.cpp \
   src/window/workloads.cpp \
   src/window/settings.cpp \
-  src/window/cluster.cpp \
+  src/window/schemawindow.cpp \
   src/item/machineicon.cpp \
-  src/item/clustericon.cpp \
+  src/item/schemaicon.cpp \
   src/item/icon.cpp \
   src/item/link.cpp \ 
+  src/drawingtable/drawingtable.cpp \
   src/drawingtable/scene.cpp \
   src/drawingtable/view.cpp \
-  src/load/machineload.cpp
+  src/load/machineload.cpp \
+  src/load/linkload.cpp \ 
+  src/schema.cpp
 
 INCLUDEPATH += include/
 HEADERS += \
@@ -19,15 +22,17 @@ HEADERS += \
   include/window/users.h \
   include/window/workloads.h \
   include/window/settings.h \
-  include/window/cluster.h \
+  include/window/schemawindow.h \
+  include/drawingtable/drawingtable.h \
   include/drawingtable/scene.h \
   include/drawingtable/view.h \
   include/item/machineicon.h \
-  include/item/clustericon.h \
+  include/item/schemaicon.h \
   include/item/icon.h \
   include/item/link.h \
   include/load/linkload.h \ 
-  include/load/machineload.h
+  include/load/machineload.h \
+  include/schema.h
 
 QT += widgets
 

@@ -33,9 +33,6 @@ void Icon::updatePosition()
     QString pos_string =
         QString("Position: %1, %2").arg(this->pos().x()).arg(this->pos().y());
 
-    if (outputLabel) {
-        outputLabel->setText(pos_string);
-    }
 
     for (auto link = links->begin(); link != links->end(); link++) {
         (*link)->updatePositions();
@@ -52,10 +49,11 @@ void Icon::mousePressEvent(QGraphicsSceneMouseEvent *event)
              << "\n";
 
     QGraphicsPixmapItem::mousePressEvent(event);
+    qDebug() << "Terminous de clicar";
 
-    select();
+    //select();
 
-    this->updatePosition();
+    //this->updatePosition();
 }
 
 void Icon::setOutputLabel(QLabel *label)
@@ -69,6 +67,7 @@ void Icon::setOutputLabel(QLabel *label)
  */
 void Icon::mouseReleaseEvent(QGraphicsSceneMouseEvent *event)
 {
+    qDebug() << "Aqui?";
     QGraphicsItem::mouseReleaseEvent(event);
     auto pos    = this->pos();
     auto height = this->scene()->sceneRect().height();
@@ -90,7 +89,9 @@ void Icon::mouseReleaseEvent(QGraphicsSceneMouseEvent *event)
         this->moveBy(0, -(pos.y() - height));
     }
 
+    qDebug() << "Ou aqui?";
     updatePosition();
+    qDebug() << "Ou  até aqui?";
 }
 
 std::string *Icon::getName()

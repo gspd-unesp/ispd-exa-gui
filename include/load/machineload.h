@@ -1,5 +1,6 @@
 #pragma once
 
+#include "item/machineicon.h"
 #include <string>
 
 class MachineLoad
@@ -68,4 +69,9 @@ private:
      * It contains the scheduling algorithm used.
      */
     std::string schedulingAlgorithm;
+
+public:
+    unsigned id;
+    MachineLoad(unsigned id);
+    MachineIcon *icon;
 };

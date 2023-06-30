@@ -1,11 +1,9 @@
 #ifndef LINK_H
 #define LINK_H
-#include "icon.h"
-#include "qgraphicsitem.h"
-#include "load/linkload.h"
+#include <QGraphicsPolygonItem>
 #include <QPen>
 
-
+class LinkLoad;
 class Icon;
 
 ///
@@ -18,13 +16,14 @@ class Icon;
 class Link : public QGraphicsPolygonItem
 {
 public:
-    explicit Link(char const *name, Icon *b, Icon *e);
+    Link(char const *name);
 
     Icon *begin; ///< the \link Icon \endlink that the link comes from
     Icon *end;   ///< the \link Icon \endlink that the link goes to
     void mousePressEvent(QGraphicsSceneMouseEvent *event) override;
     void updatePositions();
     std::string *getName();
+    void draw(Icon *b, Icon *e);
 
 protected:
     void updateArrow();
@@ -35,8 +34,6 @@ private:
     std::string *name; ///< the name of the \link Link \endlink
     QGraphicsPolygonItem* arrow;
     QPen linkPen;
-
-    LinkLoad load;
 };
 
 #endif
