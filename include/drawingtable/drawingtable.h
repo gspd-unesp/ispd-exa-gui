@@ -1,7 +1,8 @@
 #pragma once
+#include "drawingtable/view.h"
 #include "item/machineicon.h"
-#include "qradiobutton.h"
-#include "view.h"
+#include <QVBoxLayout>
+#include <QRadioButton>
 #include <QWidget>
 
 class Schema;
@@ -14,27 +15,26 @@ private:
     Scene *scene;
     View  *view;
 
-    QWidget *buttonsRow;
-    QHBoxLayout *buttonsLayout;
+    QWidget      *buttonsRow;
+    QHBoxLayout  *buttonsLayout;
     QRadioButton *pcButton;
     QRadioButton *schemaButton;
     QRadioButton *linkButton;
     QRadioButton *noneButton;
-    void setupPcButton();
-    void setupNoneButton();
-    void setupSchemaButton();
-    void setupLinkButton();
+    void          setupPcButton();
+    void          setupNoneButton();
+    void          setupSchemaButton();
+    void          setupLinkButton();
 
 public:
     DrawingTable(QFrame *parent = nullptr);
     DrawingTable(Schema *schema, QWidget *parent = nullptr);
     Schema *schema;
 
-
-    void         pcButtonClicked();
-    void         schemaButtonClicked();
-    void         linkButtonClicked();
-    void         noneButtonClicked();
+    void pcButtonClicked();
+    void schemaButtonClicked();
+    void linkButtonClicked();
+    void noneButtonClicked();
 
     MachineIcon *addMachine();
     SchemaIcon  *addSchema();
