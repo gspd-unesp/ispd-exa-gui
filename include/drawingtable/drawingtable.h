@@ -14,15 +14,22 @@ private:
     Scene *scene;
     View  *view;
 
+    QWidget *buttonsRow;
+    QHBoxLayout *buttonsLayout;
+    QRadioButton *pcButton;
+    QRadioButton *schemaButton;
+    QRadioButton *linkButton;
+    QRadioButton *noneButton;
+    void setupPcButton();
+    void setupNoneButton();
+    void setupSchemaButton();
+    void setupLinkButton();
+
 public:
     DrawingTable(QFrame *parent = nullptr);
     DrawingTable(Schema *schema, QWidget *parent = nullptr);
     Schema *schema;
 
-    QRadioButton *pcButton;
-    QRadioButton *schemaButton;
-    QRadioButton *linkButton;
-    QRadioButton *noneButton;
 
     void         pcButtonClicked();
     void         schemaButtonClicked();
