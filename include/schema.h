@@ -30,4 +30,6 @@ public:
     unsigned allocateNewMachine();
     unsigned allocateNewLink();
     unsigned allocateNewSchema();
+    void  deleteMachine(unsigned machineId);
+    void  deleteLink(unsigned linkId);
 };

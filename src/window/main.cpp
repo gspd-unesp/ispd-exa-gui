@@ -20,7 +20,6 @@ MainWindow::MainWindow(QWidget *parent)
     : QMainWindow{parent}, ui(new Ui::MainWindow)
 {
     this->ui->setupUi(this);
-    // this->ui->drawingTable = new DrawingTable(new Schema(), this-ui->frame);
 }
 
 MainWindow::~MainWindow()

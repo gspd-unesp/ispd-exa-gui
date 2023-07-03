@@ -17,23 +17,28 @@ class Link : public QGraphicsPolygonItem
 {
 public:
     Link(char const *name);
+    ~Link();
 
-    Icon *begin; ///< the \link Icon \endlink that the link comes from
-    Icon *end;   ///< the \link Icon \endlink that the link goes to
-    void mousePressEvent(QGraphicsSceneMouseEvent *event) override;
-    void updatePositions();
+    unsigned     id;
+    Icon        *begin; ///< the \link Icon \endlink that the link comes from
+    Icon        *end;   ///< the \link Icon \endlink that the link goes to
+    void         mousePressEvent(QGraphicsSceneMouseEvent *event) override;
+    void         updatePositions();
     std::string *getName();
-    void draw(Icon *b, Icon *e);
+    void         draw(Icon *b, Icon *e);
 
 protected:
     void updateArrow();
-    void paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget);
+    void paint(QPainter                       *painter,
+               const QStyleOptionGraphicsItem *option,
+               QWidget                        *widget) override;
 
     void select();
+
 private:
-    std::string *name; ///< the name of the \link Link \endlink
-    QGraphicsPolygonItem* arrow;
-    QPen linkPen;
+    std::string          *name; ///< the name of the \link Link \endlink
+    QGraphicsPolygonItem *arrow;
+    QPen                  linkPen;
 };
 
 #endif

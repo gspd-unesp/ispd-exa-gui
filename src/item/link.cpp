@@ -33,33 +33,18 @@ QPointF getMiddleOfIcon(Icon *a)
 ///
 Link::Link(const char *name) : QGraphicsPolygonItem()
 {
-    this->name = new std::string(name);
+    this->name  = new std::string(name);
     this->begin = nullptr;
-    this->end = nullptr;
+    this->end   = nullptr;
 }
 
 void Link::draw(Icon *b, Icon *e)
 {
-    if (b) {
-        qDebug() << "Icone de entrada: " << b->getName();
-    } else {
-        qDebug() << "Icone de entrada não existe.";
-    }
-    if (e) {
-        qDebug() << "Icone de saída: " << e->getName();
-    } else {
-        qDebug() << "Icone de saída não existe. ";
-    }
-    qDebug() << "Antes de atribuir atributos being.";
     this->begin = b;
-    qDebug() << "Antes de atribuir atributos end.";
     this->end   = e;
-    qDebug() << "Depois de atribuir atributos being e end.";
 
-    begin->links->append(this);
-    end->links->append(this);
-
-    qDebug() << "Depois de enfiar link nos icones.";
+    this->begin->links->insert(std::pair(this->id, this));
+    this->end->links->insert(std::pair(this->id, this));
 
     // QPen pen;
     linkPen.setWidth(2);
@@ -140,4 +125,19 @@ void Link::select()
 std::string *Link::getName()
 {
     return name;
+}
+
+Link::~Link()
+{
+    delete this->name;
+
+    Icon *icons[] = {this->begin, this->end};
+
+    for (size_t i = 0; i < std::size(icons); i++) {
+        if (icons[i]) {
+            if (icons[i]->links) {
+                icons[i]->links->erase(this->id);
+            }
+        }
+    }
 }

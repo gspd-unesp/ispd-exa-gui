@@ -1,7 +1,9 @@
 #pragma once
 
 #include "item/machineicon.h"
+#include "schema.h"
 #include <string>
+#include <vector>
 
 class MachineLoad
 {
@@ -71,7 +73,11 @@ private:
     std::string schedulingAlgorithm;
 
 public:
-    unsigned id;
-    MachineLoad(unsigned id);
-    MachineIcon *icon;
+    MachineLoad(Schema *schema, unsigned id);
+    ~MachineLoad();
+
+    std::vector<unsigned> *linksIds;
+    Schema                *schema;
+    MachineIcon           *icon;
+    unsigned               id;
 };

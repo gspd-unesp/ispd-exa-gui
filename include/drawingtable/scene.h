@@ -1,9 +1,9 @@
 #ifndef SCENE_H
 #define SCENE_H
 
+#include "item/icon.h"
 #include "qglobal.h"
 #include "qvector.h"
-#include "item/icon.h"
 #include <QGraphicsScene>
 #include <QWidget>
 
@@ -14,6 +14,8 @@ typedef enum PICK_OP
     SCHEMA,
     LINK
 } PICK_OP;
+
+class MachineIcon;
 
 class Scene : public QGraphicsScene
 {
@@ -29,25 +31,23 @@ public:
     QVector<Icon *> *icons;
     QVector<Link *> *links;
 
-    void             addIcon(Icon *icon, QPointF pos = QPointF(0, 0));
-    void             drawBackgroundLines();
+    void addIcon(Icon *icon, QPointF pos = QPointF(0, 0));
+    void drawBackgroundLines();
 
-    PICK_OP          pickOp;
+    PICK_OP pickOp;
 
-    QLabel           *machineDescriptionLabel;
+    QLabel *machineDescriptionLabel;
 
 private:
-    int pIndex;
-    int cIndex;
-    int lIndex;
-    Icon *lBegin;
-    Icon *lEnd;
-    void addLink(Link *link, Icon *a, Icon *b);
-    Icon *whichMachine(QPointF pos);
-    std::string getNewMachineName();
-    std::string getNewLinkName();
-    std::string getNewClusterName();
-    QGraphicsScene* scene;
+    Icon           *lBegin;
+    Icon           *lEnd;
+    void            addLink(Link *link, Icon *a, Icon *b);
+    Icon           *whichMachine(QPointF pos);
+    std::string     getNewMachineName();
+    std::string     getNewLinkName();
+    std::string     getNewClusterName();
+    void            removeMachine(MachineIcon *icon);
+    void            removeLink(Link *link);
 
 signals:
     void clicked(QPointF position);

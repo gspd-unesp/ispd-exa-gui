@@ -4,6 +4,7 @@
 #include "item/machineicon.h"
 #include "item/schemaicon.h"
 #include "qgraphicsitem.h"
+#include "schema.h"
 #include <QDebug>
 #include <QGraphicsItem>
 #include <QGraphicsSceneMouseEvent>
@@ -24,7 +25,6 @@ Scene::Scene(QObject *parent) : QGraphicsScene{parent}
     this->lBegin = nullptr;
     this->lEnd   = nullptr;
     this->pickOp = NONE;
-    this->pIndex = this->cIndex = this->lIndex = 0;
 
     setSceneRect(0, 0, 2000, 2000);
     drawBackgroundLines();
@@ -65,40 +65,36 @@ void Scene::addLink(Link *link, Icon *a, Icon *b)
 void Scene::keyPressEvent(QKeyEvent *event)
 {
     if (event->key() == Qt::Key_Delete) {
-        QList<Icon *> iconsToRemove;
-        QList<Link *> linksToRemove;
+        std::map<unsigned, Icon *> iconsToRemove;
+        std::map<unsigned, Link *> linksToRemove;
 
         for (auto *icon : *icons) {
             if (icon->isSelected) {
-                iconsToRemove.append(icon);
+                iconsToRemove.insert(std::pair(icon->id, icon));
 
-                for (auto *link : *icon->links) {
-                    linksToRemove.append(link);
+                for (auto link : *icon->links) {
+                    linksToRemove.insert(link);
 
-                    auto *otherIcon =
-                        (link->begin == icon) ? link->end : link->begin;
-                    otherIcon->links->removeOne(link);
+                    auto *otherIcon = (link.second->begin == icon)
+                                          ? link.second->end
+                                          : link.second->begin;
+                    otherIcon->links->erase(link.first);
                 }
                 icon->links->clear();
             }
         }
 
-        for (Icon *icon : iconsToRemove) {
-            for (Link *link : *icon->links) {
-                removeItem(link);
-                delete link;
+        for (auto icon : iconsToRemove) {
+            if (dynamic_cast<MachineIcon *>(icon.second) != nullptr) {
+                this->removeMachine((MachineIcon *)icon.second);
             }
-
-            removeItem(icon);
-            icons->removeAll(icon);
-            delete icon;
         }
 
-        for (Link *link : linksToRemove) {
-            removeItem(link);
-            delete link;
+        for (auto link : linksToRemove) {
+            this->removeLink(link.second);
         }
     }
+
     QGraphicsScene::keyPressEvent(event);
 }
 
@@ -207,4 +203,29 @@ Icon *Scene::whichMachine(QPointF pos)
     }
 
     return nullptr;
+}
+
+void Scene::removeMachine(MachineIcon *icon)
+{
+    unsigned id         = icon->id;
+    Schema  *sceneOwner = ((DrawingTable *)this->parent())->schema;
+
+    this->icons->removeOne(icon);
+    sceneOwner->deleteMachine(id);
+
+    removeItem(icon);
+
+    delete (icon);
+}
+
+void Scene::removeLink(Link *link)
+{
+    unsigned id         = link->id;
+    Schema  *sceneOwner = ((DrawingTable *)this->parent())->schema;
+
+    this->links->removeOne(link);
+
+    sceneOwner->deleteLink(id);
+
+    removeItem(link);
 }

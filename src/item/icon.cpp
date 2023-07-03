@@ -3,13 +3,14 @@
 #include "utils/iconSize.h"
 #include <QDebug>
 #include <QGraphicsScene>
+#include <map>
 
 Icon::Icon(const char *name, QGraphicsItem *parent)
     : QGraphicsPixmapItem{parent}
 {
     this->setFlag(QGraphicsItem::ItemIsMovable);
     this->name       = new std::string(name);
-    this->links      = new QVector<Link *>();
+    this->links      = new std::map<unsigned, Link *>();
     this->isSelected = false;
 }
 
@@ -33,9 +34,8 @@ void Icon::updatePosition()
     QString pos_string =
         QString("Position: %1, %2").arg(this->pos().x()).arg(this->pos().y());
 
-
     for (auto link = links->begin(); link != links->end(); link++) {
-        (*link)->updatePositions();
+        (*link).second->updatePositions();
     }
 }
 
@@ -51,9 +51,9 @@ void Icon::mousePressEvent(QGraphicsSceneMouseEvent *event)
     QGraphicsPixmapItem::mousePressEvent(event);
     qDebug() << "Terminous de clicar";
 
-    //select();
+    select();
 
-    //this->updatePosition();
+    // this->updatePosition();
 }
 
 void Icon::setOutputLabel(QLabel *label)
@@ -114,4 +114,10 @@ void Icon::select()
             QPixmap::fromImage(QImage(this->iconPath.c_str())).scaled(iconSize);
         this->setPixmap(pixmap);
     }
+}
+
+Icon::~Icon()
+{
+    delete this->name;
+    delete this->links;
 }
