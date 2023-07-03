@@ -1,8 +1,8 @@
 #include "drawingtable/scene.h"
-#include "item/schemaicon.h"
+#include "drawingtable/drawingtable.h"
 #include "item/link.h"
 #include "item/machineicon.h"
-#include "drawingtable/drawingtable.h"
+#include "item/schemaicon.h"
 #include "qgraphicsitem.h"
 #include <QDebug>
 #include <QGraphicsItem>
@@ -14,9 +14,9 @@
 #include <QGraphicsScene>
 #include <QKeyEvent>
 
-/*
- * Create the scene following the QGraphicsScene constructor
- */
+///
+/// Create the scene following the QGraphicsScene constructor
+///
 Scene::Scene(QObject *parent) : QGraphicsScene{parent}
 {
     this->icons  = new QVector<Icon *>();
@@ -30,6 +30,12 @@ Scene::Scene(QObject *parent) : QGraphicsScene{parent}
     drawBackgroundLines();
 }
 
+///
+/// @brief Add an Icon to the position specified.
+///
+/// @params icon an icon (Machine, Schema...)
+/// @params pos  the position to set the icon
+///
 void Scene::addIcon(Icon *icon, QPointF pos)
 {
     icon->setPos(pos);
@@ -38,15 +44,24 @@ void Scene::addIcon(Icon *icon, QPointF pos)
     this->icons->append(icon);
 }
 
+///
+/// @brief Add an Link to the position specified.
+///
+/// @params link an Link
+/// @params a    the icon that the Link comes from
+/// @params b    the icon that the Link goes to
+///
 void Scene::addLink(Link *link, Icon *a, Icon *b)
 {
-    qDebug() << "Antes de desenharr.";
     link->draw(a, b);
-    qDebug() << "Antes de adicionar na scene.";
     this->addItem(link);
-    qDebug() << "Depois de adicionar a scene";
 }
 
+///
+/// @brief Handles a keyboard keypress.
+///
+/// @params event a keyboard event
+///
 void Scene::keyPressEvent(QKeyEvent *event)
 {
     if (event->key() == Qt::Key_Delete) {
@@ -55,14 +70,9 @@ void Scene::keyPressEvent(QKeyEvent *event)
 
         for (auto *icon : *icons) {
             if (icon->isSelected) {
-                qDebug() << "Deletando ícone " << icon->getName()->c_str()
-                         << "\n";
-
                 iconsToRemove.append(icon);
 
                 for (auto *link : *icon->links) {
-                    qDebug() << "Deletando link " << link->getName()->c_str()
-                             << "\n";
                     linksToRemove.append(link);
 
                     auto *otherIcon =
@@ -72,8 +82,8 @@ void Scene::keyPressEvent(QKeyEvent *event)
                 icon->links->clear();
             }
         }
+
         for (Icon *icon : iconsToRemove) {
-            // Remove os links associados ao ícone da cena e os deleta
             for (Link *link : *icon->links) {
                 removeItem(link);
                 delete link;
@@ -84,7 +94,6 @@ void Scene::keyPressEvent(QKeyEvent *event)
             delete icon;
         }
 
-        // Remove os links da cena
         for (Link *link : linksToRemove) {
             removeItem(link);
             delete link;
@@ -93,6 +102,12 @@ void Scene::keyPressEvent(QKeyEvent *event)
     QGraphicsScene::keyPressEvent(event);
 }
 
+///
+/// @brief Handles the mouse press, adapting the behavior based on the actual
+///        state.
+///
+/// @params event a mouse press event
+///
 void Scene::mousePressEvent(QGraphicsSceneMouseEvent *event)
 {
     switch (this->pickOp) {
@@ -102,18 +117,18 @@ void Scene::mousePressEvent(QGraphicsSceneMouseEvent *event)
     }
     case PC: {
         // auto newMachine = new MachineIcon(getNewMachineName().c_str());
-        auto newMachine = ((DrawingTable *) this->parent())->addMachine();
+        auto newMachine = ((DrawingTable *)this->parent())->addMachine();
         this->addIcon(newMachine, event->scenePos());
         break;
     }
     case SCHEMA: {
-        auto newSchema = ((DrawingTable *) this->parent())->addSchema();
+        auto newSchema = ((DrawingTable *)this->parent())->addSchema();
         this->addIcon(newSchema, event->scenePos());
         if (newSchema->owner) {
             qDebug() << "Owner of schema exists";
             break;
         }
-            qDebug() << "Owner of schema exists";
+        qDebug() << "Owner of schema exists";
         break;
     }
     case LINK: {
@@ -135,7 +150,7 @@ void Scene::mousePressEvent(QGraphicsSceneMouseEvent *event)
             }
             this->lEnd = machine;
 
-            auto *newLink = ((DrawingTable *) this->parent())->addLink();
+            auto *newLink = ((DrawingTable *)this->parent())->addLink();
             qDebug() << "Antes de enfia link na scene.";
             this->addLink(newLink, this->lBegin, this->lEnd);
 
@@ -147,6 +162,9 @@ void Scene::mousePressEvent(QGraphicsSceneMouseEvent *event)
     }
 }
 
+///
+/// @brief Draw lines at the background of the scene.
+///
 void Scene::drawBackgroundLines()
 {
     auto rect = sceneRect();
@@ -173,44 +191,20 @@ void Scene::drawBackgroundLines()
     }
 }
 
+///
+/// @brief  Finds the machine icon located at the specified position within
+///         the scene.
+///
+/// @param  pos The position in the scene to check for a machine icon.
+/// @return a pointer to the machine icon if found, or nullptr if not found.
+///
 Icon *Scene::whichMachine(QPointF pos)
 {
     for (auto i = this->icons->begin(); i != this->icons->end(); i++) {
-
-        qDebug() << pos << " Está em "
-                 << (*i)->sceneBoundingRect().contains(pos) << "?\n";
         if ((*i)->sceneBoundingRect().contains(pos)) {
-            qDebug() << "Consegui achar " << (*i)->getName()->c_str() << "\n";
             return *i;
         }
     }
 
     return nullptr;
-}
-
-std::string Scene::getNewMachineName()
-{
-    std::string newMachineName("Machine");
-
-    newMachineName.append(std::to_string(this->pIndex++));
-
-    return newMachineName;
-}
-
-std::string Scene::getNewClusterName()
-{
-    std::string newClusterMachine("Cluster");
-
-    newClusterMachine.append(std::to_string(this->cIndex++));
-
-    return newClusterMachine;
-}
-
-std::string Scene::getNewLinkName()
-{
-    std::string newLinkMachine("Link");
-
-    newLinkMachine.append(std::to_string(this->lIndex++));
-
-    return newLinkMachine;
 }
