@@ -8,7 +8,7 @@
 #include <map>
 #include <string>
 
-class Link;
+class Link; //
 
 class Icon : public QObject, public QGraphicsPixmapItem
 {
