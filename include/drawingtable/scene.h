@@ -3,6 +3,7 @@
 
 #include "item/icon.h"
 #include "qglobal.h"
+#include "window/users.h"
 #include "qvector.h"
 #include <QGraphicsScene>
 #include <QWidget>
@@ -24,6 +25,7 @@ class Scene : public QGraphicsScene
 
 protected:
     void mousePressEvent(QGraphicsSceneMouseEvent *event) override;
+    void mouseDoubleClickEvent(QGraphicsSceneMouseEvent *event) override;
     void keyPressEvent(QKeyEvent *event) override;
 
 public:
@@ -48,6 +50,7 @@ private:
     std::string     getNewClusterName();
     void            removeMachine(MachineIcon *icon);
     void            removeLink(Link *link);
+    UserWindow      *userWindow;
 
 signals:
     void clicked(QPointF position);

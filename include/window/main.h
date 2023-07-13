@@ -39,6 +39,7 @@ private:
     QImage *bClusterIcon;
     QImage *buttonBicon;
     QImage *buttonCicon;
+    QImage *bLinkIcon;
 signals:
 private slots:
     void on_buttonB_clicked();

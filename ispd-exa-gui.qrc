@@ -11,5 +11,8 @@
         <file>icons/cursor.png</file>
         <file>icons/clusterSelected.png</file>
         <file>icons/pcSelected.png</file>
+        <file>icons/connection.png</file>
+        <file>icons/perfil.png</file>
+        <file>icons/engine.png</file>
     </qresource>
 </RCC>

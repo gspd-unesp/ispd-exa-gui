@@ -4,6 +4,8 @@
 #include "item/machineicon.h"
 #include "item/schemaicon.h"
 #include "qgraphicsitem.h"
+#include "window/users.h"
+#include "window/machineconfiguration.h"
 #include "schema.h"
 #include <QDebug>
 #include <QGraphicsItem>
@@ -228,4 +230,14 @@ void Scene::removeLink(Link *link)
     sceneOwner->deleteLink(id);
 
     removeItem(link);
+}
+
+void Scene::mouseDoubleClickEvent(QGraphicsSceneMouseEvent *event)
+{
+    Icon *clickedIcon = whichMachine(event->scenePos());
+    if (clickedIcon && dynamic_cast<MachineIcon*>(clickedIcon)) {
+        machineIconConfiguration *machineIconConfig = new machineIconConfiguration(clickedIcon->getName()->c_str());
+        machineIconConfig->show();
+    }
+    QGraphicsScene::mouseDoubleClickEvent(event);
 }
