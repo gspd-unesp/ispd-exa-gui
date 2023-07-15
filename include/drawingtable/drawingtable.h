@@ -1,8 +1,11 @@
 #pragma once
 #include "drawingtable/view.h"
 #include "item/machineicon.h"
+#include "window/users.h"
+#include "window/simulation.h"
 #include <QVBoxLayout>
 #include <QRadioButton>
+#include <QPushButton>
 #include <QWidget>
 
 class Schema;
@@ -21,6 +24,13 @@ private:
     QRadioButton *schemaButton;
     QRadioButton *linkButton;
     QRadioButton *noneButton;
+
+    QPushButton *openUserWindow;
+    QPushButton *openSimulationWindow;
+
+    UserWindow *userWindow;
+    Simulation *simulationWindow;
+
     void          setupPcButton();
     void          setupNoneButton();
     void          setupSchemaButton();
@@ -35,6 +45,8 @@ public:
     void schemaButtonClicked();
     void linkButtonClicked();
     void noneButtonClicked();
+    void openUserWindowClicked();
+    void openSimulationWindowClicked();
 
     MachineIcon *addMachine();
     SchemaIcon  *addSchema();

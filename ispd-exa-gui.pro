@@ -1,11 +1,14 @@
 SOURCES += \
   src/ispd-exa-gui.cpp \
+  src/item/linkicon.cpp \
+  src/item/machineicon.cpp \
+  src/window/machineconfiguration.cpp \
   src/window/main.cpp \
+  src/window/simulation.cpp \
   src/window/users.cpp \
   src/window/workloads.cpp \
   src/window/settings.cpp \
   src/window/schemawindow.cpp \
-  src/item/machineicon.cpp \
   src/item/schemaicon.cpp \
   src/item/icon.cpp \
   src/item/link.cpp \ 
@@ -18,7 +21,10 @@ SOURCES += \
 
 INCLUDEPATH += include/
 HEADERS += \
+  include/item/linkicon.h \
+  include/window/machineconfiguration.h \
   include/window/main.h \
+  include/window/simulation.h \
   include/window/users.h \
   include/window/workloads.h \
   include/window/settings.h \
@@ -42,6 +48,8 @@ RESOURCES += \
   ispd-exa-gui.qrc
 
 FORMS += \
+  forms/machineconfiguration.ui \
+  forms/simulation.ui \
   forms/userwindow.ui \
   forms/workloads.ui \
   forms/mainwindow.ui \

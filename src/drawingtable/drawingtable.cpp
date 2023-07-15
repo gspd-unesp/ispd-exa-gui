@@ -4,7 +4,9 @@
 #include "load/machineload.h"
 #include "qdebug.h"
 #include "qradiobutton.h"
+#include "qpushbutton.h"
 #include "schema.h"
+#include "window/users.h"
 #include <QImage>
 #include <QPixmap>
 #include <QVBoxLayout>
@@ -13,7 +15,38 @@
 void printSchema(Schema *schema);
 
 DrawingTable::DrawingTable(QFrame *parent) : DrawingTable(new Schema(), parent)
-{}
+{
+
+    QPixmap image(":/icons/perfil.png");
+    QSize imageSize(30, 30);
+    QPixmap resizedImage = image.scaled(imageSize, Qt::KeepAspectRatio, Qt::SmoothTransformation);
+
+    openUserWindow = new QPushButton(this);
+    openUserWindow->setIcon(QIcon(resizedImage));
+    openUserWindow->setIconSize(image.size());
+    openUserWindow->setFixedSize(40, 40);
+
+           //----------------------------------------------------------------------------------------
+
+    QPixmap image_2(":/icons/engine.png");
+    QSize imageSize_2(30, 30);
+    QPixmap resizedImage_2 = image_2.scaled(imageSize_2, Qt::KeepAspectRatio, Qt::SmoothTransformation);
+
+    openSimulationWindow = new QPushButton("Simulate", this);
+    openSimulationWindow->setIcon(QIcon(resizedImage_2));
+    openSimulationWindow->setIconSize(imageSize_2);
+
+    openSimulationWindow->setFixedSize(100, 40);
+
+
+           //----------------------------------------------------------------------------------------
+
+    buttonsLayout->addWidget(openUserWindow, 0, Qt::AlignRight);
+    buttonsLayout->addWidget(openSimulationWindow, 0, Qt::AlignRight);
+
+    connect(openUserWindow, &QPushButton::clicked, this, &DrawingTable::openUserWindowClicked);
+    connect(openSimulationWindow, &QPushButton::clicked, this, &DrawingTable::openSimulationWindowClicked);
+}
 
 DrawingTable::DrawingTable(Schema *schema, QWidget *parent) : QWidget{parent}
 {
@@ -85,8 +118,8 @@ void DrawingTable::setupSchemaButton()
 void DrawingTable::setupLinkButton()
 {
     linkButton = new QRadioButton(buttonsRow);
-    // linkButton->setIcon(QIcon(QPixmap::fromImage(QImage(":icons/link.png"))));
-    // linkButton->setIconSize(QSize(35, 35));
+    linkButton->setIcon(QIcon(QPixmap::fromImage(QImage(":icons/connection.png"))));
+    linkButton->setIconSize(QSize(35, 35));
     buttonsLayout->addWidget(linkButton);
     QObject::connect(linkButton,
                      &QRadioButton::clicked,
@@ -197,4 +230,15 @@ void printSchema(Schema *schema)
         qDebug() << "Link #" << link->second->id << ": "
                  << link->second->line->getName()->c_str();
     }
+}
+void DrawingTable::openUserWindowClicked()
+{
+    this->userWindow = new UserWindow();
+    userWindow->show();
+}
+
+void DrawingTable::openSimulationWindowClicked()
+{
+    this->simulationWindow = new Simulation();
+    simulationWindow->show();
 }
