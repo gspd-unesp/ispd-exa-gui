@@ -23,5 +23,6 @@ class UserWindow : public QMainWindow
     QImage *addIcon;
   signals:
     void itemMoved(const QPointF &pos);
+  private slots:
 };
 #endif // USERWINDOW_H
