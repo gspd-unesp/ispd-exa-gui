@@ -138,12 +138,12 @@ void Scene::mousePressEvent(QGraphicsSceneMouseEvent *event)
 
         if (this->lBegin == nullptr) {
             qDebug() << "Primeira máquina\n";
-            this->lBegin = machine;
+                        this->lBegin = machine;
         }
         else if (this->lEnd == nullptr) {
             qDebug() << "Segunda máquina\n";
 
-            if (whichMachine(event->scenePos()) == this->lBegin) {
+                if (whichMachine(event->scenePos()) == this->lBegin) {
                 break;
             }
             this->lEnd = machine;

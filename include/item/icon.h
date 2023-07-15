@@ -1,6 +1,7 @@
 #ifndef ICON_H
 #define ICON_H
 
+#include "qgraphicsscene.h"
 #include <QGraphicsItem>
 #include <QLabel>
 #include <QObject>
@@ -26,6 +27,7 @@ public:
     std::string iconPath;
     std::string iconPathSelected;
 
+    void deselect();
 protected:
     void mouseReleaseEvent(QGraphicsSceneMouseEvent *event) override;
     void mousePressEvent(QGraphicsSceneMouseEvent *event) override;

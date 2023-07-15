@@ -4,6 +4,12 @@
 #include <QDebug>
 #include <QGraphicsScene>
 #include <map>
+#include <QKeyEvent>
+#include <QGraphicsItem>
+#include <QGraphicsSceneMouseEvent>
+#include <QMouseEvent>
+#include <iostream>
+#include <string>
 
 Icon::Icon(const char *name, QGraphicsItem *parent)
     : QGraphicsPixmapItem{parent}
@@ -48,12 +54,22 @@ void Icon::mousePressEvent(QGraphicsSceneMouseEvent *event)
     qDebug() << "(" << this->pos().x() << " , " << this->pos().y() << ")"
              << "\n";
 
+
     QGraphicsPixmapItem::mousePressEvent(event);
+
+    // Check if Shift key is pressed
+    if (event->modifiers() & Qt::ShiftModifier) {
+    } else {
+        for (QGraphicsItem *item : scene()->items()) {
+            qDebug() << "Shift está selecionado";
+                if (Icon* icon = dynamic_cast<Icon*>(item)) {
+                icon->deselect();
+            }
+        }
+    }
     qDebug() << "Terminous de clicar";
 
     select();
-
-    // this->updatePosition();
 }
 
 void Icon::setOutputLabel(QLabel *label)
@@ -103,12 +119,15 @@ void Icon::select()
 {
     if (!isSelected) {
         isSelected = true;
-
         auto pixmap = QPixmap::fromImage(QImage(this->iconPathSelected.c_str()))
                           .scaled(iconSelectSize);
         this->setPixmap(pixmap);
     }
-    else {
+}
+
+void Icon::deselect()
+{
+    if (isSelected) {
         isSelected = false;
         auto pixmap =
             QPixmap::fromImage(QImage(this->iconPath.c_str())).scaled(iconSize);
