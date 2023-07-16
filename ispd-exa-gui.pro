@@ -1,7 +1,9 @@
 SOURCES += \
+  packcircles.cpp \
   src/ispd-exa-gui.cpp \
   src/item/linkicon.cpp \
   src/item/machineicon.cpp \
+  src/window/adduser.cpp \
   src/window/machineconfiguration.cpp \
   src/window/main.cpp \
   src/window/simulation.cpp \
@@ -22,6 +24,7 @@ SOURCES += \
 INCLUDEPATH += include/
 HEADERS += \
   include/item/linkicon.h \
+  include/window/adduser.h \
   include/window/machineconfiguration.h \
   include/window/main.h \
   include/window/simulation.h \
@@ -36,9 +39,10 @@ HEADERS += \
   include/item/schemaicon.h \
   include/item/icon.h \
   include/item/link.h \
-  include/load/linkload.h \ 
+  include/load/linkload.h \
   include/load/machineload.h \
-  include/schema.h
+  include/schema.h \
+  packcircles.h
 
 QT += widgets
 
@@ -48,6 +52,7 @@ RESOURCES += \
   ispd-exa-gui.qrc
 
 FORMS += \
+  forms/adduser.ui \
   forms/machineconfiguration.ui \
   forms/simulation.ui \
   forms/userwindow.ui \
@@ -66,4 +71,6 @@ OBJECTS_DIR = $$DESTDIR/.obj
 MOC_DIR = $$DESTDIR/.moc
 RCC_DIR = $$DESTDIR/.qrc
 UI_DIR = $$DESTDIR/.u
+
+DISTFILES +=
 

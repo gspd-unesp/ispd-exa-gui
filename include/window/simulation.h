@@ -15,7 +15,17 @@ public:
     explicit Simulation(QWidget *parent = nullptr);
     ~Simulation();
 
+private slots:
+    void on_pushButton_clicked();
+
 private:
+    void createGlobal();
+    void createTasks();
+    void createUser();
+    void createResources();
+    void createResultsFile();
+    void resultsCommunication();
+    void resultsProcessing();
     Ui::Simulation *ui;
 };
 

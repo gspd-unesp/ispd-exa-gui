@@ -14,5 +14,6 @@
         <file>icons/connection.png</file>
         <file>icons/perfil.png</file>
         <file>icons/engine.png</file>
+        <file>icons/save.png</file>
     </qresource>
 </RCC>
