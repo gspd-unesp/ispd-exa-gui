@@ -17,14 +17,6 @@
 #include <QPainter>
 #include <QSvgRenderer>
 
-
-
-
-
-
-
-
-
 //CIRCLE PACKING
 #include "packcircles.h"
 #include <stdlib.h>
@@ -48,7 +40,6 @@ void usage(char *progname)
     exit(EXIT_FAILURE);
 }
 
-// h,s,v must be floats in the intervall [0,1[
 static void hsv2rgb(double h, double s, double v, unsigned int *r, unsigned int *b, unsigned int *g)
 {
 
@@ -111,16 +102,13 @@ static void printSVG(node_t *first, node_t *a_, node_t *bb_topright, node_t *bb_
     double width = (bb_topright->x + fabs(bb_bottomleft->x)) + 2 * spacing;
     int viewport_width = 640;
     int viewport_height = 480;
-    // scaling of stroke-width with the size of the image
     double stroke_width = viewport_width / 400 * (width / viewport_width);
 
     fprintf(output_file, "<svg xmlns=\"http://www.w3.org/2000/svg\" height=\"%i\" width=\"%i\" viewBox=\"0 0 %.5f %.5f\" preserveAspectRatio=\"xMidYMid meet\">\n", viewport_height, viewport_width, width, height);
     fprintf(output_file, "<defs>\n");
     fprintf(output_file, "<style type=\"text/css\"><![CDATA[\n");
     fprintf(output_file, "  .circle_c { fill:#eee; stroke: #444; stroke-width: %.5f }\n", stroke_width);
-    // optionally:  printf("  .circle_c:hover { stroke: #444; stroke-width: %.5f }\n",2*stroke_width);
 
-           // printf("  .text_c { font-size: %.5fpx; text-anchor: middle; dominant-baseline: central; }\n", stroke_width * 2.5);
     fprintf(output_file, "  .text_c { text-anchor: middle; dominant-baseline: central; }\n");
 
     fprintf(output_file, "]]></style>\n");
@@ -139,18 +127,15 @@ static void printSVG(node_t *first, node_t *a_, node_t *bb_topright, node_t *bb_
 
         double fontSize = n->radius * 0.25;
 
-               // Use absolute positioning for the text elements
         double textX = n->x;
-        double textY = n->y + fontSize * 0.35; // Adjust the text position based on font size
+        double textY = n->y + fontSize * 0.35;
 
         fprintf(output_file, "<text x=\"%.5f\" y=\"%.5f\" class=\"text_c\" style=\"font-size: %.5fpx; dominant-baseline: middle; text-anchor: middle;\">%s</text>\n", textX, textY, fontSize, n->name ? n->name : "");
 
         node_t* next = n->insertnext;
         n = next;
     }
-    // printf("</g>\n");
-    // printf("</svg>\n");
-    //  print last node chain
+
     if (debug && a_ && a_->next)
     {
         node_t *a = a_;
@@ -169,9 +154,8 @@ static void printSVG(node_t *first, node_t *a_, node_t *bb_topright, node_t *bb_
 static node_t *alloc_node(unsigned long size_, int num_)
 {
     node_t *n = (node_t *)malloc(sizeof(node_t));
-    n->size = size_; // this corresponds to the circle area
-    // calculate radius from circle area
-    //  A = pi * r^2   ->  r = sqrt(A/pi)
+    n->size = size_;
+
     double r = sqrt((double)size_ / M_PI);
     n->radius = r;
     n->next = NULL;
@@ -228,13 +212,12 @@ static int intersects(node_t *a, node_t *b)
     double dx = b->x - a->x;
     double dy = b->y - a->y;
     double dr = a->radius + b->radius;
-    if (dr * dr - 1e-6 > dx * dx + dy * dy) // overlap is bigger than epsilon
+    if (dr * dr - 1e-6 > dx * dx + dy * dy)
         return 1;
     else
         return 0;
 }
 
-// inserts node b after a
 static void insert(node_t *a, node_t *b)
 {
     node_t *c = a->next;
@@ -254,7 +237,7 @@ static void splice(node_t *a, node_t *b)
 static node_t *placeCircles(node_t *firstnode, node_t *bb_topright, node_t *bb_bottomleft, int debug)
 {
 
-           // Create first circle.
+
     node_t *a = firstnode;
     node_t *b = NULL;
     node_t *c = NULL;
@@ -262,7 +245,7 @@ static node_t *placeCircles(node_t *firstnode, node_t *bb_topright, node_t *bb_b
     a->x = -1 * a->radius;
     bound(a, bb_topright, bb_bottomleft);
 
-           // Create second circle
+
     if (!a->insertnext)
     {
         return a;
@@ -272,7 +255,7 @@ static node_t *placeCircles(node_t *firstnode, node_t *bb_topright, node_t *bb_b
     b->y = 0;
     bound(b, bb_topright, bb_bottomleft);
 
-           // Create third circle.
+
     if (!b->insertnext)
     {
         return a;
@@ -286,7 +269,7 @@ static node_t *placeCircles(node_t *firstnode, node_t *bb_topright, node_t *bb_b
         return a;
     }
 
-           // make initial chain of a <-> b <-> c
+
     a->next = c;
     a->prev = b;
     b->next = a;
@@ -295,11 +278,7 @@ static node_t *placeCircles(node_t *firstnode, node_t *bb_topright, node_t *bb_b
     c->prev = a;
     b = c;
 
-           // fprintf(stderr,"a=%i\n",a->num);
-           // fprintf(stderr,"b=%i\n",b->num);
-           // fprintf(stderr,"c=%i\n",c->num);
 
-           // add remaining nodes
     int skip = 0;
     c = c->insertnext;
     while (c)
@@ -307,10 +286,7 @@ static node_t *placeCircles(node_t *firstnode, node_t *bb_topright, node_t *bb_b
         if (debug)
             fprintf(stderr, "Inserting node %i ------------------------\n", c->num);
 
-               // Determine the node a in the chain, which is nearest to the center
-               // The new node c will be placed next to a (unless overlap occurs)
-               // NB: This search is only done the first time for each new node, i.e.
-               // not again after splicing
+
         if (!skip)
         {
             node_t *n = a;
@@ -337,17 +313,16 @@ static node_t *placeCircles(node_t *firstnode, node_t *bb_topright, node_t *bb_b
         if (debug)
             fprintf(stderr, "Trying to place node %i between nodes %i and %i\n", c->num, a->num, b->num);
 
-               // a corresponds to C_m, and b corresponds to C_n in the paper
+
         place(a, b, c);
 
-               // or debugging: initial placement of c that may ovelap
-               //  printf("<circle cx=\"%.5f\" cy=\"%.5f\" r=\"%.5f\" stroke=\"black\" stroke-width=\"3\" fill=\"red\" />\n",c->x, c->y, c->radius);
+
         int isect = 0;
         node_t *j = b->next;
         node_t *k = a->prev;
         double sj = b->radius;
         double sk = a->radius;
-        // j = b.next, k = a.previous, sj = b._.r, sk = a._.r;
+
         do
         {
             if (sj <= sk)
@@ -388,7 +363,7 @@ static node_t *placeCircles(node_t *firstnode, node_t *bb_topright, node_t *bb_b
 
         if (isect == 0)
         {
-            // Update node chain.
+
             insert(a, c);
             b = c;
             bound(c, bb_topright, bb_bottomleft);
@@ -443,14 +418,14 @@ void Simulation::createGlobal()
     QFile file(filePath);
     */
     QString fileName = "results.json";
-    QDir directory(QCoreApplication::applicationDirPath()); // Get the current application directory
+    QDir directory(QCoreApplication::applicationDirPath());
     directory.cdUp();
     directory.cdUp();
     directory.cdUp();
     directory.cdUp();
     directory.cdUp();
     directory.cdUp();
-    directory.cd("ispd-exa-gui"); // Navigate to the "ispd-exa-gui" directory
+    directory.cd("ispd-exa-gui");
 
     QString filePath = directory.filePath(fileName);
     //QFile file(filePath);
@@ -510,14 +485,14 @@ void Simulation::createTasks()
     QFile file(filePath);
 */
     QString fileName = "results.json";
-    QDir directory(QCoreApplication::applicationDirPath()); // Get the current application directory
+    QDir directory(QCoreApplication::applicationDirPath());
     directory.cdUp();
     directory.cdUp();
     directory.cdUp();
     directory.cdUp();
     directory.cdUp();
     directory.cdUp();
-    directory.cd("ispd-exa-gui"); // Navigate to the "ispd-exa-gui" directory
+    directory.cd("ispd-exa-gui");
 
     QString filePath = directory.filePath(fileName);
     //QFile file(filePath);
@@ -571,19 +546,17 @@ void Simulation::createUser()
 {
 
     QString fileName = "results.json";
-    QDir directory(QCoreApplication::applicationDirPath()); // Get the current application directory
+    QDir directory(QCoreApplication::applicationDirPath());
     directory.cdUp();
     directory.cdUp();
     directory.cdUp();
     directory.cdUp();
     directory.cdUp();
     directory.cdUp();
-    directory.cd("ispd-exa-gui"); // Navigate to the "ispd-exa-gui" directory
+    directory.cd("ispd-exa-gui");
 
     QString filePath = directory.filePath(fileName);
-    //QFile file(filePath);
 
-    //QString filePath = QCoreApplication::applicationDirPath() + "/results.json";
     qDebug() << "File path: " << filePath;
 
     QFile file(filePath);
@@ -671,14 +644,14 @@ void Simulation::createResources()
     QFile file(filePath);
 */
     QString fileName = "results.json";
-    QDir directory(QCoreApplication::applicationDirPath()); // Get the current application directory
+    QDir directory(QCoreApplication::applicationDirPath());
     directory.cdUp();
     directory.cdUp();
     directory.cdUp();
     directory.cdUp();
     directory.cdUp();
     directory.cdUp();
-    directory.cd("ispd-exa-gui"); // Navigate to the "ispd-exa-gui" directory
+    directory.cd("ispd-exa-gui");
 
     QString filePath = directory.filePath(fileName);
     //QFile file(filePath);
@@ -732,6 +705,9 @@ void Simulation::createResources()
                 QString communicationPerformed = linksObj.value("communication_performed").toString();
 
                 ui->tableWidget->setItem(rowIndex, 0, new QTableWidgetItem(label));
+
+                ui->tableWidget->setItem(rowIndex, 1, new QTableWidgetItem("---"));
+
                 ui->tableWidget->setItem(rowIndex, 2, new QTableWidgetItem(processingPerformed));
                 ui->tableWidget->setItem(rowIndex, 3, new QTableWidgetItem(communicationPerformed));
 
@@ -753,14 +729,14 @@ void Simulation::createResultsFile()
 */
 
     QString fileName = "results.json";
-    QDir directory(QCoreApplication::applicationDirPath()); // Get the current application directory
+    QDir directory(QCoreApplication::applicationDirPath());
     directory.cdUp();
     directory.cdUp();
     directory.cdUp();
     directory.cdUp();
     directory.cdUp();
     directory.cdUp();
-    directory.cd("ispd-exa-gui"); // Navigate to the "ispd-exa-gui" directory
+    directory.cd("ispd-exa-gui");
 
     QString filePath = directory.filePath(fileName);
     //QFile file(filePath);
@@ -839,60 +815,17 @@ void Simulation::createResultsFile()
 void Simulation::resultsCommunication()
 {
 
-    QDir directory(QCoreApplication::applicationDirPath()); // Get the current application directory
+    QDir directory(QCoreApplication::applicationDirPath());
     directory.cdUp();
     directory.cdUp();
     directory.cdUp();
     directory.cdUp();
     directory.cdUp();
     directory.cdUp();
-    directory.cd("ispd-exa-gui"); // Navigate to the "ispd-exa-gui" directory
+    directory.cd("ispd-exa-gui");
 
     QString filePath = directory.absolutePath();
     QDir::setCurrent(filePath);
-    /*
-    qDebug() << "Directory: " << filePath;
-
-
-    //QString filePath = QCoreApplication::applicationDirPath();
-
-
-    QString command_1 = QString("gcc -O3 -o packCircles packcircles.c -lm");
-
-
-    QProcess process;
-    QProcess process_2;
-
-    process.setWorkingDirectory(directory.absolutePath()); // Set the working directory
-    process.start(command_1);
-    process.waitForFinished();
-
-    QString errorOutput = process.readAllStandardError();
-    if (!errorOutput.isEmpty()) {
-        qDebug() << "Compilation failed. Error output:";
-        qDebug() << errorOutput;
-    } else {
-        qDebug() << "Program compiled and executed successfully.";
-    }
-
-
-    //QString command = QString("./packCircles -i %1 > output.svg -c").arg(filePath);
-    QString command = QString("./packCircles -i link_values.txt > output.svg -c");
-    //QProcess::execute(command);
-
-    process_2.setWorkingDirectory(directory.absolutePath()); // Set the working directory
-    process_2.start(command);
-    process_2.waitForFinished();
-
-
-    QString errorOutput_2 = process_2.readAllStandardError();
-    if (!errorOutput_2.isEmpty()) {
-        qDebug() << "Compilation failed. Error output:";
-        qDebug() << errorOutput_2;
-    } else {
-        qDebug() << "Program compiled and executed successfully.";
-    }
-*/
     circlePacking(1);
 
     QPixmap pixmap("output.svg");
@@ -904,55 +837,19 @@ void Simulation::resultsProcessing()
 
     //QString filePath = QCoreApplication::applicationDirPath();
 
-    //QDir::setCurrent(filePath); // Set the current working directory
+    //QDir::setCurrent(filePath);
 
-    QDir directory(QCoreApplication::applicationDirPath()); // Get the current application directory
+    QDir directory(QCoreApplication::applicationDirPath());
     directory.cdUp();
     directory.cdUp();
     directory.cdUp();
     directory.cdUp();
     directory.cdUp();
     directory.cdUp();
-    directory.cd("ispd-exa-gui"); // Navigate to the "ispd-exa-gui" directory
+    directory.cd("ispd-exa-gui");
 
     QString filePath = directory.absolutePath();
     QDir::setCurrent(filePath);
-    /*
-
-    QString command_1 = QString("gcc -O3 -o packCircles packcircles.c -lm");
-    //QProcess::execute(command_1);
-    QProcess process;
-    QProcess process_2;
-
-    process.setWorkingDirectory(directory.absolutePath()); // Set the working directory
-    process.start(command_1);
-    process.waitForFinished();
-
-    QString errorOutput = process.readAllStandardError();
-    if (!errorOutput.isEmpty()) {
-        qDebug() << "Compilation failed. Error output:";
-        qDebug() << errorOutput;
-    } else {
-        qDebug() << "Program compiled and executed successfully.";
-    }
-
-           //QString command = QString("./packCircles -i %1 > output.svg -c").arg(filePath);
-    QString command = QString("./packCircles -i machine_values.txt > output_2.svg -c");
-
-    //QProcess::execute(command);
-    process_2.setWorkingDirectory(directory.absolutePath()); // Set the working directory
-    process_2.start(command);
-    process_2.waitForFinished();
-
-
-    QString errorOutput_2 = process_2.readAllStandardError();
-    if (!errorOutput_2.isEmpty()) {
-        qDebug() << "Compilation failed. Error output:";
-        qDebug() << errorOutput_2;
-    } else {
-        qDebug() << "Program compiled and executed successfully.";
-    }
-*/
 
     circlePacking(2);
 
@@ -964,19 +861,19 @@ void Simulation::resultsProcessing()
 void Simulation::circlePacking(int flag)
 {
 
-    QDir directory(QCoreApplication::applicationDirPath()); // Get the current application directory
+    QDir directory(QCoreApplication::applicationDirPath());
     directory.cdUp();
     directory.cdUp();
     directory.cdUp();
     directory.cdUp();
     directory.cdUp();
     directory.cdUp();
-    directory.cd("ispd-exa-gui"); // Navigate to the "ispd-exa-gui" directory
+    directory.cd("ispd-exa-gui");
 
     QString filePath = directory.absolutePath();
     QDir::setCurrent(filePath);
 
-    char *inputfilename;;  // Replace with your desired input file name
+    char *inputfilename;;
     if(flag == 1)
         inputfilename = "link_values.txt";
     else if(flag == 2)
@@ -1050,7 +947,7 @@ void Simulation::circlePacking(int flag)
         {
             unsigned int r, g, b;
             hsv2rgb(h, 0.5, 0.95, &r, &g, &b);
-            h += 0.618033988749895; // golden ration conjugate
+            h += 0.618033988749895;
             h = fmod(h, 1);
             char *color = (char *)malloc(sizeof(char) * 17);
             color[16] = '\0';
@@ -1078,7 +975,7 @@ void Simulation::circlePacking(int flag)
 
     printSVG(firstnode, a, bb_topright, bb_bottomleft, debug, output_file);
 
-           // go through all nodes and free
+
     node_t *n = firstnode;
     while (n)
     {
@@ -1093,5 +990,4 @@ void Simulation::circlePacking(int flag)
     fclose(output_file);
 
     return;
-    //exit(EXIT_SUCCESS);
 }
