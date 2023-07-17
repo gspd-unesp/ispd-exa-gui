@@ -6,6 +6,11 @@
 #include <QListWidget>
 #include "window/adduser.h"
 #include "ui_userwindow.h"
+#include <QList>
+
+// #include "drawingtable/drawingtable.h"
+
+class DrawingTable;
 
 namespace Ui
 {
@@ -17,11 +22,15 @@ class UserWindow : public QMainWindow
     Q_OBJECT
 
 public:
-    explicit UserWindow(QWidget *parent = nullptr);
+    explicit UserWindow(QWidget *parent = nullptr, DrawingTable* drawingTable = nullptr, const QList<QString> &list1Data = QList<QString>(), const QList<double> &list2Data = QList<double>());
     void addOnList1(const QString &valor);
     void addOnList2(double valor);
+    void setDrawingTable(DrawingTable* drawingTable);
+    void receiveUserWindowData(const QList<QString> &list1Data, const QList<double> &list2Data);
 
     ~UserWindow();
+
+protected:
 
 private:
     Ui::UserWindow *ui;
@@ -33,6 +42,7 @@ private:
     QStringList list1Values;
     QStringList list2Values;
     int mnSelected = -1;
+    DrawingTable* drawingTable;
 
 private slots:
     void on_addButton_clicked();

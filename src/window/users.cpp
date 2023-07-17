@@ -2,11 +2,16 @@
 #include <QPushButton>
 #include <QSettings>
 #include <ui_userwindow.h>
+#include <QSettings>
+#include "drawingtable/drawingtable.h"
 
-UserWindow::UserWindow(QWidget *parent)
+
+UserWindow::UserWindow(QWidget *parent, DrawingTable *drawingTable, const QList<QString> &list1Data, const QList<double> &list2Data)
     : QMainWindow(parent), ui(new Ui::UserWindow)
 {
     ui->setupUi(this);
+
+    this->drawingTable = drawingTable;
     // Add a close icon and a add icon
     this->fecharImg = new QImage(":/icons/x_button.png");
     this->addIcon   = new QImage(":/icons/add_icon.png");
@@ -29,15 +34,20 @@ UserWindow::UserWindow(QWidget *parent)
     this->ui->addButton->setFixedSize(50, 22);
     this->ui->addButton->setIconSize(QSize(12, 12));
 
-    addOnList1("user1");
-    addOnList2(100);
+    // addOnList1("user1");
+    // addOnList2(100);
+
+    ui->listWidget->addItems(list1Data);
+    for (const double value : list2Data)
+    {
+        ui->listWidget_2->addItem(QString::number(value));
+    }
 }
 
 UserWindow::~UserWindow()
 {
     delete ui;
 }
-
 
 void UserWindow::addOnList1(const QString &valor)
 {
@@ -60,7 +70,6 @@ void UserWindow::on_addButton_clicked()
 
 void UserWindow::on_pushButton_clicked()
 {
-
     if(mnSelected != -1)
     {
 
@@ -82,6 +91,10 @@ void UserWindow::on_listWidget_currentRowChanged(int currentRow)
     mnSelected = currentRow;
 }
 
+void UserWindow::setDrawingTable(DrawingTable* drawingTable)
+{
+    this->drawingTable = drawingTable;
+}
 
 void UserWindow::on_listWidget_2_currentRowChanged(int currentRow)
 {
@@ -91,6 +104,26 @@ void UserWindow::on_listWidget_2_currentRowChanged(int currentRow)
 
 void UserWindow::on_okButton_clicked()
 {
+    if (drawingTable)
+    {
+        qDebug() << "Entrou aqui";
+        QList<QString> list1Data;
+        QList<double> list2Data;
+
+               // Copy the items from listWidget and listWidget_2 to the new QLists
+        for (int i = 0; i < ui->listWidget->count(); ++i)
+        {
+            list1Data.append(ui->listWidget->item(i)->text());
+        }
+
+        for (int i = 0; i < ui->listWidget_2->count(); ++i)
+        {
+            list2Data.append(ui->listWidget_2->item(i)->text().toDouble());
+        }
+
+               // Call the function in DrawingTable to receive the data
+        drawingTable->receiveUserWindowData(list1Data, list2Data);
+    }
     close();
 }
 
