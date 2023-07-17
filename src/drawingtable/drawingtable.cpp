@@ -7,6 +7,7 @@
 #include "qpushbutton.h"
 #include "schema.h"
 #include "window/users.h"
+#include "utils/iconSize.h"
 #include <QImage>
 #include <QPixmap>
 #include <QVBoxLayout>
@@ -58,10 +59,10 @@ DrawingTable::DrawingTable(Schema *schema, QWidget *parent) : QWidget{parent}
     this->buttonsLayout = new QHBoxLayout(buttonsRow);
     this->buttonsLayout->setAlignment(Qt::AlignLeft);
 
-    setupPcButton();
-    setupNoneButton();
-    setupLinkButton();
-    setupSchemaButton();
+    this->setupPcButton();
+    this->setupNoneButton();
+    this->setupLinkButton();
+    this->setupSchemaButton();
 
     auto *mainLayout = new QVBoxLayout(this);
     mainLayout->addWidget(buttonsRow);
@@ -73,10 +74,10 @@ DrawingTable::DrawingTable(Schema *schema, QWidget *parent) : QWidget{parent}
 ///
 void DrawingTable::setupPcButton()
 {
-    pcButton = new QRadioButton(buttonsRow);
-    pcButton->setIcon(QIcon(QPixmap::fromImage(QImage(":icons/pc.png"))));
-    pcButton->setIconSize(QSize(35, 35));
-    buttonsLayout->addWidget(pcButton);
+    this->pcButton = new QRadioButton(this->buttonsRow);
+    this->pcButton->setIcon(QIcon(QPixmap::fromImage(QImage(":icons/pc.png"))));
+    this->pcButton->setIconSize(buttonSize);
+    this->buttonsLayout->addWidget(pcButton);
     QObject::connect(
         pcButton, &QRadioButton::clicked, this, &DrawingTable::pcButtonClicked);
 }
@@ -88,7 +89,7 @@ void DrawingTable::setupNoneButton()
 {
     noneButton = new QRadioButton(buttonsRow);
     noneButton->setIcon(QIcon(QPixmap::fromImage(QImage(":icons/cursor.png"))));
-    noneButton->setIconSize(QSize(35, 35));
+    noneButton->setIconSize(buttonSize);
     buttonsLayout->addWidget(noneButton);
     QObject::connect(noneButton,
                      &QRadioButton::clicked,
@@ -101,10 +102,11 @@ void DrawingTable::setupNoneButton()
 ///
 void DrawingTable::setupSchemaButton()
 {
+
     schemaButton = new QRadioButton(buttonsRow);
     schemaButton->setIcon(
         QIcon(QPixmap::fromImage(QImage(":icons/cluster.png"))));
-    schemaButton->setIconSize(QSize(35, 35));
+    schemaButton->setIconSize(buttonSize);
     buttonsLayout->addWidget(schemaButton);
     QObject::connect(schemaButton,
                      &QRadioButton::clicked,
@@ -117,9 +119,11 @@ void DrawingTable::setupSchemaButton()
 ///
 void DrawingTable::setupLinkButton()
 {
+    const QIcon linkIcon(QPixmap::fromImage(QImage(":icons/connection.png")));
+
     linkButton = new QRadioButton(buttonsRow);
-    linkButton->setIcon(QIcon(QPixmap::fromImage(QImage(":icons/connection.png"))));
-    linkButton->setIconSize(QSize(35, 35));
+    linkButton->setIcon(linkIcon);
+    linkButton->setIconSize(buttonSize);
     buttonsLayout->addWidget(linkButton);
     QObject::connect(linkButton,
                      &QRadioButton::clicked,
