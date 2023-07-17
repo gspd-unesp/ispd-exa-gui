@@ -3,6 +3,7 @@
 #include <QDebug>
 #include <QGraphicsView>
 #include <QMouseEvent>
+#include "item/icon.h"
 
 /*
  * Create the item following the QGraphicsView constructor
@@ -26,7 +27,6 @@ void View::setGScene(Scene *scene)
  */
 void View::mousePressEvent(QMouseEvent *event)
 {
-
     qDebug() << event->pos().x();
     qDebug() << event->pos().y();
 
@@ -36,6 +36,17 @@ void View::mousePressEvent(QMouseEvent *event)
 
     if (event->button() == Qt::LeftButton) {
         qDebug() << "Custom view clicked with left.";
+    }
+
+    // Deselect all icons if the clicked area has no icons
+    QGraphicsItem* clickedItem = itemAt(event->pos().x(), event->pos().y());
+    if (!clickedItem) {
+        qDebug() << "Clicou em uma área vazia (retirar a seleção)";
+        for (auto item : this->items()) {
+            if (Icon* icon = dynamic_cast<Icon*>(item)) {
+                icon->deselect();
+            }
+        }
     }
     QGraphicsView::mousePressEvent(event);
 }
