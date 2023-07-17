@@ -4,17 +4,13 @@
 #define MAX(a,b) (((a)>(b))?(a):(b))
 
 typedef struct node {
-    /* the three columns from the input file */
-    unsigned long size; // this size corresponds to the size of the area
+    unsigned long size;
     char * color;
     char * name;
-    /* link chain */
     struct node * next;
     struct node * prev;
-    /* insertion order */
     struct node * insertnext;
     int num;
-    /* circle attributes */
     double x;
     double y;
     double radius;
