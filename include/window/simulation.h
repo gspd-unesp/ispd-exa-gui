@@ -26,6 +26,7 @@ private:
     void createResultsFile();
     void resultsCommunication();
     void resultsProcessing();
+    void circlePacking(int flag);
     Ui::Simulation *ui;
 };
 

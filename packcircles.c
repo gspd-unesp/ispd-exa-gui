@@ -41,7 +41,6 @@
  * See the file LICENSE.
  *
  * */
-/*
 
 #include <stdlib.h>
 #include <stdio.h>
@@ -140,7 +139,7 @@ static void printSVG(node_t *first, node_t *a_, node_t *bb_topright, node_t *bb_
     printf("  .circle_c { fill:#eee; stroke: #444; stroke-width: %.5f }\n", stroke_width);
     // optionally:  printf("  .circle_c:hover { stroke: #444; stroke-width: %.5f }\n",2*stroke_width);
 
-           //printf("  .text_c { font-size: %.5fpx; text-anchor: middle; dominant-baseline: central; }\n", stroke_width * 2.5);
+           // printf("  .text_c { font-size: %.5fpx; text-anchor: middle; dominant-baseline: central; }\n", stroke_width * 2.5);
     printf("  .text_c { text-anchor: middle; dominant-baseline: central; }\n");
 
     printf("]]></style>\n");
@@ -150,31 +149,27 @@ static void printSVG(node_t *first, node_t *a_, node_t *bb_topright, node_t *bb_
     double offset_x = (bb_bottomleft->x + bb_topright->x) / 2.0;
     double offset_y = (bb_bottomleft->y + bb_topright->y) / 2.0;
 
-    node_t *n = first;
+    node_t* n = first;
     while (n)
     {
         n->x -= offset_x;
         n->y -= offset_y;
         printf("<g><title>%s (num=%i)</title><circle cx=\"%.5f\" cy=\"%.5f\" r=\"%.5f\" style=\"fill:%s\" class=\"circle_c\"/></g>\n", n->name ? n->name : "", (int)n->size, n->x, n->y, n->radius, n->color ? n->color : "");
-        //double maxFontSize = n->radius * 2 / (strlen(n->name) + 1); // Add 1 for better visual spacing
 
-               // Adjust the font size to fit within the maximum font size
-        double fontSize = n->radius * 0.5;
-        // Display the name as a text element inside the circle
-        //printf("<text x=\"%.5f\" y=\"%.5f\" class=\"text_c\" font-size=\"%.5f\">%s</text>\n", n->x, n->y, fontSize, n->name ? n->name : "");
-        printf("<text x=\"%.5f\" y=\"%.5f\" class=\"text_c\" style=\"font-size: %.5fpx\">%s</text>\n", n->x, n->y, fontSize, n->name ? n->name : "");
+        double fontSize = n->radius * 0.25;
 
-               //printf("</g>\n");
-               // for debug, node number
-               // printf("<text x=\"%.5f\" y=\"%.5f\" stroke=\"black\" stroke-width=\"1\">%i</text>\n",n->x, n->y, n->num);
-        node_t *next = n->insertnext;
-        // for debug, lines follow insertion order
-        // if(next) printf("<line x1=\"%.5f\" y1=\"%.5f\" x2=\"%.5f\" y2=\"%.5f\" style=\"stroke:black;stroke-width:2;\" />",n->x,n->y,next->x,next->y);
+        // Use absolute positioning for the text elements
+        double textX = n->x;
+        double textY = n->y + fontSize * 0.35; // Adjust the text position based on font size
+
+        printf("<text x=\"%.5f\" y=\"%.5f\" class=\"text_c\" style=\"font-size: %.5fpx; dominant-baseline: middle; text-anchor: middle;\">%s</text>\n", textX, textY, fontSize, n->name ? n->name : "");
+
+        node_t* next = n->insertnext;
         n = next;
     }
-    //printf("</g>\n");
-    //printf("</svg>\n");
-    // print last node chain
+    // printf("</g>\n");
+    // printf("</svg>\n");
+    //  print last node chain
     if (debug && a_ && a_->next)
     {
         node_t *a = a_;
@@ -186,7 +181,7 @@ static void printSVG(node_t *first, node_t *a_, node_t *bb_topright, node_t *bb_
             b = b->next;
         } while (b != a_->next);
     }
-    printf("</g>\n");
+   	printf("</g>\n");
     printf("</svg>\n");
 }
 
@@ -514,6 +509,7 @@ int main(int argc, char **argv)
 
                // check for additional columns with color and name
         //
+		/*
         char *firsttab = strchr(line, '\t');
         if (firsttab)
         {
@@ -547,22 +543,16 @@ int main(int argc, char **argv)
                  if (debug)
                      fprintf(stderr, "len_color = %lu, color=%s\n", length_color, color);
              }
-         }//
+         }//*/
         char *underscore = strchr(line, '_');
         if (underscore)
         {
-            char *color = underscore + 1;
-            char *nextunderscore = strchr(color, '_');
-            if (nextunderscore)
-            {
-                *nextunderscore = '\0';
-                char *name = nextunderscore + 1;
-                char *newline = strchr(name, '\n');
-                if (newline)
-                    *newline = '\0';
-                n->color = strdup(color);
-                n->name = strdup(name);
-            }
+            *underscore = '\0';
+            char *name = underscore + 1;
+            char *newline = strchr(name, '\n');
+            if (newline)
+                *newline = '\0';
+            n->name = strdup(name);
         }
 
         if (generate_colors && n->color == NULL)
@@ -607,4 +597,4 @@ int main(int argc, char **argv)
 
     exit(EXIT_SUCCESS);
 }
-*/
+

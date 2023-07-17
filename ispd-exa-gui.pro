@@ -1,5 +1,4 @@
 SOURCES += \
-  packcircles.cpp \
   src/ispd-exa-gui.cpp \
   src/item/linkicon.cpp \
   src/item/machineicon.cpp \
@@ -42,9 +41,9 @@ HEADERS += \
   include/load/linkload.h \
   include/load/machineload.h \
   include/schema.h \
-  packcircles.h
+  packCircles.h
 
-QT += widgets
+QT += widgets svg
 
 CONFIG += c++17
 
@@ -72,5 +71,7 @@ MOC_DIR = $$DESTDIR/.moc
 RCC_DIR = $$DESTDIR/.qrc
 UI_DIR = $$DESTDIR/.u
 
-DISTFILES +=
+DISTFILES += \
+    packCircles \
+    results.json
 
