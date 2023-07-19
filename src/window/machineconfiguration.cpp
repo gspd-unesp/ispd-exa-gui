@@ -14,5 +14,3 @@ machineIconConfiguration::~machineIconConfiguration()
 {
     delete ui;
 }
-
-
