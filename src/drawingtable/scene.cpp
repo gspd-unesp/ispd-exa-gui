@@ -236,8 +236,14 @@ void Scene::mouseDoubleClickEvent(QGraphicsSceneMouseEvent *event)
 {
     Icon *clickedIcon = whichMachine(event->scenePos());
     if (clickedIcon && dynamic_cast<MachineIcon*>(clickedIcon)) {
-        machineIconConfiguration *machineIconConfig = new machineIconConfiguration(clickedIcon->getName()->c_str());
-        machineIconConfig->show();
+        // Carregue a configuração do ícone antes de abrir a janela de configuração
+        clickedIcon->loadConfiguration();
+
+               // Abra a janela de configuração
+        clickedIcon->saveConfiguration();
+
+               // Salve a configuração atualizada do ícone após fechar a janela de configuração
+        // clickedIcon->saveConfiguration();
     }
     QGraphicsScene::mouseDoubleClickEvent(event);
 }

@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>410</width>
-    <height>364</height>
+    <height>403</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -31,7 +31,7 @@
        </spacer>
       </item>
       <item row="0" column="1">
-       <widget class="QPushButton" name="pushButton">
+       <widget class="QPushButton" name="okButton">
         <property name="text">
          <string>Ok</string>
         </property>
@@ -104,9 +104,9 @@ background-color: rgba(0, 0, 0, 0);</string>
       <property name="geometry">
        <rect>
         <x>0</x>
-        <y>-408</y>
+        <y>-379</y>
         <width>376</width>
-        <height>664</height>
+        <height>658</height>
        </rect>
       </property>
       <property name="maximumSize">
@@ -150,7 +150,7 @@ background-color: rgba(0, 0, 0, 0);</string>
         </widget>
        </item>
        <item row="0" column="1">
-        <widget class="QLineEdit" name="lineEdit">
+        <widget class="QLineEdit" name="labelEdit">
          <property name="sizePolicy">
           <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
            <horstretch>0</horstretch>
@@ -203,7 +203,7 @@ background-color: rgba(0, 0, 0, 0);</string>
         </widget>
        </item>
        <item row="2" column="1">
-        <widget class="QComboBox" name="comboBox_2">
+        <widget class="QComboBox" name="Owner_ComboBox">
          <property name="currentText">
           <string>User1</string>
          </property>
@@ -255,7 +255,7 @@ background-color: rgba(0, 0, 0, 0);</string>
         </widget>
        </item>
        <item row="4" column="1">
-        <widget class="QLineEdit" name="lineEdit_3">
+        <widget class="QLineEdit" name="CompPower_lineEdit">
          <property name="text">
           <string>0.0</string>
          </property>
@@ -349,7 +349,7 @@ background-color: rgba(0, 0, 0, 0);</string>
         </widget>
        </item>
        <item row="8" column="1">
-        <widget class="QLineEdit" name="lineEdit_5">
+        <widget class="QLineEdit" name="loadFactor_lineEdit">
          <property name="text">
           <string>0.0</string>
          </property>
@@ -396,7 +396,7 @@ background-color: rgba(0, 0, 0, 0);</string>
         </widget>
        </item>
        <item row="10" column="1">
-        <widget class="QLineEdit" name="lineEdit_6">
+        <widget class="QLineEdit" name="cores_lineEdit">
          <property name="text">
           <string>1</string>
          </property>
@@ -443,7 +443,7 @@ background-color: rgba(0, 0, 0, 0);</string>
         </widget>
        </item>
        <item row="12" column="1">
-        <widget class="QLineEdit" name="lineEdit_7">
+        <widget class="QLineEdit" name="primarystorage_lineEdit">
          <property name="text">
           <string>0.0</string>
          </property>
@@ -490,7 +490,7 @@ background-color: rgba(0, 0, 0, 0);</string>
         </widget>
        </item>
        <item row="18" column="1">
-        <widget class="QComboBox" name="comboBox">
+        <widget class="QComboBox" name="scheduling_comboBox">
          <item>
           <property name="text">
            <string>RoundRobin</string>
@@ -609,7 +609,7 @@ background-color: rgba(0, 0, 0, 0);</string>
         </widget>
        </item>
        <item row="22" column="1">
-        <widget class="QLineEdit" name="lineEdit_11">
+        <widget class="QLineEdit" name="energyconsumer_lineEdit">
          <property name="text">
           <string>0.0</string>
          </property>
@@ -629,7 +629,7 @@ background-color: rgba(0, 0, 0, 0);</string>
         </spacer>
        </item>
        <item row="16" column="1">
-        <widget class="QCheckBox" name="checkBox">
+        <widget class="QCheckBox" name="master_checkBox">
          <property name="maximumSize">
           <size>
            <width>16777215</width>
@@ -688,7 +688,7 @@ background-color: rgba(0, 0, 0, 0);</string>
         </spacer>
        </item>
        <item row="14" column="1">
-        <widget class="QLineEdit" name="lineEdit_12">
+        <widget class="QLineEdit" name="secondaryStorage_lineEdit">
          <property name="text">
           <string>0.0</string>
          </property>
@@ -728,5 +728,22 @@ background-color: rgba(0, 0, 0, 0);</string>
   </layout>
  </widget>
  <resources/>
- <connections/>
+ <connections>
+  <connection>
+   <sender>okButton</sender>
+   <signal>clicked()</signal>
+   <receiver>machineIconConfiguration</receiver>
+   <slot>close()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>158</x>
+     <y>376</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>5</x>
+     <y>382</y>
+    </hint>
+   </hints>
+  </connection>
+ </connections>
 </ui>

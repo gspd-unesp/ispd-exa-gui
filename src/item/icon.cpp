@@ -10,6 +10,8 @@
 #include <QMouseEvent>
 #include <iostream>
 #include <string>
+#include <QDialog>
+
 
 Icon::Icon(const char *name, QGraphicsItem *parent)
     : QGraphicsPixmapItem{parent}
@@ -18,6 +20,51 @@ Icon::Icon(const char *name, QGraphicsItem *parent)
     this->name       = new std::string(name);
     this->links      = new std::map<unsigned, Link *>();
     this->isSelected = false;
+
+    configuration = IconConfiguration();
+}
+
+void Icon::saveConfiguration()
+{
+    machineIconConfiguration *configDialog = new machineIconConfiguration(this->getName()->c_str());
+
+    // Preencha a janela de configuração com os valores atuais do ícone
+    configDialog->setLineEditValue(this->configuration.textValue);
+    configDialog->setComboBoxIndex(this->configuration.comboBoxIndex);
+    configDialog->setCheckBoxState(this->configuration.checkBoxState);
+
+    configDialog->show();
+
+           // Conecte o sinal configurationAccepted() à função saveConfiguration()
+    connect(configDialog, &machineIconConfiguration::configurationClicked, this, [this, configDialog]() {
+        // Salve as configurações atualizadas de volta na estrutura IconConfiguration
+        this->configuration.textValue = configDialog->getLineEditValue();
+        this->configuration.comboBoxIndex = configDialog->getComboBoxIndex();
+        this->configuration.checkBoxState = configDialog->getCheckBoxState();
+    });
+}
+
+void Icon::loadConfiguration()
+{
+    // Verifica se o ícone possui configurações salvas
+    if (!configuration.textValue.isEmpty()) {
+        qDebug() << "Entrou no if do loadConfiguration";
+        // Crie a janela de configuração e defina os valores dos widgets com base nas configurações
+        machineIconConfiguration *configDialog = new machineIconConfiguration(this->getName()->c_str());
+
+               // Carregue as configurações salvas para os widgets na janela de configuração
+        configDialog->setLineEditValue(configuration.textValue);
+        configDialog->setComboBoxIndex(configuration.comboBoxIndex);
+        configDialog->setCheckBoxState(configuration.checkBoxState);
+
+               // Abra a janela de configuração para exibir os valores carregados
+        configDialog->show();
+
+               // Lembre-se de deletar a janela de configuração após o uso
+        delete configDialog;
+    } else {
+        qDebug() << "Não entrou no if do loadConfiguration";
+    }
 }
 
 /*
