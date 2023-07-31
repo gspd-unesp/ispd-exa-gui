@@ -28,7 +28,6 @@ void Icon::saveConfiguration()
 {
     machineIconConfiguration *configDialog = new machineIconConfiguration(this->getName()->c_str());
 
-    // Preencha a janela de configuração com os valores atuais do ícone
     configDialog->setLineEdit01Value(this->configuration.labelEdit);
     configDialog->setLineEdit02Value(this->configuration.CompPower_lineEdit);
     configDialog->setLineEdit03Value(this->configuration.cores_lineEdit);
@@ -44,9 +43,7 @@ void Icon::saveConfiguration()
 
     configDialog->show();
 
-           // Conecte o sinal configurationAccepted() à função saveConfiguration()
     connect(configDialog, &machineIconConfiguration::configurationClicked, this, [this, configDialog]() {
-        // Salve as configurações atualizadas de volta na estrutura IconConfiguration
         this->configuration.labelEdit = configDialog->getLineEdit01Value();
         this->configuration.CompPower_lineEdit = configDialog->getLineEdit02Value();
         this->configuration.cores_lineEdit = configDialog->getLineEdit03Value();
@@ -66,7 +63,6 @@ void Icon::saveConfiguration()
 
 void Icon::loadConfiguration()
 {
-    // Verifica se o ícone possui configurações salvas
     if (!configuration.labelEdit.isEmpty()
         || !configuration.CompPower_lineEdit.isEmpty()
         || !configuration.cores_lineEdit.isEmpty()
@@ -75,11 +71,8 @@ void Icon::loadConfiguration()
         || !configuration.loadFactor_lineEdit.isEmpty()
         || !configuration.primarystorage_lineEdit.isEmpty()
         || !configuration.secondaryStorage_lineEdit.isEmpty()) {
-        qDebug() << "Entrou no if do loadConfiguration";
-        // Crie a janela de configuração e defina os valores dos widgets com base nas configurações
         machineIconConfiguration *configDialog = new machineIconConfiguration(this->getName()->c_str());
 
-               // Carregue as configurações salvas para os widgets na janela de configuração
         configDialog->setLineEdit01Value(configuration.labelEdit);
         configDialog->setLineEdit02Value(configuration.CompPower_lineEdit);
         configDialog->setLineEdit03Value(configuration.cores_lineEdit);
@@ -92,13 +85,9 @@ void Icon::loadConfiguration()
         configDialog->setComboBoxIndex(configuration.comboBoxIndex);
         configDialog->setCheckBoxState(configuration.checkBoxState);
 
-               // Abra a janela de configuração para exibir os valores carregados
         configDialog->show();
-
-               // Lembre-se de deletar a janela de configuração após o uso
         delete configDialog;
     } else {
-        qDebug() << "Não entrou no if do loadConfiguration";
     }
 }
 
@@ -143,14 +132,11 @@ void Icon::mousePressEvent(QGraphicsSceneMouseEvent *event)
     if (event->modifiers() & Qt::ShiftModifier) {
     } else {
         for (QGraphicsItem *item : scene()->items()) {
-            qDebug() << "Shift está selecionado";
                 if (Icon* icon = dynamic_cast<Icon*>(item)) {
                 icon->deselect();
             }
         }
     }
-    qDebug() << "Terminous de clicar";
-
     select();
 }
 
@@ -165,7 +151,6 @@ void Icon::setOutputLabel(QLabel *label)
  */
 void Icon::mouseReleaseEvent(QGraphicsSceneMouseEvent *event)
 {
-    qDebug() << "Aqui?";
     QGraphicsItem::mouseReleaseEvent(event);
     auto pos    = this->pos();
     auto height = this->scene()->sceneRect().height();
@@ -186,10 +171,7 @@ void Icon::mouseReleaseEvent(QGraphicsSceneMouseEvent *event)
     if (pos.y() > height) {
         this->moveBy(0, -(pos.y() - height));
     }
-
-    qDebug() << "Ou aqui?";
     updatePosition();
-    qDebug() << "Ou  até aqui?";
 }
 
 std::string *Icon::getName()

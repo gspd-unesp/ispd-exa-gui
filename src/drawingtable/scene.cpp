@@ -137,11 +137,9 @@ void Scene::mousePressEvent(QGraphicsSceneMouseEvent *event)
         }
 
         if (this->lBegin == nullptr) {
-            qDebug() << "Primeira máquina\n";
                         this->lBegin = machine;
         }
         else if (this->lEnd == nullptr) {
-            qDebug() << "Segunda máquina\n";
 
                 if (whichMachine(event->scenePos()) == this->lBegin) {
                 break;
@@ -149,7 +147,6 @@ void Scene::mousePressEvent(QGraphicsSceneMouseEvent *event)
             this->lEnd = machine;
 
             auto *newLink = ((DrawingTable *)this->parent())->addLink();
-            qDebug() << "Antes de enfia link na scene.";
             this->addLink(newLink, this->lBegin, this->lEnd);
 
             this->lBegin = nullptr;
@@ -236,14 +233,8 @@ void Scene::mouseDoubleClickEvent(QGraphicsSceneMouseEvent *event)
 {
     Icon *clickedIcon = whichMachine(event->scenePos());
     if (clickedIcon && dynamic_cast<MachineIcon*>(clickedIcon)) {
-        // Carregue a configuração do ícone antes de abrir a janela de configuração
         clickedIcon->loadConfiguration();
-
-               // Abra a janela de configuração
         clickedIcon->saveConfiguration();
-
-               // Salve a configuração atualizada do ícone após fechar a janela de configuração
-        // clickedIcon->saveConfiguration();
     }
     QGraphicsScene::mouseDoubleClickEvent(event);
 }
