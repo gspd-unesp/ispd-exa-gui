@@ -104,9 +104,9 @@ background-color: rgba(0, 0, 0, 0);</string>
       <property name="geometry">
        <rect>
         <x>0</x>
-        <y>-379</y>
-        <width>376</width>
-        <height>658</height>
+        <y>0</y>
+        <width>369</width>
+        <height>724</height>
        </rect>
       </property>
       <property name="maximumSize">

@@ -24,12 +24,12 @@ void machineIconConfiguration::setLineEditValue(const QString& value)
 
 int machineIconConfiguration::getComboBoxIndex()
 {
-    return ui->comboBox->currentIndex();
+    return ui->Owner_ComboBox->currentIndex();
 }
 
 void machineIconConfiguration::setComboBoxIndex(int index)
 {
-    ui->comboBox->setCurrentIndex(index);
+    ui->Owner_ComboBox->setCurrentIndex(index);
 }
 
 bool machineIconConfiguration::getCheckBoxState()
