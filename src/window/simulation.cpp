@@ -16,6 +16,10 @@
 #include <QProcess>
 #include <QPainter>
 #include <QSvgRenderer>
+#include <QObject>
+#include <QEvent>
+#include <QVBoxLayout>
+
 
 //CIRCLE PACKING
 #include "packcircles.h"
@@ -378,46 +382,12 @@ static node_t *placeCircles(node_t *firstnode, node_t *bb_topright, node_t *bb_b
 
 
 
-
-
-
-
-
-
-
-
-
-
-
 Simulation::Simulation(QWidget *parent) :
       QWidget(parent),
       ui(new Ui::Simulation)
 {
     ui->setupUi(this);
-    createGlobal();
-    createTasks();
-    createUser();
-    createResources();
-    createResultsFile();
 
-
-    resultsCommunication();
-    resultsProcessing();
-
-}
-
-Simulation::~Simulation()
-{
-    delete ui;
-}
-
-void Simulation::createGlobal()
-{
-/*
-    QString filePath = QCoreApplication::applicationDirPath() + "/results.json";
-    QFile file(filePath);
-    */
-    QString fileName = "results.json";
     QDir directory(QCoreApplication::applicationDirPath());
     directory.cdUp();
     directory.cdUp();
@@ -427,10 +397,36 @@ void Simulation::createGlobal()
     directory.cdUp();
     directory.cd("ispd-exa-gui");
 
-    QString filePath = directory.filePath(fileName);
-    //QFile file(filePath);
+    originalTextEditPos = ui->textEdit->pos();
+    originalTextEditSize = ui->textEdit->size();
+    originalLabelPos = ui->label->pos();
+    originalLabelSize = ui->label->size();
 
-           //QString filePath = QCoreApplication::applicationDirPath() + "/results.json";
+
+    QApplication::instance()->installEventFilter(this);
+
+    createGlobal(directory);
+    createTasks(directory);
+    createUser(directory);
+    createResources(directory);
+    createResultsFile(directory);
+    resultsCommunication(directory);
+    resultsProcessing(directory);
+
+}
+
+Simulation::~Simulation()
+{
+    delete ui;
+}
+
+void Simulation::createGlobal(QDir directory)
+{
+
+    QString fileName = "results.json";
+
+    QString filePath = directory.filePath(fileName);
+
     qDebug() << "File path: " << filePath;
 
     QFile file(filePath);
@@ -478,26 +474,12 @@ void Simulation::createGlobal()
 
 }
 
-void Simulation::createTasks()
+void Simulation::createTasks(QDir directory)
 {
-    /*
-    QString filePath = QCoreApplication::applicationDirPath() + "/results.json";
-    QFile file(filePath);
-*/
+
     QString fileName = "results.json";
-    QDir directory(QCoreApplication::applicationDirPath());
-    directory.cdUp();
-    directory.cdUp();
-    directory.cdUp();
-    directory.cdUp();
-    directory.cdUp();
-    directory.cdUp();
-    directory.cd("ispd-exa-gui");
 
     QString filePath = directory.filePath(fileName);
-    //QFile file(filePath);
-
-           //QString filePath = QCoreApplication::applicationDirPath() + "/results.json";
     qDebug() << "File path: " << filePath;
 
     QFile file(filePath);
@@ -542,20 +524,11 @@ void Simulation::createTasks()
 
 }
 
-void Simulation::createUser()
+void Simulation::createUser(QDir directory)
 {
 
     QString fileName = "results.json";
-    QDir directory(QCoreApplication::applicationDirPath());
-    directory.cdUp();
-    directory.cdUp();
-    directory.cdUp();
-    directory.cdUp();
-    directory.cdUp();
-    directory.cdUp();
-    directory.cd("ispd-exa-gui");
-
-    QString filePath = directory.filePath(fileName);
+   QString filePath = directory.filePath(fileName);
 
     qDebug() << "File path: " << filePath;
 
@@ -618,10 +591,10 @@ void Simulation::on_pushButton_clicked()
 
 }
 
-void Simulation::createResources()
+void Simulation::createResources(QDir directory)
 {
-    ui->tableWidget->setColumnWidth(2, 194);
-    ui->tableWidget->setColumnWidth(3, 195);
+    ui->tableWidget->setColumnWidth(2, 184);
+    ui->tableWidget->setColumnWidth(3, 185);
 
            //----------------------------------------------------------------------------------------------------
 
@@ -639,21 +612,11 @@ void Simulation::createResources()
 
     //----------------------------------------------------------------------------------------
 
-    /*
-    QString filePath = QCoreApplication::applicationDirPath() + "/results.json";
-    QFile file(filePath);
-*/
-    QString fileName = "results.json";
-    QDir directory(QCoreApplication::applicationDirPath());
-    directory.cdUp();
-    directory.cdUp();
-    directory.cdUp();
-    directory.cdUp();
-    directory.cdUp();
-    directory.cdUp();
-    directory.cd("ispd-exa-gui");
 
-    QString filePath = directory.filePath(fileName);
+   QString fileName = "results.json";
+
+
+   QString filePath = directory.filePath(fileName);
     //QFile file(filePath);
 
            //QString filePath = QCoreApplication::applicationDirPath() + "/results.json";
@@ -721,22 +684,12 @@ void Simulation::createResources()
     }
 }
 
-void Simulation::createResultsFile()
+void Simulation::createResultsFile(QDir directory)
 {
-    /*
-    QString filePath = QCoreApplication::applicationDirPath() + "/results.json";
-    QFile file(filePath);
-*/
 
-    QString fileName = "results.json";
-    QDir directory(QCoreApplication::applicationDirPath());
-    directory.cdUp();
-    directory.cdUp();
-    directory.cdUp();
-    directory.cdUp();
-    directory.cdUp();
-    directory.cdUp();
-    directory.cd("ispd-exa-gui");
+
+   QString fileName = "results.json";
+
 
     QString filePath = directory.filePath(fileName);
     //QFile file(filePath);
@@ -812,63 +765,29 @@ void Simulation::createResultsFile()
     }
 }
 
-void Simulation::resultsCommunication()
+void Simulation::resultsCommunication(QDir directory)
 {
 
-    QDir directory(QCoreApplication::applicationDirPath());
-    directory.cdUp();
-    directory.cdUp();
-    directory.cdUp();
-    directory.cdUp();
-    directory.cdUp();
-    directory.cdUp();
-    directory.cd("ispd-exa-gui");
-
-    QString filePath = directory.absolutePath();
-    QDir::setCurrent(filePath);
-    circlePacking(1);
+    circlePacking(1, directory);
 
     QPixmap pixmap("output.svg");
     ui->label->setPixmap(pixmap);
     ui->label->adjustSize();
 }
-void Simulation::resultsProcessing()
+void Simulation::resultsProcessing(QDir directory)
 {
 
-    //QString filePath = QCoreApplication::applicationDirPath();
 
-    //QDir::setCurrent(filePath);
-
-    QDir directory(QCoreApplication::applicationDirPath());
-    directory.cdUp();
-    directory.cdUp();
-    directory.cdUp();
-    directory.cdUp();
-    directory.cdUp();
-    directory.cdUp();
-    directory.cd("ispd-exa-gui");
-
-    QString filePath = directory.absolutePath();
-    QDir::setCurrent(filePath);
-
-    circlePacking(2);
+    circlePacking(2, directory);
 
     QPixmap pixmap("output_2.svg");
     ui->label_2->setPixmap(pixmap);
     ui->label_2->adjustSize();
 }
 
-void Simulation::circlePacking(int flag)
+void Simulation::circlePacking(int flag, QDir directory)
 {
 
-    QDir directory(QCoreApplication::applicationDirPath());
-    directory.cdUp();
-    directory.cdUp();
-    directory.cdUp();
-    directory.cdUp();
-    directory.cdUp();
-    directory.cdUp();
-    directory.cd("ispd-exa-gui");
 
     QString filePath = directory.absolutePath();
     QDir::setCurrent(filePath);
@@ -911,13 +830,14 @@ void Simulation::circlePacking(int flag)
         if (length_line == 1)
         {
             continue;
-        } // only newline char
+        }
         unsigned long input_number = ULONG_MAX;
         input_number = strtoul(line, NULL, 10);
         if (input_number == 0 || input_number == ULONG_MAX)
         {
-            fprintf(stderr, "Bad number (out of range error) in input line: %s", line);
-            exit(EXIT_FAILURE);
+            //fprintf(stderr, "Bad number (out of range error) in input line: %s", line);
+            //exit(EXIT_FAILURE);
+            continue;
         }
 
         node_t *n = alloc_node(input_number, counter);
@@ -970,9 +890,6 @@ void Simulation::circlePacking(int flag)
     else if(flag == 2)
         output_file = fopen("output_2.svg", "w");
 
-
-
-
     printSVG(firstnode, a, bb_topright, bb_bottomleft, debug, output_file);
 
 
@@ -991,3 +908,110 @@ void Simulation::circlePacking(int flag)
 
     return;
 }
+
+bool Simulation::eventFilter(QObject *obj, QEvent *event)
+{
+    if (event->type() == QEvent::WindowStateChange)
+    {
+        Qt::WindowStates states = this->windowState();
+        bool isFullScreen = (states & Qt::WindowFullScreen);
+
+
+        if (isFullScreen)
+        {
+            int windowWidth = this->width();
+            int windowHeight = this->height();
+
+            int newX = (windowWidth - 800) / 2; // Place the widgets in the center horizontally
+            int newY = ((windowHeight - 600) / 2) - 200;
+
+            ui->textEdit->move(newX, newY);
+            ui->textEdit->resize(800, 600);
+
+            ui->textEdit_2->move(newX, newY);
+            ui->textEdit_2->resize(800, 600);
+
+            ui->textEdit_3->move(newX, newY);
+            ui->textEdit_3->resize(800, 600);
+
+            ui->tableWidget->move(newX, newY);
+            ui->tableWidget->resize(800, 600);
+            ui->tableWidget->setColumnWidth(2, 275);
+            ui->tableWidget->setColumnWidth(3, 300);
+
+            ui->label_2->move(newX, newY);
+            ui->label_2->resize(800, 600);
+            QPixmap pixmap_2("output_2.svg");
+            ui->label_2->setPixmap(pixmap_2);
+            ui->label_2->adjustSize();
+            /*
+
+            QPixmap originalPixmap_2("output_2.svg");
+
+            int newWidth = 800;
+
+            int newHeight = originalPixmap_2.scaledToWidth(newWidth).height();
+
+            QPixmap resizedPixmap_2 = originalPixmap_2.scaled(newWidth, newHeight, Qt::KeepAspectRatio, Qt::SmoothTransformation);
+
+            ui->label_2->setPixmap(resizedPixmap_2);
+            ui->label_2->move(newX, newY);
+*/
+//------------------------------------------------------------------------------------------------------------------------
+
+
+            ui->label->move(newX, newY);
+            ui->label->resize(800, 600);
+            QPixmap pixmap("output.svg");
+            ui->label->setPixmap(pixmap);
+            ui->label->adjustSize();
+/*
+            QPixmap originalPixmap("output.svg");
+
+
+            QPixmap resizedPixmap = originalPixmap.scaled(newWidth, newHeight, Qt::KeepAspectRatio, Qt::SmoothTransformation);
+
+            ui->label->setPixmap(resizedPixmap);
+            ui->label->move(newX, newY);
+*/
+
+
+        }
+        else
+        {
+
+            ui->textEdit->move(originalTextEditPos);
+            ui->textEdit->resize(originalTextEditSize);
+
+            ui->textEdit_2->move(originalTextEditPos);
+            ui->textEdit_2->resize(originalTextEditSize);
+
+            ui->textEdit_3->move(originalTextEditPos);
+            ui->textEdit_3->resize(originalTextEditSize);
+
+            ui->tableWidget->move(originalTextEditPos);
+            ui->tableWidget->resize(originalTextEditSize);
+            ui->tableWidget->setColumnWidth(2, 184);
+            ui->tableWidget->setColumnWidth(3, 185);
+
+            ui->label->move(originalLabelPos);
+            ui->label->resize(originalLabelSize);
+
+            ui->label_2->move(originalLabelPos);
+            ui->label_2->resize(originalLabelSize);
+
+            QPixmap pixmap("output.svg");
+            ui->label->setPixmap(pixmap);
+            ui->label->adjustSize();
+
+            QPixmap pixmap_2("output_2.svg");
+            ui->label_2->setPixmap(pixmap_2);
+            ui->label_2->adjustSize();
+
+
+        }
+    }
+
+    return QWidget::eventFilter(obj, event);
+}
+

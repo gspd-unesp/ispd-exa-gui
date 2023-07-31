@@ -17,7 +17,11 @@
   "users": [
     {
       "name": "user1",
-      "number_of_tasks": "5",
+      "number_of_tasks": "2",
+      "computing_power": [
+        { "time": "7.5", "rate": 100 },
+        { "time": "40", "rate": 100 }
+      ],
       "communication": {
         "queue_average_time": "12.1",
         "communication_average_time": "18.6",
@@ -34,6 +38,10 @@
     {
       "label": "mac0",
       "owner": "user1",
+      "computing_power": [
+        { "time": "0", "rate": 100 },
+        { "time": "40", "rate": 100 }
+      ],
       "processing_performed": "0.0",
       "communication_performed": "0.0",
       "Mflops": "1000"
@@ -41,72 +49,13 @@
     {
       "label": "mac1",
       "owner": "user1",
+      "computing_power": [
+        { "time": "7.5", "rate": 100 },
+        { "time": "40", "rate": 100 }
+      ],
       "processing_performed": "22.222222",
       "communication_performed": "0.0",
       "Mflops": "500"
-    },
-    {
-      "label": "mac2",
-      "owner": "user1",
-      "processing_performed": "50.0",
-      "communication_performed": "0.0",
-      "Mflops": "800"
-    },
-    {
-      "label": "mac3",
-      "owner": "user1",
-      "processing_performed": "10.0",
-      "communication_performed": "0.0",
-      "Mflops": "1200"
-    },
-    {
-      "label": "mac4",
-      "owner": "user1",
-      "processing_performed": "30.0",
-      "communication_performed": "0.0",
-      "Mflops": "700"
-    },
-    {
-      "label": "mac5",
-      "owner": "user1",
-      "processing_performed": "15.0",
-      "communication_performed": "0.0",
-      "Mflops": "900"
-    },
-    {
-      "label": "mac6",
-      "owner": "user1",
-      "processing_performed": "5.0",
-      "communication_performed": "0.0",
-      "Mflops": "1500"
-    },
-    {
-      "label": "mac7",
-      "owner": "user1",
-      "processing_performed": "40.0",
-      "communication_performed": "0.0",
-      "Mflops": "600"
-    },
-    {
-      "label": "mac8",
-      "owner": "user1",
-      "processing_performed": "20.0",
-      "communication_performed": "0.0",
-      "Mflops": "1000"
-    },
-    {
-      "label": "mac9",
-      "owner": "user1",
-      "processing_performed": "12.0",
-      "communication_performed": "0.0",
-      "Mflops": "1100"
-    },
-    {
-      "label": "mac10",
-      "owner": "user1",
-      "processing_performed": "8.0",
-      "communication_performed": "0.0",
-      "Mflops": "1300"
     }
   ],
   "links": [
@@ -121,54 +70,22 @@
       "processing_performed": "0.0",
       "communication_performed": "13.3333",
       "Mbits": "200"
+    }
+  ],
+  "tasks": [
+    {
+      "name": "task1",
+      "computing_power": [
+        { "time": "7.5", "rate": 100 },
+        { "time": "40", "rate": 100 }
+      ]
     },
     {
-      "label": "link3",
-      "processing_performed": "0.0",
-      "communication_performed": "15.0",
-      "Mbits": "150"
-    },
-    {
-      "label": "link4",
-      "processing_performed": "0.0",
-      "communication_performed": "8.8888",
-      "Mbits": "250"
-    },
-    {
-      "label": "link5",
-      "processing_performed": "0.0",
-      "communication_performed": "16.6666",
-      "Mbits": "180"
-    },
-    {
-      "label": "link6",
-      "processing_performed": "0.0",
-      "communication_performed": "10.0",
-      "Mbits": "220"
-    },
-    {
-      "label": "link7",
-      "processing_performed": "0.0",
-      "communication_performed": "12.5",
-      "Mbits": "190"
-    },
-    {
-      "label": "link8",
-      "processing_performed": "0.0",
-      "communication_performed": "11.1111",
-      "Mbits": "210"
-    },
-    {
-      "label": "link9",
-      "processing_performed": "0.0",
-      "communication_performed": "9.0909",
-      "Mbits": "230"
-    },
-    {
-      "label": "link10",
-      "processing_performed": "0.0",
-      "communication_performed": "14.2857",
-      "Mbits": "170"
+      "name": "task2",
+      "computing_power": [
+        { "time": "7.5", "rate": 100 },
+        { "time": "45", "rate": 100 }
+      ]
     }
   ]
 }
