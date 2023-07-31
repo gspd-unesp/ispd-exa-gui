@@ -18,8 +18,23 @@ public:
     ~machineIconConfiguration();
 
     // Adicione funções para obter e configurar os valores dos widgets da janela
-    QString getLineEditValue();
-    void setLineEditValue(const QString& value);
+    QString getLineEdit01Value();
+    QString getLineEdit02Value();
+    QString getLineEdit03Value();
+    QString getLineEdit04Value();
+    QString getLineEdit05Value();
+    QString getLineEdit06Value();
+    QString getLineEdit07Value();
+    QString getLineEdit08Value();
+
+    void setLineEdit01Value(const QString& value);
+    void setLineEdit02Value(const QString& value);
+    void setLineEdit03Value(const QString& value);
+    void setLineEdit04Value(const QString& value);
+    void setLineEdit05Value(const QString& value);
+    void setLineEdit06Value(const QString& value);
+    void setLineEdit07Value(const QString& value);
+    void setLineEdit08Value(const QString& value);
 
     int getComboBoxIndex();
     void setComboBoxIndex(int index);

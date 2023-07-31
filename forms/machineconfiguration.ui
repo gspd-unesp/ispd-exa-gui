@@ -104,9 +104,9 @@ background-color: rgba(0, 0, 0, 0);</string>
       <property name="geometry">
        <rect>
         <x>0</x>
-        <y>0</y>
-        <width>369</width>
-        <height>724</height>
+        <y>-379</y>
+        <width>376</width>
+        <height>658</height>
        </rect>
       </property>
       <property name="maximumSize">
@@ -742,6 +742,22 @@ background-color: rgba(0, 0, 0, 0);</string>
     <hint type="destinationlabel">
      <x>5</x>
      <y>382</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>pushButton_2</sender>
+   <signal>clicked()</signal>
+   <receiver>machineIconConfiguration</receiver>
+   <slot>close()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>257</x>
+     <y>370</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>406</x>
+     <y>393</y>
     </hint>
    </hints>
   </connection>

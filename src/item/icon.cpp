@@ -29,7 +29,16 @@ void Icon::saveConfiguration()
     machineIconConfiguration *configDialog = new machineIconConfiguration(this->getName()->c_str());
 
     // Preencha a janela de configuração com os valores atuais do ícone
-    configDialog->setLineEditValue(this->configuration.textValue);
+    configDialog->setLineEdit01Value(this->configuration.labelEdit);
+    configDialog->setLineEdit02Value(this->configuration.CompPower_lineEdit);
+    configDialog->setLineEdit03Value(this->configuration.cores_lineEdit);
+    configDialog->setLineEdit04Value(this->configuration.energyconsumer_lineEdit);
+    configDialog->setLineEdit05Value(this->configuration.lineEdit_4);
+    configDialog->setLineEdit06Value(this->configuration.loadFactor_lineEdit);
+    configDialog->setLineEdit07Value(this->configuration.primarystorage_lineEdit);
+    configDialog->setLineEdit08Value(this->configuration.secondaryStorage_lineEdit);
+
+
     configDialog->setComboBoxIndex(this->configuration.comboBoxIndex);
     configDialog->setCheckBoxState(this->configuration.checkBoxState);
 
@@ -38,7 +47,18 @@ void Icon::saveConfiguration()
            // Conecte o sinal configurationAccepted() à função saveConfiguration()
     connect(configDialog, &machineIconConfiguration::configurationClicked, this, [this, configDialog]() {
         // Salve as configurações atualizadas de volta na estrutura IconConfiguration
-        this->configuration.textValue = configDialog->getLineEditValue();
+        this->configuration.labelEdit = configDialog->getLineEdit01Value();
+        this->configuration.CompPower_lineEdit = configDialog->getLineEdit02Value();
+        this->configuration.cores_lineEdit = configDialog->getLineEdit03Value();
+        this->configuration.energyconsumer_lineEdit = configDialog->getLineEdit04Value();
+        this->configuration.lineEdit_4 = configDialog->getLineEdit05Value();
+        this->configuration.loadFactor_lineEdit = configDialog->getLineEdit06Value();
+        this->configuration.primarystorage_lineEdit = configDialog->getLineEdit07Value();
+        this->configuration.secondaryStorage_lineEdit = configDialog->getLineEdit08Value();
+
+
+
+
         this->configuration.comboBoxIndex = configDialog->getComboBoxIndex();
         this->configuration.checkBoxState = configDialog->getCheckBoxState();
     });
@@ -47,13 +67,28 @@ void Icon::saveConfiguration()
 void Icon::loadConfiguration()
 {
     // Verifica se o ícone possui configurações salvas
-    if (!configuration.textValue.isEmpty()) {
+    if (!configuration.labelEdit.isEmpty()
+        || !configuration.CompPower_lineEdit.isEmpty()
+        || !configuration.cores_lineEdit.isEmpty()
+        || !configuration.energyconsumer_lineEdit.isEmpty()
+        || !configuration.lineEdit_4.isEmpty()
+        || !configuration.loadFactor_lineEdit.isEmpty()
+        || !configuration.primarystorage_lineEdit.isEmpty()
+        || !configuration.secondaryStorage_lineEdit.isEmpty()) {
         qDebug() << "Entrou no if do loadConfiguration";
         // Crie a janela de configuração e defina os valores dos widgets com base nas configurações
         machineIconConfiguration *configDialog = new machineIconConfiguration(this->getName()->c_str());
 
                // Carregue as configurações salvas para os widgets na janela de configuração
-        configDialog->setLineEditValue(configuration.textValue);
+        configDialog->setLineEdit01Value(configuration.labelEdit);
+        configDialog->setLineEdit02Value(configuration.CompPower_lineEdit);
+        configDialog->setLineEdit03Value(configuration.cores_lineEdit);
+        configDialog->setLineEdit04Value(configuration.energyconsumer_lineEdit);
+        configDialog->setLineEdit05Value(configuration.lineEdit_4);
+        configDialog->setLineEdit06Value(configuration.loadFactor_lineEdit);
+        configDialog->setLineEdit07Value(configuration.primarystorage_lineEdit);
+        configDialog->setLineEdit08Value(configuration.secondaryStorage_lineEdit);
+
         configDialog->setComboBoxIndex(configuration.comboBoxIndex);
         configDialog->setCheckBoxState(configuration.checkBoxState);
 

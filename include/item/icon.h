@@ -15,13 +15,28 @@ class Link;
 
 // Define a estrutura para armazenar as configurações do ícone
 struct IconConfiguration {
-    QString textValue;
+    QString CompPower_lineEdit;
+    QString cores_lineEdit;
+    QString energyconsumer_lineEdit;
+    QString labelEdit;
+    QString lineEdit_4;
+    QString loadFactor_lineEdit;
+    QString primarystorage_lineEdit;
+    QString secondaryStorage_lineEdit;
+
     int comboBoxIndex;
     bool checkBoxState;
     // Adicione mais campos aqui, se necessário
     IconConfiguration() : comboBoxIndex(0), checkBoxState(false) {
         // Define os valores iniciais dos campos conforme necessário
-        textValue = ""; // Por exemplo, defina uma string vazia como valor inicial para textValue
+        labelEdit = ""; // Por exemplo, defina uma string vazia como valor inicial para textValue
+        CompPower_lineEdit = "";
+        cores_lineEdit = "";
+        energyconsumer_lineEdit = "";
+        lineEdit_4 = "";
+        loadFactor_lineEdit = "";
+        primarystorage_lineEdit = "";
+        secondaryStorage_lineEdit = "";
     }
 };
 
