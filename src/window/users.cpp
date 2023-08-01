@@ -34,9 +34,6 @@ UserWindow::UserWindow(QWidget *parent, DrawingTable *drawingTable, const QList<
     this->ui->addButton->setFixedSize(50, 22);
     this->ui->addButton->setIconSize(QSize(12, 12));
 
-    // addOnList1("user1");
-    // addOnList2(100);
-
     ui->listWidget->addItems(list1Data);
     for (const double value : list2Data)
     {
@@ -57,7 +54,7 @@ void UserWindow::addOnList1(const QString &valor)
 
 void UserWindow::addOnList2(double valor)
 {
-    QString strValor = QString::number(valor); // Converter o double para QString
+    QString strValor = QString::number(valor);
     ui->listWidget_2->addItem(strValor);
 }
 
@@ -106,11 +103,9 @@ void UserWindow::on_okButton_clicked()
 {
     if (drawingTable)
     {
-        qDebug() << "Entrou aqui";
         QList<QString> list1Data;
         QList<double> list2Data;
 
-               // Copy the items from listWidget and listWidget_2 to the new QLists
         for (int i = 0; i < ui->listWidget->count(); ++i)
         {
             list1Data.append(ui->listWidget->item(i)->text());
@@ -121,7 +116,6 @@ void UserWindow::on_okButton_clicked()
             list2Data.append(ui->listWidget_2->item(i)->text().toDouble());
         }
 
-               // Call the function in DrawingTable to receive the data
         drawingTable->receiveUserWindowData(list1Data, list2Data);
     }
     close();

@@ -41,6 +41,10 @@ private:
     void          setupSchemaButton();
     void          setupLinkButton();
 
+    QGraphicsRectItem* selectionRectItem = nullptr; // Novo membro para o retângulo de seleção
+    void addSelectionRectToScene(const QRectF& rect);
+    void removeSelectionRectFromScene();
+
 public:
     DrawingTable(QFrame *parent = nullptr);
     DrawingTable(Schema *schema, QWidget *parent = nullptr);

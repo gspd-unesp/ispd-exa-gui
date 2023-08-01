@@ -57,6 +57,7 @@ public:
     std::string iconPathSelected;
 
     void deselect();
+    void select();
 
     // Funções para salvar e carregar as configurações do ícone
     void saveConfiguration();
@@ -68,7 +69,6 @@ protected:
 
 private:
     void         updatePosition();
-    void         select();
     QString      positionString;
     QLabel      *outputLabel;
     std::string *name;

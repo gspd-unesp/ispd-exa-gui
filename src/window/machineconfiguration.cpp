@@ -93,7 +93,6 @@ void machineIconConfiguration::setLineEdit08Value(const QString& value)
     ui->secondaryStorage_lineEdit->setText(value);
 }
 
-// =============================================
 int machineIconConfiguration::getComboBoxIndex()
 {
     return ui->Owner_ComboBox->currentIndex();
