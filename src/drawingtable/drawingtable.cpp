@@ -1,7 +1,7 @@
 #include "item/link.h"
 #include "item/schemaicon.h"
-#include "load/linkload.h"
-#include "load/machineload.h"
+#include "item/linkicon.h"
+#include "item/machine.h"
 #include "qdebug.h"
 #include "qradiobutton.h"
 #include "qpushbutton.h"
@@ -145,9 +145,6 @@ MachineIcon *DrawingTable::addMachine()
 {
     const unsigned machineId = schema->allocateNewMachine();
 
-    // FOR DEBUG
-    printSchema(schema);
-
     return schema->machines->at(machineId)->icon;
 }
 
@@ -171,14 +168,14 @@ SchemaIcon *DrawingTable::addSchema()
 ///
 /// @return the link's line
 ///
-Link *DrawingTable::addLink()
+LinkIcon *DrawingTable::addLink()
 {
     const unsigned linkId = schema->allocateNewLink();
 
     // FOR DEBUG
     printSchema(schema);
 
-    return schema->links->at(linkId)->line;
+    return schema->links->at(linkId)->icon;
 }
 
 ///
@@ -237,7 +234,7 @@ void printSchema(Schema *schema)
          link++) {
 
         qDebug() << "Link #" << link->second->id << ": "
-                 << link->second->line->getName()->c_str();
+                 << link->second->icon->getName()->c_str();
     }
 }
 void DrawingTable::openUserWindowClicked()

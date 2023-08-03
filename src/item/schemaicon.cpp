@@ -25,3 +25,4 @@ void SchemaIcon::mouseDoubleClickEvent(QGraphicsSceneMouseEvent *event)
     this->window->show();
     Icon::mouseDoubleClickEvent(event);
 }
+

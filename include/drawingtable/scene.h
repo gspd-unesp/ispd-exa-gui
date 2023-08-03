@@ -2,9 +2,10 @@
 #define SCENE_H
 
 #include "item/icon.h"
+#include "item/machine.h"
 #include "qglobal.h"
-#include "window/users.h"
 #include "qvector.h"
+#include "window/users.h"
 #include <QGraphicsScene>
 #include <QWidget>
 
@@ -17,6 +18,8 @@ typedef enum PICK_OP
 } PICK_OP;
 
 class MachineIcon;
+class LinkIcon;
+class DrawingTable;
 
 class Scene : public QGraphicsScene
 {
@@ -33,8 +36,8 @@ protected:
 
 public:
     explicit Scene(QObject *parent = nullptr);
-    QVector<Icon *> *icons;
-    QVector<Link *> *links;
+    QVector<Icon *>     *icons;
+    QVector<LinkIcon *> *links;
 
     void addIcon(Icon *icon, QPointF pos = QPointF(0, 0));
     void drawBackgroundLines();
@@ -44,16 +47,19 @@ public:
     QLabel *machineDescriptionLabel;
 
 private:
-    Icon           *lBegin;
-    Icon           *lEnd;
-    void            addLink(Link *link, Icon *a, Icon *b);
-    Icon           *whichMachine(QPointF pos);
-    std::string     getNewMachineName();
-    std::string     getNewLinkName();
-    std::string     getNewClusterName();
-    void            removeMachine(MachineIcon *icon);
-    void            removeLink(Link *link);
-    UserWindow      *userWindow;
+    DrawingTable *table;
+    Schema       *schema;
+    Item         *lBegin;
+    Item         *lEnd;
+    void          addLink(LinkIcon *linkIcon, Item *a, Item *b);
+    Item         *whichMachine(QPointF pos);
+    std::string   getNewMachineName();
+    std::string   getNewLinkName();
+    std::string   getNewClusterName();
+    void          removeMachine(Machine *machine);
+    void          removeLink(Link *link);
+    void          removeItemIcon(Item *item);
+    UserWindow   *userWindow;
     QPointF startSelection;
     QGraphicsRectItem *selectionRect;
 

@@ -15,6 +15,7 @@
 
 
 class Link;
+class Item;
 
 // Define a estrutura para armazenar as configurações do ícone
 struct IconConfiguration {
@@ -51,12 +52,14 @@ public:
     Icon(const char *name, QGraphicsItem *parent = nullptr);
     ~Icon();
     Icon(QPixmap pixmap, QGraphicsItem *parent = nullptr);
-    void             setOutputLabel(QLabel *label);
+    void                       setOutputLabel(QLabel *label);
+    std::string               *getName();
+    bool                       isSelected;
+    unsigned                   id;
+    void                       setLinks(std::map<unsigned, Link *> *links);
+    std::map<unsigned, Link *> *getLinks();
     std::map<unsigned, Link *> *links;
-    std::string     *getName();
-    bool             isSelected;
     bool             select;
-    unsigned         id;
 
     std::string iconPath;
     std::string iconPathSelected;
@@ -69,6 +72,8 @@ public:
     void saveConfiguration();
     void loadConfiguration();
     void selection(bool select);
+    void deselect();
+
 protected:
     void mouseReleaseEvent(QGraphicsSceneMouseEvent *event) override;
     void mousePressEvent(QGraphicsSceneMouseEvent *event) override;
@@ -80,6 +85,8 @@ private:
     QLabel      *outputLabel;
     std::string *name;
     IconConfiguration configuration; // Adicione o membro de dados para armazenar a configuração
+    Item                       *item;
+
 signals:
 };
 

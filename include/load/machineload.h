@@ -1,7 +1,4 @@
 #pragma once
-
-#include "item/machineicon.h"
-#include "schema.h"
 #include <string>
 #include <vector>
 
@@ -71,13 +68,4 @@ private:
      * It contains the scheduling algorithm used.
      */
     std::string schedulingAlgorithm;
-
-public:
-    MachineLoad(Schema *schema, unsigned id);
-    ~MachineLoad();
-
-    std::vector<unsigned> *linksIds;
-    Schema                *schema;
-    MachineIcon           *icon;
-    unsigned               id;
 };

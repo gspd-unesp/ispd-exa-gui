@@ -1,14 +1,15 @@
 #include "schema.h"
 #include "item/link.h"
+#include "item/linkicon.h"
+#include "item/machine.h"
 #include "item/machineicon.h"
 #include "item/schemaicon.h"
-#include "load/linkload.h"
 #include "load/machineload.h"
 
 Schema::Schema(Schema *parent)
 {
-    machines = new std::map<unsigned, MachineLoad *>();
-    links    = new std::map<unsigned, LinkLoad *>;
+    machines = new std::map<unsigned, Machine *>();
+    links    = new std::map<unsigned, Link *>;
     schemas  = new std::map<unsigned, Schema *>;
 
     if (parent) {
@@ -26,12 +27,9 @@ unsigned Schema::allocateNewMachine()
 {
     const unsigned newMachineId = schemaIds->machineId;
     std::string    newMachineName("Machine" + std::to_string(newMachineId));
-    auto          *newMachine = new MachineLoad(this, newMachineId);
-    newMachine->icon          = new MachineIcon(newMachineName.c_str());
-    newMachine->icon->id      = newMachineId;
+    auto          *newMachine = new Machine(this, newMachineId, newMachineName.c_str());
 
-    machines->insert(
-        std::pair<unsigned, MachineLoad *>(newMachineId, newMachine));
+    machines->insert(std::pair<unsigned, Machine *>(newMachineId, newMachine));
 
     schemaIds->machineId++;
 
@@ -42,11 +40,12 @@ unsigned Schema::allocateNewLink()
 {
     const unsigned newLinkId = schemaIds->linkId;
     std::string    newLinkName("Link" + std::to_string(newLinkId));
-    auto          *newLink = new LinkLoad(newLinkId);
-    newLink->line          = new Link(newLinkName.c_str());
-    newLink->line->id      = newLinkId;
 
-    links->insert(std::pair<unsigned, LinkLoad *>(newLinkId, newLink));
+    auto *newLink     = new Link(newLinkId);
+    newLink->icon     = new LinkIcon(newLinkName.c_str());
+    newLink->icon->id = newLinkId;
+
+    links->insert(std::pair<unsigned, Link *>(newLinkId, newLink));
 
     schemaIds->linkId++;
 
@@ -68,17 +67,27 @@ unsigned Schema::allocateNewSchema()
 
 void Schema::deleteMachine(unsigned machineId)
 {
-    MachineLoad *machineToDelete = this->machines->at(machineId);
+    Machine *machineToDelete = this->machines->at(machineId);
 
     delete (machineToDelete);
 
     this->machines->erase(machineId);
 }
 
-void Schema::deleteLink(unsigned linkId) {
-    LinkLoad *linkToDelete = this->links->at(linkId);
+void Schema::deleteLink(unsigned linkId)
+{
+    Link *linkToDelete = this->links->at(linkId);
 
     delete (linkToDelete);
 
     this->links->erase(linkId);
+}
+
+Icon *Schema::getIcon()
+{
+    return this->icon;
+}
+
+void Schema::showConfiguration()
+{
 }

@@ -1,5 +1,6 @@
 #include "item/icon.h"
 #include "item/link.h"
+#include "item/linkicon.h"
 #include "utils/iconSize.h"
 #include <QDebug>
 #include <QGraphicsScene>
@@ -11,15 +12,14 @@
 #include <iostream>
 #include <string>
 #include <QDialog>
+#include <vector>
 
 Icon::Icon(const char *name, QGraphicsItem *parent)
     : QGraphicsPixmapItem{parent}
 {
     this->setFlag(QGraphicsItem::ItemIsMovable);
     this->name       = new std::string(name);
-    this->links      = new std::map<unsigned, Link *>();
     this->isSelected = false;
-    // this->select = false;
 
     configuration = IconConfiguration();
 }
@@ -87,6 +87,15 @@ void Icon::loadConfiguration()
         delete configDialog;
     } else {
     }
+    this->links      = nullptr;
+}
+
+void Icon::setLinks(std::map<unsigned, Link *> *links) {
+    this->links = links;
+}
+
+std::map<unsigned, Link *> *Icon::getLinks() {
+    return this->links;
 }
 
 /*
@@ -109,8 +118,8 @@ void Icon::updatePosition()
     QString pos_string =
         QString("Position: %1, %2").arg(this->pos().x()).arg(this->pos().y());
 
-    for (auto link = links->begin(); link != links->end(); link++) {
-        (*link).second->updatePositions();
+    for (auto link = this->links->begin(); link != this->links->end(); link++) {
+        (*link).second->icon->updatePositions();
     }
 }
 

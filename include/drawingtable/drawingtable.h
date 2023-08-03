@@ -12,6 +12,7 @@
 
 class Schema;
 class SchemaIcon;
+class LinkIcon;
 
 class DrawingTable : public QWidget
 {
@@ -61,5 +62,5 @@ public:
 
     MachineIcon *addMachine();
     SchemaIcon  *addSchema();
-    Link        *addLink();
+    LinkIcon        *addLink();
 };

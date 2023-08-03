@@ -19,6 +19,7 @@ SOURCES += \
   src/drawingtable/view.cpp \
   src/load/machineload.cpp \
   src/load/linkload.cpp \ 
+  src/item/machine.cpp \ 
   src/schema.cpp
 
 INCLUDEPATH += include/
@@ -42,6 +43,7 @@ HEADERS += \
   include/utils/iconSize.h \
   include/load/linkload.h \
   include/load/machineload.h \
+  include/item/machine.h \ 
   include/schema.h \
   packCircles.h \
   qcustomplot.h
