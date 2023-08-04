@@ -47,9 +47,6 @@ DrawingTable::DrawingTable(QFrame *parent) : DrawingTable(new Schema(), parent)
 
     connect(openUserWindow, &QPushButton::clicked, this, &DrawingTable::openUserWindowClicked);
     connect(openSimulationWindow, &QPushButton::clicked, this, &DrawingTable::openSimulationWindowClicked);
-    connect(this, &DrawingTable::mousePressEvent, view, &View::mousePressEvent);
-    connect(this, &DrawingTable::mouseMoveEvent, view, &View::mouseMoveEvent);
-    connect(this, &DrawingTable::mouseReleaseEvent, view, &View::mouseReleaseEvent);
 }
 
 DrawingTable::DrawingTable(Schema *schema, QWidget *parent) : QWidget{parent}
@@ -76,27 +73,6 @@ void DrawingTable::receiveUserWindowData(const QList<QString> &list1Data, const 
 {
     this->list1Data = list1Data;
     this->list2Data = list2Data;
-}
-
-void DrawingTable::addSelectionRectToScene(const QRectF& rect)
-{
-    if (!selectionRectItem) {
-        selectionRectItem = new QGraphicsRectItem(rect);
-        selectionRectItem->setPen(QPen(Qt::red, 2, Qt::DashLine));
-        selectionRectItem->setBrush(QBrush(QColor(100, 100, 255, 50)));
-        scene->addItem(selectionRectItem);
-    } else {
-        selectionRectItem->setRect(rect);
-    }
-}
-
-void DrawingTable::removeSelectionRectFromScene()
-{
-    if (selectionRectItem) {
-        scene->removeItem(selectionRectItem);
-        delete selectionRectItem;
-        selectionRectItem = nullptr;
-    }
 }
 
 ///

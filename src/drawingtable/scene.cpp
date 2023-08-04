@@ -13,7 +13,7 @@
 #include <QMouseEvent>
 #include <iostream>
 #include <string>
-
+#include <QGraphicsView>
 #include <QGraphicsScene>
 #include <QKeyEvent>
 
@@ -110,6 +110,7 @@ void Scene::mousePressEvent(QGraphicsSceneMouseEvent *event)
 {
     switch (this->pickOp) {
     case NONE: {
+        selectionArea(event);
         QGraphicsScene::mousePressEvent(event);
         break;
     }
@@ -137,11 +138,11 @@ void Scene::mousePressEvent(QGraphicsSceneMouseEvent *event)
         }
 
         if (this->lBegin == nullptr) {
-                        this->lBegin = machine;
+            this->lBegin = machine;
         }
         else if (this->lEnd == nullptr) {
 
-                if (whichMachine(event->scenePos()) == this->lBegin) {
+            if (whichMachine(event->scenePos()) == this->lBegin) {
                 break;
             }
             this->lEnd = machine;
@@ -154,6 +155,56 @@ void Scene::mousePressEvent(QGraphicsSceneMouseEvent *event)
         }
         break;
     }
+    }
+}
+
+void Scene::mouseMoveEvent(QGraphicsSceneMouseEvent *event)
+{
+    // qDebug() << "Mouse Move Event: " << event->scenePos();
+
+    if (this->startSelection != QPointF()) {
+        qDebug() << "Selection in progress";        // Update the selection rectangle while dragging the mouse
+        QRectF selectionAreaRect = QRectF(this->startSelection, event->scenePos()).normalized();
+        this->selectionRect->setRect(selectionAreaRect);
+        //qDebug() << "arrastando o mouse";
+    }
+    QGraphicsScene::mouseMoveEvent(event);
+}
+
+void Scene::mouseReleaseEvent(QGraphicsSceneMouseEvent *event)
+{
+    if (event->button() == Qt::LeftButton && this->startSelection != QPointF()) {
+        // Calculate the selection area rectangle
+        QRectF selectionAreaRect = QRectF(this->startSelection, event->scenePos()).normalized();
+
+               // Deselect all icons outside the selection area
+        for (auto item : this->items()) {
+            if (Icon *icon = dynamic_cast<Icon *>(item)) {
+                if (selectionAreaRect.contains(icon->sceneBoundingRect())) {
+                    icon->select();
+                } else {
+                    icon->deselect();
+                }
+            }
+        }
+               // Reset the initial position for area selection
+        this->startSelection = QPointF();
+        this->removeItem(this->selectionRect); // Remove the selection rectangle from the scene
+        delete this->selectionRect;
+        this->selectionRect = nullptr;
+    }
+
+    QGraphicsScene::mouseReleaseEvent(event);
+}
+
+void Scene::selectionArea(QGraphicsSceneMouseEvent *event) {
+    if (event->button() == Qt::LeftButton) {
+        this->startSelection = event->scenePos();
+        this->selectionRect = new QGraphicsRectItem();
+        this->selectionRect->setPen(QPen(Qt::blue, 1, Qt::SolidLine)); // Change color and pen style
+        this->selectionRect->setBrush(QBrush(QColor(100, 100, 255, 40)));
+        this->selectionRect->setRect(QRectF(this->startSelection, event->scenePos()).normalized());
+        this->addItem(this->selectionRect); // Add the selection rectangle to the scene
     }
 }
 
