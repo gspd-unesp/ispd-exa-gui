@@ -161,7 +161,6 @@ void Scene::mousePressEvent(QGraphicsSceneMouseEvent *event)
 void Scene::mouseMoveEvent(QGraphicsSceneMouseEvent *event)
 {
     // qDebug() << "Mouse Move Event: " << event->scenePos();
-
     if (this->startSelection != QPointF()) {
         qDebug() << "Selection in progress";        // Update the selection rectangle while dragging the mouse
         QRectF selectionAreaRect = QRectF(this->startSelection, event->scenePos()).normalized();
@@ -198,13 +197,16 @@ void Scene::mouseReleaseEvent(QGraphicsSceneMouseEvent *event)
 }
 
 void Scene::selectionArea(QGraphicsSceneMouseEvent *event) {
-    if (event->button() == Qt::LeftButton) {
-        this->startSelection = event->scenePos();
-        this->selectionRect = new QGraphicsRectItem();
-        this->selectionRect->setPen(QPen(Qt::blue, 1, Qt::SolidLine)); // Change color and pen style
-        this->selectionRect->setBrush(QBrush(QColor(100, 100, 255, 40)));
-        this->selectionRect->setRect(QRectF(this->startSelection, event->scenePos()).normalized());
-        this->addItem(this->selectionRect); // Add the selection rectangle to the scene
+    Icon *clickedIcon = whichMachine(event->scenePos());
+    if (!clickedIcon && !dynamic_cast<MachineIcon*>(clickedIcon)) {
+        if (event->button() == Qt::LeftButton) {
+            this->startSelection = event->scenePos();
+            this->selectionRect = new QGraphicsRectItem();
+            this->selectionRect->setPen(QPen(Qt::blue, 1, Qt::SolidLine)); // Change color and pen style
+            this->selectionRect->setBrush(QBrush(QColor(100, 100, 255, 40)));
+            this->selectionRect->setRect(QRectF(this->startSelection, event->scenePos()).normalized());
+            this->addItem(this->selectionRect); // Add the selection rectangle to the scene
+        }
     }
 }
 
