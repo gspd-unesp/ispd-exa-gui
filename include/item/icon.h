@@ -51,17 +51,20 @@ public:
     std::map<unsigned, Link *> *links;
     std::string     *getName();
     bool             isSelected;
+    bool             select;
     unsigned         id;
 
     std::string iconPath;
     std::string iconPathSelected;
 
-    void deselect();
-    void select();
+    // void deselect();
+    // void select();
+
 
     // Funções para salvar e carregar as configurações do ícone
     void saveConfiguration();
     void loadConfiguration();
+    void selection(bool select);
 protected:
     void mouseReleaseEvent(QGraphicsSceneMouseEvent *event) override;
     void mousePressEvent(QGraphicsSceneMouseEvent *event) override;

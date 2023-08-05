@@ -17,7 +17,6 @@ void printSchema(Schema *schema);
 
 DrawingTable::DrawingTable(QFrame *parent) : DrawingTable(new Schema(), parent)
 {
-
     QPixmap image(":/icons/perfil.png");
     QSize imageSize(30, 30);
     QPixmap resizedImage = image.scaled(imageSize, Qt::KeepAspectRatio, Qt::SmoothTransformation);

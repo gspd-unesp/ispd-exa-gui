@@ -38,13 +38,12 @@ void View::mousePressEvent(QMouseEvent *event)
         qDebug() << "Custom view clicked with left.";
     }
 
-           // Deselect all icons if the clicked area has no icons
+    // Deselect all icons if the clicked area has no icons
     QGraphicsItem* clickedItem = itemAt(event->pos().x(), event->pos().y());
     if (!clickedItem) {
-        qDebug() << "Clicou em uma área vazia (retirar a seleção)";
         for (auto item : this->items()) {
             if (Icon* icon = dynamic_cast<Icon*>(item)) {
-                icon->deselect();
+                icon->selection(false);
             }
         }
     }

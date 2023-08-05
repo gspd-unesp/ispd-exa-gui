@@ -160,12 +160,9 @@ void Scene::mousePressEvent(QGraphicsSceneMouseEvent *event)
 
 void Scene::mouseMoveEvent(QGraphicsSceneMouseEvent *event)
 {
-    // qDebug() << "Mouse Move Event: " << event->scenePos();
     if (this->startSelection != QPointF()) {
-        qDebug() << "Selection in progress";        // Update the selection rectangle while dragging the mouse
         QRectF selectionAreaRect = QRectF(this->startSelection, event->scenePos()).normalized();
         this->selectionRect->setRect(selectionAreaRect);
-        //qDebug() << "arrastando o mouse";
     }
     QGraphicsScene::mouseMoveEvent(event);
 }
@@ -176,17 +173,17 @@ void Scene::mouseReleaseEvent(QGraphicsSceneMouseEvent *event)
         // Calculate the selection area rectangle
         QRectF selectionAreaRect = QRectF(this->startSelection, event->scenePos()).normalized();
 
-               // Deselect all icons outside the selection area
+        // Deselect all icons outside the selection area
         for (auto item : this->items()) {
             if (Icon *icon = dynamic_cast<Icon *>(item)) {
                 if (selectionAreaRect.contains(icon->sceneBoundingRect())) {
-                    icon->select();
+                    icon->selection(true);
                 } else {
-                    icon->deselect();
+                    icon->selection(false);
                 }
             }
         }
-               // Reset the initial position for area selection
+        // Reset the initial position for area selection
         this->startSelection = QPointF();
         this->removeItem(this->selectionRect); // Remove the selection rectangle from the scene
         delete this->selectionRect;

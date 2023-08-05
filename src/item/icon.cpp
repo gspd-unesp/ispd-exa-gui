@@ -20,6 +20,7 @@ Icon::Icon(const char *name, QGraphicsItem *parent)
     this->name       = new std::string(name);
     this->links      = new std::map<unsigned, Link *>();
     this->isSelected = false;
+    // this->select = false;
 
     configuration = IconConfiguration();
 }
@@ -52,9 +53,6 @@ void Icon::saveConfiguration()
         this->configuration.loadFactor_lineEdit = configDialog->getLineEdit06Value();
         this->configuration.primarystorage_lineEdit = configDialog->getLineEdit07Value();
         this->configuration.secondaryStorage_lineEdit = configDialog->getLineEdit08Value();
-
-
-
 
         this->configuration.comboBoxIndex = configDialog->getComboBoxIndex();
         this->configuration.checkBoxState = configDialog->getCheckBoxState();
@@ -133,11 +131,11 @@ void Icon::mousePressEvent(QGraphicsSceneMouseEvent *event)
     } else {
         for (QGraphicsItem *item : scene()->items()) {
                 if (Icon* icon = dynamic_cast<Icon*>(item)) {
-                icon->deselect();
+                icon->selection(false);
             }
         }
     }
-    select();
+    selection(true);
 }
 
 void Icon::setOutputLabel(QLabel *label)
@@ -179,25 +177,43 @@ std::string *Icon::getName()
     return this->name;
 }
 
-void Icon::select()
-{
-    if (!isSelected) {
-        isSelected = true;
-        auto pixmap = QPixmap::fromImage(QImage(this->iconPathSelected.c_str()))
-                          .scaled(iconSelectSize);
-        this->setPixmap(pixmap);
+void Icon::selection(bool select) {
+    if(select && !isSelected) {
+        if (!isSelected) {
+            isSelected = true;
+            auto pixmap = QPixmap::fromImage(QImage(this->iconPathSelected.c_str()))
+                              .scaled(iconSelectSize);
+            this->setPixmap(pixmap);
+        }
+    } else if(!select && isSelected) {
+        if (isSelected) {
+            isSelected = false;
+            auto pixmap =
+                QPixmap::fromImage(QImage(this->iconPath.c_str())).scaled(iconSize);
+            this->setPixmap(pixmap);
+        }
     }
 }
 
-void Icon::deselect()
-{
-    if (isSelected) {
-        isSelected = false;
-        auto pixmap =
-            QPixmap::fromImage(QImage(this->iconPath.c_str())).scaled(iconSize);
-        this->setPixmap(pixmap);
-    }
-}
+//void Icon::select()
+//{
+//    if (!isSelected) {
+//        isSelected = true;
+//        auto pixmap = QPixmap::fromImage(QImage(this->iconPathSelected.c_str()))
+//                          .scaled(iconSelectSize);
+//        this->setPixmap(pixmap);
+//    }
+//}
+
+//void Icon::deselect()
+//{
+//    if (isSelected) {
+//        isSelected = false;
+//        auto pixmap =
+//            QPixmap::fromImage(QImage(this->iconPath.c_str())).scaled(iconSize);
+//        this->setPixmap(pixmap);
+//    }
+//}
 
 Icon::~Icon()
 {
