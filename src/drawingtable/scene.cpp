@@ -174,15 +174,18 @@ void Scene::mouseReleaseEvent(QGraphicsSceneMouseEvent *event)
         QRectF selectionAreaRect = QRectF(this->startSelection, event->scenePos()).normalized();
 
         // Deselect all icons outside the selection area
-        for (auto item : this->items()) {
-            if (Icon *icon = dynamic_cast<Icon *>(item)) {
-                if (selectionAreaRect.contains(icon->sceneBoundingRect())) {
-                    icon->selection(true);
-                } else {
-                    icon->selection(false);
+            for (auto item : this->items()) {
+                if (Icon *icon = dynamic_cast<Icon *>(item)) {
+                    if (selectionAreaRect.contains(icon->sceneBoundingRect())) {
+                        icon->selection(true);
+                    } else {
+                        if (event->modifiers() & Qt::ShiftModifier) {
+                        } else {
+                        icon->selection(false);
+                        }
+                    }
                 }
             }
-        }
         // Reset the initial position for area selection
         this->startSelection = QPointF();
         this->removeItem(this->selectionRect); // Remove the selection rectangle from the scene

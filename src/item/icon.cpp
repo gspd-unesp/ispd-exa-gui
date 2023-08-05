@@ -123,18 +123,7 @@ void Icon::mousePressEvent(QGraphicsSceneMouseEvent *event)
     qDebug() << "(" << this->pos().x() << " , " << this->pos().y() << ")"
              << "\n";
 
-
     QGraphicsPixmapItem::mousePressEvent(event);
-
-    // Check if Shift key is pressed
-    if (event->modifiers() & Qt::ShiftModifier) {
-    } else {
-        for (QGraphicsItem *item : scene()->items()) {
-                if (Icon* icon = dynamic_cast<Icon*>(item)) {
-                icon->selection(false);
-            }
-        }
-    }
     selection(true);
 }
 
@@ -169,6 +158,17 @@ void Icon::mouseReleaseEvent(QGraphicsSceneMouseEvent *event)
     if (pos.y() > height) {
         this->moveBy(0, -(pos.y() - height));
     }
+
+    // Check if Shift key is pressed
+    if (event->modifiers() & Qt::ShiftModifier) {
+    } else if (!isSelected){
+        for (QGraphicsItem *item : scene()->items()) {
+            if (Icon* icon = dynamic_cast<Icon*>(item)) {
+                icon->selection(false);
+            }
+        }
+    }
+
     updatePosition();
 }
 
@@ -194,26 +194,6 @@ void Icon::selection(bool select) {
         }
     }
 }
-
-//void Icon::select()
-//{
-//    if (!isSelected) {
-//        isSelected = true;
-//        auto pixmap = QPixmap::fromImage(QImage(this->iconPathSelected.c_str()))
-//                          .scaled(iconSelectSize);
-//        this->setPixmap(pixmap);
-//    }
-//}
-
-//void Icon::deselect()
-//{
-//    if (isSelected) {
-//        isSelected = false;
-//        auto pixmap =
-//            QPixmap::fromImage(QImage(this->iconPath.c_str())).scaled(iconSize);
-//        this->setPixmap(pixmap);
-//    }
-//}
 
 Icon::~Icon()
 {
