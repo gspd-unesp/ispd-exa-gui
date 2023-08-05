@@ -11,6 +11,7 @@
 #include <iostream>
 #include <string>
 #include <QDialog>
+#include <QGraphicsView>
 
 
 Icon::Icon(const char *name, QGraphicsItem *parent)
@@ -38,8 +39,8 @@ void Icon::saveConfiguration()
     configDialog->setLineEdit07Value(this->configuration.primarystorage_lineEdit);
     configDialog->setLineEdit08Value(this->configuration.secondaryStorage_lineEdit);
 
-
-    configDialog->setComboBoxIndex(this->configuration.comboBoxIndex);
+    configDialog->setOwnerComboBoxIndex(this->configuration.ownercomboBoxIndex);
+    configDialog->setSchedulingComboBoxIndex(this->configuration.schedulingcomboBoxIndex);
     configDialog->setCheckBoxState(this->configuration.checkBoxState);
 
     configDialog->show();
@@ -54,7 +55,8 @@ void Icon::saveConfiguration()
         this->configuration.primarystorage_lineEdit = configDialog->getLineEdit07Value();
         this->configuration.secondaryStorage_lineEdit = configDialog->getLineEdit08Value();
 
-        this->configuration.comboBoxIndex = configDialog->getComboBoxIndex();
+        this->configuration.ownercomboBoxIndex = configDialog->getOwnerComboBoxIndex();
+        this->configuration.schedulingcomboBoxIndex = configDialog->getSchedulingComboBoxIndex();
         this->configuration.checkBoxState = configDialog->getCheckBoxState();
     });
 }
@@ -80,7 +82,8 @@ void Icon::loadConfiguration()
         configDialog->setLineEdit07Value(configuration.primarystorage_lineEdit);
         configDialog->setLineEdit08Value(configuration.secondaryStorage_lineEdit);
 
-        configDialog->setComboBoxIndex(configuration.comboBoxIndex);
+        configDialog->setOwnerComboBoxIndex(configuration.ownercomboBoxIndex);
+        configDialog->setSchedulingComboBoxIndex(configuration.schedulingcomboBoxIndex);
         configDialog->setCheckBoxState(configuration.checkBoxState);
 
         configDialog->show();
@@ -124,7 +127,17 @@ void Icon::mousePressEvent(QGraphicsSceneMouseEvent *event)
              << "\n";
 
     QGraphicsPixmapItem::mousePressEvent(event);
-    selection(true);
+    // QGraphicsItem* clickedItem01 = itemAt(event->pos().x(), event->pos().y());
+    if (event->modifiers() & Qt::ShiftModifier) {
+        selection(true);
+    } else if (!isSelected){
+        for (QGraphicsItem *item : scene()->items()) {
+            if (Icon* icon = dynamic_cast<Icon*>(item)) {
+                icon->selection(false);
+            }
+        }
+        selection(true);
+    }
 }
 
 void Icon::setOutputLabel(QLabel *label)
@@ -168,7 +181,6 @@ void Icon::mouseReleaseEvent(QGraphicsSceneMouseEvent *event)
             }
         }
     }
-
     updatePosition();
 }
 

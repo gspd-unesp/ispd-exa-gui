@@ -253,7 +253,6 @@ Icon *Scene::whichMachine(QPointF pos)
             return *i;
         }
     }
-
     return nullptr;
 }
 

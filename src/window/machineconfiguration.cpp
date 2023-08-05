@@ -93,14 +93,24 @@ void machineIconConfiguration::setLineEdit08Value(const QString& value)
     ui->secondaryStorage_lineEdit->setText(value);
 }
 
-int machineIconConfiguration::getComboBoxIndex()
+int machineIconConfiguration::getOwnerComboBoxIndex()
 {
     return ui->Owner_ComboBox->currentIndex();
 }
 
-void machineIconConfiguration::setComboBoxIndex(int index)
+void machineIconConfiguration::setOwnerComboBoxIndex(int index)
 {
     ui->Owner_ComboBox->setCurrentIndex(index);
+}
+
+int machineIconConfiguration::getSchedulingComboBoxIndex()
+{
+    return ui->scheduling_comboBox->currentIndex();
+}
+
+void machineIconConfiguration::setSchedulingComboBoxIndex(int indexschedule)
+{
+    ui->scheduling_comboBox->setCurrentIndex(indexschedule);
 }
 
 bool machineIconConfiguration::getCheckBoxState()

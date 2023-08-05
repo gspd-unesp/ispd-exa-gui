@@ -36,8 +36,11 @@ public:
     void setLineEdit07Value(const QString& value);
     void setLineEdit08Value(const QString& value);
 
-    int getComboBoxIndex();
-    void setComboBoxIndex(int index);
+    int getOwnerComboBoxIndex();
+    void setOwnerComboBoxIndex(int indexowner);
+
+    int getSchedulingComboBoxIndex();
+    void setSchedulingComboBoxIndex(int indexschedule);
 
     bool getCheckBoxState();
     void setCheckBoxState(bool checked);

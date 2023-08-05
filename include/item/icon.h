@@ -10,6 +10,7 @@
 #include <string>
 #include <QDialog>
 #include "window/machineconfiguration.h"
+#include <QGraphicsView>
 
 class Link;
 
@@ -24,10 +25,11 @@ struct IconConfiguration {
     QString primarystorage_lineEdit;
     QString secondaryStorage_lineEdit;
 
-    int comboBoxIndex;
+    int ownercomboBoxIndex;
+    int schedulingcomboBoxIndex;
     bool checkBoxState;
     // Adicione mais campos aqui, se necessário
-    IconConfiguration() : comboBoxIndex(0), checkBoxState(false) {
+    IconConfiguration() : ownercomboBoxIndex(0), schedulingcomboBoxIndex(0), checkBoxState(false) {
         // Define os valores iniciais dos campos conforme necessário
         labelEdit = ""; // Por exemplo, defina uma string vazia como valor inicial para textValue
         CompPower_lineEdit = "";
