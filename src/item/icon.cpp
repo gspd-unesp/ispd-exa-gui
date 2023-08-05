@@ -11,8 +11,6 @@
 #include <iostream>
 #include <string>
 #include <QDialog>
-#include <QGraphicsView>
-
 
 Icon::Icon(const char *name, QGraphicsItem *parent)
     : QGraphicsPixmapItem{parent}
@@ -127,7 +125,6 @@ void Icon::mousePressEvent(QGraphicsSceneMouseEvent *event)
              << "\n";
 
     QGraphicsPixmapItem::mousePressEvent(event);
-    // QGraphicsItem* clickedItem01 = itemAt(event->pos().x(), event->pos().y());
     if (event->modifiers() & Qt::ShiftModifier) {
         selection(true);
     } else if (!isSelected){
