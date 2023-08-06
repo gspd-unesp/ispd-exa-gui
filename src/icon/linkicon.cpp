@@ -1,5 +1,5 @@
-#include "item/link.h"
-#include "item/icon.h"
+#include "icon/linkicon.h"
+#include "icon/icon.h"
 #include "qdebug.h"
 #include <QGraphicsDropShadowEffect>
 #include <QGraphicsEffect>
@@ -31,20 +31,17 @@ QPointF getMiddleOfIcon(Icon *a)
 ///  @param b     the Icon that the Link comes from
 ///  @param e     the Icon that the Link goes to
 ///
-Link::Link(const char *name) : QGraphicsPolygonItem()
+LinkIcon::LinkIcon(char const *name) : QGraphicsPolygonItem()
 {
     this->name  = new std::string(name);
     this->begin = nullptr;
     this->end   = nullptr;
 }
 
-void Link::draw(Icon *b, Icon *e)
+void LinkIcon::draw(Icon *b, Icon *e)
 {
     this->begin = b;
     this->end   = e;
-
-    this->begin->links->insert(std::pair(this->id, this));
-    this->end->links->insert(std::pair(this->id, this));
 
     // QPen pen;
     linkPen.setWidth(2);
@@ -73,14 +70,14 @@ void Link::draw(Icon *b, Icon *e)
 /// @brief Update the position of the Link, suppose to be used when moving
 ///        an Icon that the Link is connected.
 ///
-void Link::updatePositions()
+void LinkIcon::updatePositions()
 {
     QPolygonF newLine;
     newLine << getMiddleOfIcon(this->begin) << getMiddleOfIcon(this->end);
     this->setPolygon(newLine);
 }
 
-void Link::paint(QPainter                       *painter,
+void LinkIcon::paint(QPainter                       *painter,
                  const QStyleOptionGraphicsItem *option,
                  QWidget                        *widget)
 {
@@ -100,13 +97,13 @@ void Link::paint(QPainter                       *painter,
     painter->drawPolygon(QPolygonF() << line.p2() << arrowP1 << arrowP2);
 }
 
-void Link::mousePressEvent(QGraphicsSceneMouseEvent *event)
+void LinkIcon::mousePressEvent(QGraphicsSceneMouseEvent *event)
 {
     select(); // Call the select function to toggle the color
     QGraphicsPolygonItem::mousePressEvent(event);
 }
 
-void Link::select()
+void LinkIcon::select()
 {
     if (begin->isSelected == false) {
         begin->isSelected = true;
@@ -122,12 +119,12 @@ void Link::select()
     }
 }
 
-std::string *Link::getName()
+std::string *LinkIcon::getName()
 {
     return name;
 }
 
-Link::~Link()
+LinkIcon::~LinkIcon()
 {
     delete this->name;
 

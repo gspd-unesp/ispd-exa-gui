@@ -1,25 +1,27 @@
-#include "item/icon.h"
-#include "item/link.h"
+#include "icon/icon.h"
+#include "components/item.h"
+#include "components/link.h"
+#include "icon/linkicon.h"
+#include "qgraphicssceneevent.h"
 #include "utils/iconSize.h"
 #include <QDebug>
-#include <QGraphicsScene>
-#include <map>
-#include <QKeyEvent>
 #include <QGraphicsItem>
+#include <QGraphicsScene>
 #include <QGraphicsSceneMouseEvent>
+#include <QKeyEvent>
 #include <QMouseEvent>
 #include <iostream>
+#include <map>
 #include <string>
 #include <QDialog>
+#include <vector>
 
 Icon::Icon(const char *name, QGraphicsItem *parent)
     : QGraphicsPixmapItem{parent}
 {
     this->setFlag(QGraphicsItem::ItemIsMovable);
     this->name       = new std::string(name);
-    this->links      = new std::map<unsigned, Link *>();
     this->isSelected = false;
-    // this->select = false;
 
     configuration = IconConfiguration();
 }
@@ -87,6 +89,23 @@ void Icon::loadConfiguration()
         delete configDialog;
     } else {
     }
+    this->links      = nullptr;
+    this->item       = nullptr;
+}
+
+void Icon::setLinks(std::map<unsigned, Link *> *connected_links)
+{
+    this->links = connected_links;
+}
+
+void Icon::setItem(Item *it)
+{
+    this->item = it;
+}
+
+std::map<unsigned, Link *> *Icon::getLinks()
+{
+    return this->links;
 }
 
 /*
@@ -109,8 +128,8 @@ void Icon::updatePosition()
     QString pos_string =
         QString("Position: %1, %2").arg(this->pos().x()).arg(this->pos().y());
 
-    for (auto link = links->begin(); link != links->end(); link++) {
-        (*link).second->updatePositions();
+    for (auto link = this->links->begin(); link != this->links->end(); link++) {
+        (*link).second->icon->updatePositions();
     }
 }
 
@@ -207,4 +226,15 @@ Icon::~Icon()
 {
     delete this->name;
     delete this->links;
+}
+
+void Icon::mouseDoubleClickEvent(QGraphicsSceneMouseEvent *event)
+{
+    Item *clickedItem = this->item;
+
+    if (clickedItem) {
+        clickedItem->showConfiguration();
+    }
+
+    QGraphicsPixmapItem::mouseDoubleClickEvent(event);
 }

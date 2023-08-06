@@ -1,10 +1,11 @@
 #ifndef SCENE_H
 #define SCENE_H
 
-#include "item/icon.h"
+#include "icon/icon.h"
+#include "components/machine.h"
 #include "qglobal.h"
-#include "window/users.h"
 #include "qvector.h"
+#include "window/users.h"
 #include <QGraphicsScene>
 #include <QWidget>
 
@@ -17,6 +18,8 @@ typedef enum PICK_OP
 } PICK_OP;
 
 class MachineIcon;
+class LinkIcon;
+class DrawingTable;
 
 class Scene : public QGraphicsScene
 {
@@ -25,16 +28,15 @@ class Scene : public QGraphicsScene
 
 protected:
     void mousePressEvent(QGraphicsSceneMouseEvent *event) override;
-    void mouseDoubleClickEvent(QGraphicsSceneMouseEvent *event) override;
     void keyPressEvent(QKeyEvent *event) override;
     void mouseMoveEvent(QGraphicsSceneMouseEvent *event);
     void mouseReleaseEvent(QGraphicsSceneMouseEvent *event);
 
 
 public:
-    explicit Scene(QObject *parent = nullptr);
-    QVector<Icon *> *icons;
-    QVector<Link *> *links;
+    Scene(DrawingTable *parent);
+    QVector<Icon *>     *icons;
+    QVector<LinkIcon *> *links;
 
     void addIcon(Icon *icon, QPointF pos = QPointF(0, 0));
     void drawBackgroundLines();
@@ -44,16 +46,20 @@ public:
     QLabel *machineDescriptionLabel;
 
 private:
-    Icon           *lBegin;
-    Icon           *lEnd;
-    void            addLink(Link *link, Icon *a, Icon *b);
-    Icon           *whichMachine(QPointF pos);
-    std::string     getNewMachineName();
-    std::string     getNewLinkName();
-    std::string     getNewClusterName();
-    void            removeMachine(MachineIcon *icon);
-    void            removeLink(Link *link);
-    UserWindow      *userWindow;
+    DrawingTable *table;
+    Schema       *schema;
+    Connection   *lBegin;
+    Connection   *lEnd;
+    void          addLink(Link *link, Connection *a, Connection *b);
+    Connection   *whichConnection(QPointF pos);
+    std::string   getNewMachineName();
+    std::string   getNewLinkName();
+    std::string   getNewClusterName();
+    void          removeMachine(Machine *machine);
+    void          removeLink(Link *link);
+    void          removeItemIcon(Item *item);
+    void          deleteItems();
+    UserWindow   *userWindow;
     QPointF startSelection;
     QGraphicsRectItem *selectionRect;
 

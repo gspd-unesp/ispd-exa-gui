@@ -1,49 +1,21 @@
 SOURCES += \
   qcustomplot.cpp \
+  src/components/*.cpp \
+  src/components/conf/*.cpp \
+  src/window/*.cpp \
+  src/window/drawingtable/*.cpp \
+  src/icon/*.cpp \
   src/ispd-exa-gui.cpp \
-  src/item/linkicon.cpp \
-  src/item/machineicon.cpp \
-  src/window/adduser.cpp \
-  src/window/machineconfiguration.cpp \
-  src/window/main.cpp \
-  src/window/simulation.cpp \
-  src/window/users.cpp \
-  src/window/workloads.cpp \
-  src/window/settings.cpp \
-  src/window/schemawindow.cpp \
-  src/item/schemaicon.cpp \
-  src/item/icon.cpp \
-  src/item/link.cpp \ 
-  src/drawingtable/drawingtable.cpp \
-  src/drawingtable/scene.cpp \
-  src/drawingtable/view.cpp \
-  src/load/machineload.cpp \
-  src/load/linkload.cpp \ 
-  src/schema.cpp
 
 INCLUDEPATH += include/
 HEADERS += \
-  include/item/linkicon.h \
-  include/window/adduser.h \
-  include/window/machineconfiguration.h \
-  include/window/main.h \
-  include/window/simulation.h \
-  include/window/users.h \
-  include/window/workloads.h \
-  include/window/settings.h \
-  include/window/schemawindow.h \
-  include/drawingtable/drawingtable.h \
-  include/drawingtable/scene.h \
-  include/drawingtable/view.h \
-  include/item/machineicon.h \
-  include/item/schemaicon.h \
-  include/item/icon.h \
-  include/item/link.h \
-  include/utils/iconSize.h \
-  include/load/linkload.h \
-  include/load/machineload.h \
-  include/schema.h \
   packCircles.h \
+  include/components/*.h \
+  include/components/conf/*.h \
+  include/window/*.h \
+  include/window/drawingtable/*.h \
+  include/icon/*.h \
+  include/utils/*.h \
   qcustomplot.h
 
 QT += widgets svg printsupport

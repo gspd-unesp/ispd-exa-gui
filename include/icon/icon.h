@@ -2,6 +2,7 @@
 #define ICON_H
 
 #include "qgraphicsscene.h"
+#include "qgraphicssceneevent.h"
 #include <QGraphicsItem>
 #include <QLabel>
 #include <QObject>
@@ -15,6 +16,7 @@
 
 
 class Link;
+class Item;
 
 // Define a estrutura para armazenar as configurações do ícone
 struct IconConfiguration {
@@ -49,30 +51,37 @@ class Icon : public QObject, public QGraphicsPixmapItem
     Q_OBJECT
 public:
     Icon(const char *name, QGraphicsItem *parent = nullptr);
-    ~Icon();
     Icon(QPixmap pixmap, QGraphicsItem *parent = nullptr);
-    void             setOutputLabel(QLabel *label);
+    ~Icon();
+
+    bool                        isSelected;
+    unsigned                    id;
     std::map<unsigned, Link *> *links;
-    std::string     *getName();
-    bool             isSelected;
     bool             select;
-    unsigned         id;
 
     std::string iconPath;
     std::string iconPathSelected;
 
-    // void deselect();
-    // void select();
 
 
     // Funções para salvar e carregar as configurações do ícone
     void saveConfiguration();
     void loadConfiguration();
     void selection(bool select);
+    void deselect();
+    /* void                        deselect(); */
+    void                        setLinks(std::map<unsigned, Link *> *links);
+    std::map<unsigned, Link *> *getLinks();
+    void                        setOutputLabel(QLabel *label);
+    std::string                *getName();
+
+    void setItem(Item *item);
+
 protected:
     void mouseReleaseEvent(QGraphicsSceneMouseEvent *event) override;
     void mousePressEvent(QGraphicsSceneMouseEvent *event) override;
     void mouseMoveEvent(QGraphicsSceneMouseEvent *event) override;
+    void mouseDoubleClickEvent(QGraphicsSceneMouseEvent *event) override;
 
 private:
     void         updatePosition();
@@ -80,6 +89,8 @@ private:
     QLabel      *outputLabel;
     std::string *name;
     IconConfiguration configuration; // Adicione o membro de dados para armazenar a configuração
+    Item                       *item;
+
 signals:
 };
 

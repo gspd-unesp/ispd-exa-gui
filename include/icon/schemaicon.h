@@ -21,7 +21,6 @@ public:
     SchemaWindow *window;
 
 protected:
-    void mouseDoubleClickEvent(QGraphicsSceneMouseEvent *event);
 
 private:
     std::deque<MachineIcon> *machines;
