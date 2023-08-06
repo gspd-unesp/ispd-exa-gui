@@ -27,6 +27,9 @@ protected:
     void mousePressEvent(QGraphicsSceneMouseEvent *event) override;
     void mouseDoubleClickEvent(QGraphicsSceneMouseEvent *event) override;
     void keyPressEvent(QKeyEvent *event) override;
+    void mouseMoveEvent(QGraphicsSceneMouseEvent *event);
+    void mouseReleaseEvent(QGraphicsSceneMouseEvent *event);
+
 
 public:
     explicit Scene(QObject *parent = nullptr);
@@ -51,7 +54,10 @@ private:
     void            removeMachine(MachineIcon *icon);
     void            removeLink(Link *link);
     UserWindow      *userWindow;
+    QPointF startSelection;
+    QGraphicsRectItem *selectionRect;
 
+    void selectionArea(QGraphicsSceneMouseEvent *event);
 signals:
     void clicked(QPointF position);
 };

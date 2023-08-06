@@ -10,6 +10,7 @@
 #include <QMouseEvent>
 #include <iostream>
 #include <string>
+#include <QDialog>
 
 Icon::Icon(const char *name, QGraphicsItem *parent)
     : QGraphicsPixmapItem{parent}
@@ -18,6 +19,74 @@ Icon::Icon(const char *name, QGraphicsItem *parent)
     this->name       = new std::string(name);
     this->links      = new std::map<unsigned, Link *>();
     this->isSelected = false;
+    // this->select = false;
+
+    configuration = IconConfiguration();
+}
+
+void Icon::saveConfiguration()
+{
+    machineIconConfiguration *configDialog = new machineIconConfiguration(this->getName()->c_str());
+
+    configDialog->setLineEdit01Value(this->configuration.labelEdit);
+    configDialog->setLineEdit02Value(this->configuration.CompPower_lineEdit);
+    configDialog->setLineEdit03Value(this->configuration.cores_lineEdit);
+    configDialog->setLineEdit04Value(this->configuration.energyconsumer_lineEdit);
+    configDialog->setLineEdit05Value(this->configuration.lineEdit_4);
+    configDialog->setLineEdit06Value(this->configuration.loadFactor_lineEdit);
+    configDialog->setLineEdit07Value(this->configuration.primarystorage_lineEdit);
+    configDialog->setLineEdit08Value(this->configuration.secondaryStorage_lineEdit);
+
+    configDialog->setOwnerComboBoxIndex(this->configuration.ownercomboBoxIndex);
+    configDialog->setSchedulingComboBoxIndex(this->configuration.schedulingcomboBoxIndex);
+    configDialog->setCheckBoxState(this->configuration.checkBoxState);
+
+    configDialog->show();
+    connect(configDialog, &machineIconConfiguration::configurationClicked, this, [this, configDialog]() {
+        this->configuration.labelEdit = configDialog->getLineEdit01Value();
+        this->configuration.CompPower_lineEdit = configDialog->getLineEdit02Value();
+        this->configuration.cores_lineEdit = configDialog->getLineEdit03Value();
+        this->configuration.energyconsumer_lineEdit = configDialog->getLineEdit04Value();
+        this->configuration.lineEdit_4 = configDialog->getLineEdit05Value();
+        this->configuration.loadFactor_lineEdit = configDialog->getLineEdit06Value();
+        this->configuration.primarystorage_lineEdit = configDialog->getLineEdit07Value();
+        this->configuration.secondaryStorage_lineEdit = configDialog->getLineEdit08Value();
+
+        this->configuration.ownercomboBoxIndex = configDialog->getOwnerComboBoxIndex();
+        this->configuration.schedulingcomboBoxIndex = configDialog->getSchedulingComboBoxIndex();
+        this->configuration.checkBoxState = configDialog->getCheckBoxState();
+    });
+}
+
+void Icon::loadConfiguration()
+{
+    if (!configuration.labelEdit.isEmpty()
+        || !configuration.CompPower_lineEdit.isEmpty()
+        || !configuration.cores_lineEdit.isEmpty()
+        || !configuration.energyconsumer_lineEdit.isEmpty()
+        || !configuration.lineEdit_4.isEmpty()
+        || !configuration.loadFactor_lineEdit.isEmpty()
+        || !configuration.primarystorage_lineEdit.isEmpty()
+        || !configuration.secondaryStorage_lineEdit.isEmpty()) {
+        machineIconConfiguration *configDialog = new machineIconConfiguration(this->getName()->c_str());
+
+        configDialog->setLineEdit01Value(configuration.labelEdit);
+        configDialog->setLineEdit02Value(configuration.CompPower_lineEdit);
+        configDialog->setLineEdit03Value(configuration.cores_lineEdit);
+        configDialog->setLineEdit04Value(configuration.energyconsumer_lineEdit);
+        configDialog->setLineEdit05Value(configuration.lineEdit_4);
+        configDialog->setLineEdit06Value(configuration.loadFactor_lineEdit);
+        configDialog->setLineEdit07Value(configuration.primarystorage_lineEdit);
+        configDialog->setLineEdit08Value(configuration.secondaryStorage_lineEdit);
+
+        configDialog->setOwnerComboBoxIndex(configuration.ownercomboBoxIndex);
+        configDialog->setSchedulingComboBoxIndex(configuration.schedulingcomboBoxIndex);
+        configDialog->setCheckBoxState(configuration.checkBoxState);
+
+        configDialog->show();
+        delete configDialog;
+    } else {
+    }
 }
 
 /*
@@ -54,22 +123,17 @@ void Icon::mousePressEvent(QGraphicsSceneMouseEvent *event)
     qDebug() << "(" << this->pos().x() << " , " << this->pos().y() << ")"
              << "\n";
 
-
     QGraphicsPixmapItem::mousePressEvent(event);
-
-    // Check if Shift key is pressed
     if (event->modifiers() & Qt::ShiftModifier) {
-    } else {
+        selection(true);
+    } else if (!isSelected){
         for (QGraphicsItem *item : scene()->items()) {
-            qDebug() << "Shift está selecionado";
-                if (Icon* icon = dynamic_cast<Icon*>(item)) {
-                icon->deselect();
+            if (Icon* icon = dynamic_cast<Icon*>(item)) {
+                icon->selection(false);
             }
         }
+        selection(true);
     }
-    qDebug() << "Terminous de clicar";
-
-    select();
 }
 
 void Icon::setOutputLabel(QLabel *label)
@@ -83,7 +147,6 @@ void Icon::setOutputLabel(QLabel *label)
  */
 void Icon::mouseReleaseEvent(QGraphicsSceneMouseEvent *event)
 {
-    qDebug() << "Aqui?";
     QGraphicsItem::mouseReleaseEvent(event);
     auto pos    = this->pos();
     auto height = this->scene()->sceneRect().height();
@@ -105,9 +168,16 @@ void Icon::mouseReleaseEvent(QGraphicsSceneMouseEvent *event)
         this->moveBy(0, -(pos.y() - height));
     }
 
-    qDebug() << "Ou aqui?";
+    // Check if Shift key is pressed
+    if (event->modifiers() & Qt::ShiftModifier) {
+    } else if (!isSelected){
+        for (QGraphicsItem *item : scene()->items()) {
+            if (Icon* icon = dynamic_cast<Icon*>(item)) {
+                icon->selection(false);
+            }
+        }
+    }
     updatePosition();
-    qDebug() << "Ou  até aqui?";
 }
 
 std::string *Icon::getName()
@@ -115,23 +185,21 @@ std::string *Icon::getName()
     return this->name;
 }
 
-void Icon::select()
-{
-    if (!isSelected) {
-        isSelected = true;
-        auto pixmap = QPixmap::fromImage(QImage(this->iconPathSelected.c_str()))
-                          .scaled(iconSelectSize);
-        this->setPixmap(pixmap);
-    }
-}
-
-void Icon::deselect()
-{
-    if (isSelected) {
-        isSelected = false;
-        auto pixmap =
-            QPixmap::fromImage(QImage(this->iconPath.c_str())).scaled(iconSize);
-        this->setPixmap(pixmap);
+void Icon::selection(bool select) {
+    if(select && !isSelected) {
+        if (!isSelected) {
+            isSelected = true;
+            auto pixmap = QPixmap::fromImage(QImage(this->iconPathSelected.c_str()))
+                              .scaled(iconSelectSize);
+            this->setPixmap(pixmap);
+        }
+    } else if(!select && isSelected) {
+        if (isSelected) {
+            isSelected = false;
+            auto pixmap =
+                QPixmap::fromImage(QImage(this->iconPath.c_str())).scaled(iconSize);
+            this->setPixmap(pixmap);
+        }
     }
 }
 

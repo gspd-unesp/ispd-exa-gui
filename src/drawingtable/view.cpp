@@ -39,14 +39,17 @@ void View::mousePressEvent(QMouseEvent *event)
     }
 
     // Deselect all icons if the clicked area has no icons
-    QGraphicsItem* clickedItem = itemAt(event->pos().x(), event->pos().y());
-    if (!clickedItem) {
-        qDebug() << "Clicou em uma área vazia (retirar a seleção)";
-        for (auto item : this->items()) {
-            if (Icon* icon = dynamic_cast<Icon*>(item)) {
-                icon->deselect();
+    if (event->modifiers() & Qt::ShiftModifier) {
+    } else {
+        QGraphicsItem* clickedItem = itemAt(event->pos().x(), event->pos().y());
+        if (!clickedItem) {
+            for (auto item : this->items()) {
+                if (Icon* icon = dynamic_cast<Icon*>(item)) {
+                    icon->selection(false);
+                }
             }
         }
     }
     QGraphicsView::mousePressEvent(event);
 }
+

@@ -2,11 +2,25 @@
 #include <QPushButton>
 #include <QSettings>
 #include <ui_userwindow.h>
+#include <QSettings>
+#include "drawingtable/drawingtable.h"
+#include <QGraphicsItem>
 
-UserWindow::UserWindow(QWidget *parent)
+
+#include <QDebug>
+#include <string>
+#include <QGraphicsView>
+#include <QGraphicsScene>
+#include <QKeyEvent>
+
+
+UserWindow::UserWindow(QWidget *parent, DrawingTable *drawingTable, const QList<QString> &list1Data, const QList<double> &list2Data, const QList<Icon*> &icons)
     : QMainWindow(parent), ui(new Ui::UserWindow)
 {
     ui->setupUi(this);
+
+    this->icons = icons;
+    this->drawingTable = drawingTable;
     // Add a close icon and a add icon
     this->fecharImg = new QImage(":/icons/x_button.png");
     this->addIcon   = new QImage(":/icons/add_icon.png");
@@ -29,15 +43,17 @@ UserWindow::UserWindow(QWidget *parent)
     this->ui->addButton->setFixedSize(50, 22);
     this->ui->addButton->setIconSize(QSize(12, 12));
 
-    addOnList1("user1");
-    addOnList2(100);
+    ui->listWidget->addItems(list1Data);
+    for (const double value : list2Data)
+    {
+        ui->listWidget_2->addItem(QString::number(value));
+    }
 }
 
 UserWindow::~UserWindow()
 {
     delete ui;
 }
-
 
 void UserWindow::addOnList1(const QString &valor)
 {
@@ -47,7 +63,7 @@ void UserWindow::addOnList1(const QString &valor)
 
 void UserWindow::addOnList2(double valor)
 {
-    QString strValor = QString::number(valor); // Converter o double para QString
+    QString strValor = QString::number(valor);
     ui->listWidget_2->addItem(strValor);
 }
 
@@ -60,7 +76,6 @@ void UserWindow::on_addButton_clicked()
 
 void UserWindow::on_pushButton_clicked()
 {
-
     if(mnSelected != -1)
     {
 
@@ -82,6 +97,10 @@ void UserWindow::on_listWidget_currentRowChanged(int currentRow)
     mnSelected = currentRow;
 }
 
+void UserWindow::setDrawingTable(DrawingTable* drawingTable)
+{
+    this->drawingTable = drawingTable;
+}
 
 void UserWindow::on_listWidget_2_currentRowChanged(int currentRow)
 {
@@ -91,6 +110,37 @@ void UserWindow::on_listWidget_2_currentRowChanged(int currentRow)
 
 void UserWindow::on_okButton_clicked()
 {
+    if (drawingTable)
+    {
+        QList<QString> list1Data;
+        QList<double> list2Data;
+
+        for (int i = 0; i < ui->listWidget->count(); ++i)
+        {
+            list1Data.append(ui->listWidget->item(i)->text());
+        }
+
+        for (int i = 0; i < ui->listWidget_2->count(); ++i)
+        {
+            list2Data.append(ui->listWidget_2->item(i)->text().toDouble());
+        }
+
+        // Passar a lista de usuários para a função saveConfiguration
+        for (int i = 0; i < ui->listWidget->count(); ++i)
+        {
+            list1Data.append(ui->listWidget->item(i)->text());
+        }
+
+
+        drawingTable->receiveUserWindowData(list1Data, list2Data);
+        for (Icon *icon : icons) // Replace "icons" with your actual list of icons
+        {
+            if (machineIconConfiguration *config = dynamic_cast<machineIconConfiguration*>(icon))
+            {
+                config->addUsersToOwnerComboBox(list1Data);
+            }
+        }
+    }
     close();
 }
 

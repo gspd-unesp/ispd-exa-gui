@@ -7,6 +7,8 @@
 #include <QRadioButton>
 #include <QPushButton>
 #include <QWidget>
+#include <QListWidget>
+
 
 class Schema;
 class SchemaIcon;
@@ -17,6 +19,9 @@ class DrawingTable : public QWidget
 private:
     Scene *scene;
     View  *view;
+
+    QList<QString> list1Data;
+    QList<double> list2Data;
 
     QWidget      *buttonsRow;
     QHBoxLayout  *buttonsLayout;
@@ -36,6 +41,10 @@ private:
     void          setupSchemaButton();
     void          setupLinkButton();
 
+    QGraphicsRectItem* selectionRectItem = nullptr; // Novo membro para o retângulo de seleção
+    void addSelectionRectToScene(const QRectF& rect);
+    void removeSelectionRectFromScene();
+
 public:
     DrawingTable(QFrame *parent = nullptr);
     DrawingTable(Schema *schema, QWidget *parent = nullptr);
@@ -47,6 +56,8 @@ public:
     void noneButtonClicked();
     void openUserWindowClicked();
     void openSimulationWindowClicked();
+
+    void receiveUserWindowData(const QList<QString> &list1Data, const QList<double> &list2Data);
 
     MachineIcon *addMachine();
     SchemaIcon  *addSchema();

@@ -39,6 +39,7 @@ HEADERS += \
   include/item/schemaicon.h \
   include/item/icon.h \
   include/item/link.h \
+  include/utils/iconSize.h \
   include/load/linkload.h \
   include/load/machineload.h \
   include/schema.h \

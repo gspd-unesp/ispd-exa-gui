@@ -17,7 +17,6 @@ void printSchema(Schema *schema);
 
 DrawingTable::DrawingTable(QFrame *parent) : DrawingTable(new Schema(), parent)
 {
-
     QPixmap image(":/icons/perfil.png");
     QSize imageSize(30, 30);
     QPixmap resizedImage = image.scaled(imageSize, Qt::KeepAspectRatio, Qt::SmoothTransformation);
@@ -67,6 +66,12 @@ DrawingTable::DrawingTable(Schema *schema, QWidget *parent) : QWidget{parent}
     auto *mainLayout = new QVBoxLayout(this);
     mainLayout->addWidget(buttonsRow);
     mainLayout->addWidget(view);
+}
+
+void DrawingTable::receiveUserWindowData(const QList<QString> &list1Data, const QList<double> &list2Data)
+{
+    this->list1Data = list1Data;
+    this->list2Data = list2Data;
 }
 
 ///
@@ -237,7 +242,8 @@ void printSchema(Schema *schema)
 }
 void DrawingTable::openUserWindowClicked()
 {
-    this->userWindow = new UserWindow();
+    this->userWindow = new UserWindow(nullptr, this, list1Data, list2Data); // Pass the lists to UserWindow constructor
+
     userWindow->show();
 }
 

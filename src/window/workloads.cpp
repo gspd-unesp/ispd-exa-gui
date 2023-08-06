@@ -16,7 +16,7 @@ WorkloadsWindow::~WorkloadsWindow()
 void WorkloadsWindow::on_pushButton_clicked()
 {
     QTextStream message(stdout);
-    message << "Programa sera fechado" << Qt::endl;
+    message << "Program will be closed" << Qt::endl;
 
     QApplication::quit();
 }

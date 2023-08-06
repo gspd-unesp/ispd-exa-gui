@@ -2,20 +2,21 @@
 #define VIEW_H
 
 #include "drawingtable/scene.h"
-#include <QGraphicsView>
 #include <QWidget>
+
+class Scene;
+class DrawingTable;
 
 class View : public QGraphicsView
 {
     Q_OBJECT
     Scene *gScene;
 
-protected:
-    void mousePressEvent(QMouseEvent *event);
-
 public:
     View(QWidget *parent = nullptr);
     void setGScene(Scene *scene);
+protected:
+    void mousePressEvent(QMouseEvent *event) override;
 };
 
 #endif

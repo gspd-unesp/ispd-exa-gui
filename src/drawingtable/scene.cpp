@@ -13,7 +13,7 @@
 #include <QMouseEvent>
 #include <iostream>
 #include <string>
-
+#include <QGraphicsView>
 #include <QGraphicsScene>
 #include <QKeyEvent>
 
@@ -110,6 +110,7 @@ void Scene::mousePressEvent(QGraphicsSceneMouseEvent *event)
 {
     switch (this->pickOp) {
     case NONE: {
+        selectionArea(event);
         QGraphicsScene::mousePressEvent(event);
         break;
     }
@@ -137,19 +138,16 @@ void Scene::mousePressEvent(QGraphicsSceneMouseEvent *event)
         }
 
         if (this->lBegin == nullptr) {
-            qDebug() << "Primeira máquina\n";
-                        this->lBegin = machine;
+            this->lBegin = machine;
         }
         else if (this->lEnd == nullptr) {
-            qDebug() << "Segunda máquina\n";
 
-                if (whichMachine(event->scenePos()) == this->lBegin) {
+            if (whichMachine(event->scenePos()) == this->lBegin) {
                 break;
             }
             this->lEnd = machine;
 
             auto *newLink = ((DrawingTable *)this->parent())->addLink();
-            qDebug() << "Antes de enfia link na scene.";
             this->addLink(newLink, this->lBegin, this->lEnd);
 
             this->lBegin = nullptr;
@@ -157,6 +155,58 @@ void Scene::mousePressEvent(QGraphicsSceneMouseEvent *event)
         }
         break;
     }
+    }
+}
+
+void Scene::mouseMoveEvent(QGraphicsSceneMouseEvent *event)
+{
+    if (this->startSelection != QPointF()) {
+        QRectF selectionAreaRect = QRectF(this->startSelection, event->scenePos()).normalized();
+        this->selectionRect->setRect(selectionAreaRect);
+    }
+    QGraphicsScene::mouseMoveEvent(event);
+}
+
+void Scene::mouseReleaseEvent(QGraphicsSceneMouseEvent *event)
+{
+    if (event->button() == Qt::LeftButton && this->startSelection != QPointF()) {
+        // Calculate the selection area rectangle
+        QRectF selectionAreaRect = QRectF(this->startSelection, event->scenePos()).normalized();
+
+        // Deselect all icons outside the selection area
+            for (auto item : this->items()) {
+                if (Icon *icon = dynamic_cast<Icon *>(item)) {
+                    if (selectionAreaRect.contains(icon->sceneBoundingRect())) {
+                        icon->selection(true);
+                    } else {
+                        if (event->modifiers() & Qt::ShiftModifier) {
+                        } else {
+                        icon->selection(false);
+                        }
+                    }
+                }
+            }
+        // Reset the initial position for area selection
+        this->startSelection = QPointF();
+        this->removeItem(this->selectionRect); // Remove the selection rectangle from the scene
+        delete this->selectionRect;
+        this->selectionRect = nullptr;
+    }
+
+    QGraphicsScene::mouseReleaseEvent(event);
+}
+
+void Scene::selectionArea(QGraphicsSceneMouseEvent *event) {
+    Icon *clickedIcon = whichMachine(event->scenePos());
+    if (!clickedIcon && !dynamic_cast<MachineIcon*>(clickedIcon)) {
+        if (event->button() == Qt::LeftButton) {
+            this->startSelection = event->scenePos();
+            this->selectionRect = new QGraphicsRectItem();
+            this->selectionRect->setPen(QPen(Qt::blue, 1, Qt::SolidLine)); // Change color and pen style
+            this->selectionRect->setBrush(QBrush(QColor(100, 100, 255, 40)));
+            this->selectionRect->setRect(QRectF(this->startSelection, event->scenePos()).normalized());
+            this->addItem(this->selectionRect); // Add the selection rectangle to the scene
+        }
     }
 }
 
@@ -203,7 +253,6 @@ Icon *Scene::whichMachine(QPointF pos)
             return *i;
         }
     }
-
     return nullptr;
 }
 
@@ -236,8 +285,8 @@ void Scene::mouseDoubleClickEvent(QGraphicsSceneMouseEvent *event)
 {
     Icon *clickedIcon = whichMachine(event->scenePos());
     if (clickedIcon && dynamic_cast<MachineIcon*>(clickedIcon)) {
-        machineIconConfiguration *machineIconConfig = new machineIconConfiguration(clickedIcon->getName()->c_str());
-        machineIconConfig->show();
+        clickedIcon->loadConfiguration();
+        clickedIcon->saveConfiguration();
     }
     QGraphicsScene::mouseDoubleClickEvent(event);
 }
