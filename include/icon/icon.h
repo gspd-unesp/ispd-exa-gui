@@ -2,6 +2,7 @@
 #define ICON_H
 
 #include "qgraphicsscene.h"
+#include "qgraphicssceneevent.h"
 #include <QGraphicsItem>
 #include <QLabel>
 #include <QObject>
@@ -50,22 +51,17 @@ class Icon : public QObject, public QGraphicsPixmapItem
     Q_OBJECT
 public:
     Icon(const char *name, QGraphicsItem *parent = nullptr);
-    ~Icon();
     Icon(QPixmap pixmap, QGraphicsItem *parent = nullptr);
-    void                       setOutputLabel(QLabel *label);
-    std::string               *getName();
-    bool                       isSelected;
-    unsigned                   id;
-    void                       setLinks(std::map<unsigned, Link *> *links);
-    std::map<unsigned, Link *> *getLinks();
+    ~Icon();
+
+    bool                        isSelected;
+    unsigned                    id;
     std::map<unsigned, Link *> *links;
     bool             select;
 
     std::string iconPath;
     std::string iconPathSelected;
 
-    // void deselect();
-    // void select();
 
 
     // Funções para salvar e carregar as configurações do ícone
@@ -73,11 +69,19 @@ public:
     void loadConfiguration();
     void selection(bool select);
     void deselect();
+    /* void                        deselect(); */
+    void                        setLinks(std::map<unsigned, Link *> *links);
+    std::map<unsigned, Link *> *getLinks();
+    void                        setOutputLabel(QLabel *label);
+    std::string                *getName();
+
+    void setItem(Item *item);
 
 protected:
     void mouseReleaseEvent(QGraphicsSceneMouseEvent *event) override;
     void mousePressEvent(QGraphicsSceneMouseEvent *event) override;
     void mouseMoveEvent(QGraphicsSceneMouseEvent *event) override;
+    void mouseDoubleClickEvent(QGraphicsSceneMouseEvent *event) override;
 
 private:
     void         updatePosition();

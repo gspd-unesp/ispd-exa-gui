@@ -1,16 +1,19 @@
-#include "schema.h"
-#include "item/link.h"
-#include "item/linkicon.h"
-#include "item/machine.h"
-#include "item/machineicon.h"
-#include "item/schemaicon.h"
-#include "load/machineload.h"
+#include "components/schema.h"
+#include "components/conf/machineconf.h"
+#include "components/link.h"
+#include "components/machine.h"
+#include "icon/linkicon.h"
+#include "icon/machineicon.h"
+#include "icon/schemaicon.h"
 
-Schema::Schema(Schema *parent)
+Schema::Schema(const char *name, Schema *parent)
 {
-    machines = new std::map<unsigned, Machine *>();
-    links    = new std::map<unsigned, Link *>;
-    schemas  = new std::map<unsigned, Schema *>;
+    this->name            = new std::string(name);
+    this->machines        = new std::map<unsigned, Machine *>();
+    this->links           = new std::map<unsigned, Link *>;
+    this->schemas         = new std::map<unsigned, Schema *>;
+    this->connected_links = new std::map<unsigned, Link *>;
+    this->window          = new SchemaWindow(this);
 
     if (parent) {
         schemaIds = parent->schemaIds;
@@ -19,15 +22,20 @@ Schema::Schema(Schema *parent)
         schemaIds = new ids{0, 0, 0, 0};
     }
 
-    id = schemaIds->schemaId;
-    schemaIds->schemaId++;
+    this->id = schemaIds->schemaId;
+    this->schemaIds->schemaId++;
+
+    icon        = new SchemaIcon(this->name->c_str(), this);
+    icon->id    = this->id;
+    icon->links = this->connected_links;
+    icon->setItem(this);
 }
 
 unsigned Schema::allocateNewMachine()
 {
     const unsigned newMachineId = schemaIds->machineId;
     std::string    newMachineName("Machine" + std::to_string(newMachineId));
-    auto          *newMachine = new Machine(this, newMachineId, newMachineName.c_str());
+    auto *newMachine = new Machine(this, newMachineId, newMachineName.c_str());
 
     machines->insert(std::pair<unsigned, Machine *>(newMachineId, newMachine));
 
@@ -56,9 +64,7 @@ unsigned Schema::allocateNewSchema()
 {
     const unsigned newSchemaId = schemaIds->schemaId;
     std::string    newSchemaName("Schema" + std::to_string(newSchemaId));
-    auto          *newSchema = new Schema(this);
-    newSchema->icon          = new SchemaIcon(newSchemaName.c_str(), this);
-    newSchema->icon->id      = newSchemaId;
+    auto          *newSchema = new Schema(newSchemaName.c_str(), this);
 
     schemas->insert(std::pair<unsigned, Schema *>(newSchemaId, newSchema));
 
@@ -83,11 +89,22 @@ void Schema::deleteLink(unsigned linkId)
     this->links->erase(linkId);
 }
 
+void Schema::showConfiguration()
+{
+    this->window->show();
+}
+
+std::map<unsigned, Link *> *Schema::get_connected_links()
+{
+    return this->connected_links;
+}
+
 Icon *Schema::getIcon()
 {
     return this->icon;
 }
 
-void Schema::showConfiguration()
+void Schema::set_connectedLinks(std::map<unsigned, Link *> *map)
 {
+    this->connected_links = map;
 }

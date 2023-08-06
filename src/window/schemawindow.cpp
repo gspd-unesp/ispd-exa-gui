@@ -2,7 +2,7 @@
 #include "qdebug.h"
 #include "window/schemawindow.h"
 #include "qwidget.h"
-#include "drawingtable/drawingtable.h"
+#include "window/drawingtable/drawingtable.h"
 
 SchemaWindow::SchemaWindow(Schema *schema, QWidget *parent) : QMainWindow{parent}
 {

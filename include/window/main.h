@@ -1,8 +1,8 @@
 #ifndef MAINWINDOW_H
 #define MAINWINDOW_H
 
-#include "drawingtable/drawingtable.h"
-#include "drawingtable/scene.h"
+#include "window/drawingtable/drawingtable.h"
+#include "window/drawingtable/scene.h"
 #include "ui_mainwindow.h"
 #include "window/users.h"
 #include "window/workloads.h"
@@ -41,13 +41,6 @@ private:
     QImage *buttonCicon;
     QImage *bLinkIcon;
 signals:
-private slots:
-    void on_buttonB_clicked();
-    void on_buttonC_clicked();
-    void on_bPc_clicked();
-    void on_bCluster_clicked();
-    void on_bLink_clicked();
-    void on_bNone_clicked();
 };
 
 #endif // MAINWINDOW_H

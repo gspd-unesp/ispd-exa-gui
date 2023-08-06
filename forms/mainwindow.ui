@@ -193,7 +193,7 @@ background-color: rgba(0, 0, 0, 0);</string>
   <customwidget>
    <class>DrawingTable</class>
    <extends>QWidget</extends>
-   <header>drawingtable/drawingtable.h</header>
+   <header>window/drawingtable/drawingtable.h</header>
    <container>1</container>
   </customwidget>
  </customwidgets>

@@ -1,4 +1,5 @@
-#include "item/machineicon.h"
+#include "icon/machineicon.h"
+#include "components/machine.h"
 #include "utils/iconSize.h"
 #include <QGraphicsItem>
 #include <QGraphicsScene>
@@ -17,3 +18,4 @@ MachineIcon::MachineIcon(unsigned id, const char *name, QGraphicsItem *parent)
 
     this->setPixmap(pixmap);
 }
+

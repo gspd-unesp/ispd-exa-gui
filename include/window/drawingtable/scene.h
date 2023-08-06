@@ -1,8 +1,8 @@
 #ifndef SCENE_H
 #define SCENE_H
 
-#include "item/icon.h"
-#include "item/machine.h"
+#include "icon/icon.h"
+#include "components/machine.h"
 #include "qglobal.h"
 #include "qvector.h"
 #include "window/users.h"
@@ -28,14 +28,13 @@ class Scene : public QGraphicsScene
 
 protected:
     void mousePressEvent(QGraphicsSceneMouseEvent *event) override;
-    void mouseDoubleClickEvent(QGraphicsSceneMouseEvent *event) override;
     void keyPressEvent(QKeyEvent *event) override;
     void mouseMoveEvent(QGraphicsSceneMouseEvent *event);
     void mouseReleaseEvent(QGraphicsSceneMouseEvent *event);
 
 
 public:
-    explicit Scene(QObject *parent = nullptr);
+    Scene(DrawingTable *parent);
     QVector<Icon *>     *icons;
     QVector<LinkIcon *> *links;
 
@@ -49,16 +48,17 @@ public:
 private:
     DrawingTable *table;
     Schema       *schema;
-    Item         *lBegin;
-    Item         *lEnd;
-    void          addLink(LinkIcon *linkIcon, Item *a, Item *b);
-    Item         *whichMachine(QPointF pos);
+    Connection   *lBegin;
+    Connection   *lEnd;
+    void          addLink(Link *link, Connection *a, Connection *b);
+    Connection   *whichConnection(QPointF pos);
     std::string   getNewMachineName();
     std::string   getNewLinkName();
     std::string   getNewClusterName();
     void          removeMachine(Machine *machine);
     void          removeLink(Link *link);
     void          removeItemIcon(Item *item);
+    void          deleteItems();
     UserWindow   *userWindow;
     QPointF startSelection;
     QGraphicsRectItem *selectionRect;

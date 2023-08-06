@@ -1,36 +1,39 @@
-#include "item/link.h"
-#include "item/schemaicon.h"
-#include "item/linkicon.h"
-#include "item/machine.h"
+#include "window/drawingtable/drawingtable.h"
+#include "components/link.h"
+#include "components/machine.h"
+#include "components/schema.h"
+#include "icon/linkicon.h"
+#include "icon/schemaicon.h"
 #include "qdebug.h"
-#include "qradiobutton.h"
 #include "qpushbutton.h"
-#include "schema.h"
-#include "window/users.h"
+#include "qradiobutton.h"
 #include "utils/iconSize.h"
+#include "window/users.h"
 #include <QImage>
 #include <QPixmap>
 #include <QVBoxLayout>
-#include <drawingtable/drawingtable.h>
 
 void printSchema(Schema *schema);
 
-DrawingTable::DrawingTable(QFrame *parent) : DrawingTable(new Schema(), parent)
+DrawingTable::DrawingTable(QFrame *parent)
+    : DrawingTable(new Schema(""), parent)
 {
     QPixmap image(":/icons/perfil.png");
-    QSize imageSize(30, 30);
-    QPixmap resizedImage = image.scaled(imageSize, Qt::KeepAspectRatio, Qt::SmoothTransformation);
+    QSize   imageSize(30, 30);
+    QPixmap resizedImage =
+        image.scaled(imageSize, Qt::KeepAspectRatio, Qt::SmoothTransformation);
 
     openUserWindow = new QPushButton(this);
     openUserWindow->setIcon(QIcon(resizedImage));
     openUserWindow->setIconSize(image.size());
     openUserWindow->setFixedSize(40, 40);
 
-           //----------------------------------------------------------------------------------------
+    //----------------------------------------------------------------------------------------
 
     QPixmap image_2(":/icons/engine.png");
-    QSize imageSize_2(30, 30);
-    QPixmap resizedImage_2 = image_2.scaled(imageSize_2, Qt::KeepAspectRatio, Qt::SmoothTransformation);
+    QSize   imageSize_2(30, 30);
+    QPixmap resizedImage_2 = image_2.scaled(
+        imageSize_2, Qt::KeepAspectRatio, Qt::SmoothTransformation);
 
     openSimulationWindow = new QPushButton("Simulate", this);
     openSimulationWindow->setIcon(QIcon(resizedImage_2));
@@ -38,14 +41,19 @@ DrawingTable::DrawingTable(QFrame *parent) : DrawingTable(new Schema(), parent)
 
     openSimulationWindow->setFixedSize(100, 40);
 
-
-           //----------------------------------------------------------------------------------------
+    //----------------------------------------------------------------------------------------
 
     buttonsLayout->addWidget(openUserWindow, 0, Qt::AlignRight);
     buttonsLayout->addWidget(openSimulationWindow, 0, Qt::AlignRight);
 
-    connect(openUserWindow, &QPushButton::clicked, this, &DrawingTable::openUserWindowClicked);
-    connect(openSimulationWindow, &QPushButton::clicked, this, &DrawingTable::openSimulationWindowClicked);
+    connect(openUserWindow,
+            &QPushButton::clicked,
+            this,
+            &DrawingTable::openUserWindowClicked);
+    connect(openSimulationWindow,
+            &QPushButton::clicked,
+            this,
+            &DrawingTable::openSimulationWindowClicked);
 }
 
 DrawingTable::DrawingTable(Schema *schema, QWidget *parent) : QWidget{parent}
@@ -168,14 +176,14 @@ SchemaIcon *DrawingTable::addSchema()
 ///
 /// @return the link's line
 ///
-LinkIcon *DrawingTable::addLink()
+Link *DrawingTable::addLink()
 {
     const unsigned linkId = schema->allocateNewLink();
 
     // FOR DEBUG
     printSchema(schema);
 
-    return schema->links->at(linkId)->icon;
+    return schema->links->at(linkId);
 }
 
 ///

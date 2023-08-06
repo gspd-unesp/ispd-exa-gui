@@ -23,7 +23,7 @@
 #include "qcustomplot.h"
 
 //CIRCLE PACKING
-#include "packcircles.h"
+#include "packCircles.h"
 #include <stdlib.h>
 #include <stdio.h>
 #include <limits.h>

@@ -1,11 +1,11 @@
 #pragma once
-#include "drawingtable/view.h"
-#include "item/machineicon.h"
-#include "window/users.h"
+#include "window/drawingtable/view.h"
+#include "icon/machineicon.h"
 #include "window/simulation.h"
-#include <QVBoxLayout>
-#include <QRadioButton>
+#include "window/users.h"
 #include <QPushButton>
+#include <QRadioButton>
+#include <QVBoxLayout>
 #include <QWidget>
 #include <QListWidget>
 
@@ -37,10 +37,10 @@ private:
     UserWindow *userWindow;
     Simulation *simulationWindow;
 
-    void          setupPcButton();
-    void          setupNoneButton();
-    void          setupSchemaButton();
-    void          setupLinkButton();
+    void setupPcButton();
+    void setupNoneButton();
+    void setupSchemaButton();
+    void setupLinkButton();
 
     QGraphicsRectItem* selectionRectItem = nullptr; // Novo membro para o retângulo de seleção
     void addSelectionRectToScene(const QRectF& rect);
@@ -62,5 +62,5 @@ public:
 
     MachineIcon *addMachine();
     SchemaIcon  *addSchema();
-    LinkIcon        *addLink();
+    Link        *addLink();
 };

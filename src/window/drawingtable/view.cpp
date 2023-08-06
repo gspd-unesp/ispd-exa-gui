@@ -1,9 +1,9 @@
-#include "drawingtable/view.h"
-#include "drawingtable/scene.h"
+#include "window/drawingtable/view.h"
+#include "window/drawingtable/scene.h"
 #include <QDebug>
 #include <QGraphicsView>
 #include <QMouseEvent>
-#include "item/icon.h"
+#include "icon/icon.h"
 
 /*
  * Create the item following the QGraphicsView constructor

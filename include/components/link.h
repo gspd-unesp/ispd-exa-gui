@@ -3,6 +3,7 @@
 class LinkIcon;
 class Icon;
 class Item;
+class Connection;
 
 class Link
 {
@@ -10,10 +11,11 @@ public:
     Link(unsigned id);
     ~Link();
 
-    void addLine(Item *a, Item *b);
+    void addLine(Connection *a, Connection *b);
+    void draw();
 
-    Item *begin;
-    Item *end;
+    Connection *begin;
+    Connection *end;
 
     unsigned  id;
     LinkIcon *icon;

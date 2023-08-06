@@ -1,5 +1,5 @@
-#include "item/linkicon.h"
-#include "item/icon.h"
+#include "icon/linkicon.h"
+#include "icon/icon.h"
 #include "qdebug.h"
 #include <QGraphicsDropShadowEffect>
 #include <QGraphicsEffect>

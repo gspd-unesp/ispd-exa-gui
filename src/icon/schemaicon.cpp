@@ -1,4 +1,4 @@
-#include "item/schemaicon.h"
+#include "icon/schemaicon.h"
 #include "qdebug.h"
 #include "utils/iconSize.h"
 #include "window/schemawindow.h"
@@ -17,12 +17,3 @@ SchemaIcon::SchemaIcon(const char *name, Schema *owner, QGraphicsItem *parent)
 
     this->setPixmap(pixmap);
 }
-
-void SchemaIcon::mouseDoubleClickEvent(QGraphicsSceneMouseEvent *event)
-{
-    // TODO: reform this
-    qDebug() << "É Aqui o problema?";
-    this->window->show();
-    Icon::mouseDoubleClickEvent(event);
-}
-

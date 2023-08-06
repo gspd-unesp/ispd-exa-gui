@@ -2,7 +2,7 @@
 #include "window/users.h"
 #include "window/workloads.h"
 
-#include "drawingtable/scene.h"
+#include "window/drawingtable/scene.h"
 
 #include <QBrush>
 #include <QColor>

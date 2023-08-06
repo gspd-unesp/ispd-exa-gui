@@ -1,7 +1,7 @@
 #ifndef LINK_H
 #define LINK_H
 
-#include "item/icon.h"
+#include "icon/icon.h"
 #include <QGraphicsPolygonItem>
 #include <QPen>
 
@@ -16,7 +16,6 @@ class LinkIcon : public QGraphicsPolygonItem
 {
 public:
     LinkIcon(const char *name);
-    /* LinkIcon(const char *name, QGraphicsItem *parent = nullptr); */
     ~LinkIcon();
 
     unsigned     id;

@@ -1,15 +1,17 @@
-#include "item/icon.h"
-#include "item/link.h"
-#include "item/linkicon.h"
+#include "icon/icon.h"
+#include "components/item.h"
+#include "components/link.h"
+#include "icon/linkicon.h"
+#include "qgraphicssceneevent.h"
 #include "utils/iconSize.h"
 #include <QDebug>
-#include <QGraphicsScene>
-#include <map>
-#include <QKeyEvent>
 #include <QGraphicsItem>
+#include <QGraphicsScene>
 #include <QGraphicsSceneMouseEvent>
+#include <QKeyEvent>
 #include <QMouseEvent>
 #include <iostream>
+#include <map>
 #include <string>
 #include <QDialog>
 #include <vector>
@@ -88,13 +90,21 @@ void Icon::loadConfiguration()
     } else {
     }
     this->links      = nullptr;
+    this->item       = nullptr;
 }
 
-void Icon::setLinks(std::map<unsigned, Link *> *links) {
-    this->links = links;
+void Icon::setLinks(std::map<unsigned, Link *> *connected_links)
+{
+    this->links = connected_links;
 }
 
-std::map<unsigned, Link *> *Icon::getLinks() {
+void Icon::setItem(Item *it)
+{
+    this->item = it;
+}
+
+std::map<unsigned, Link *> *Icon::getLinks()
+{
     return this->links;
 }
 
@@ -216,4 +226,15 @@ Icon::~Icon()
 {
     delete this->name;
     delete this->links;
+}
+
+void Icon::mouseDoubleClickEvent(QGraphicsSceneMouseEvent *event)
+{
+    Item *clickedItem = this->item;
+
+    if (clickedItem) {
+        clickedItem->showConfiguration();
+    }
+
+    QGraphicsPixmapItem::mouseDoubleClickEvent(event);
 }

@@ -4,7 +4,7 @@
 #include <QObject>
 #include <string>
 
-class MachineItem;
+class Machine;
 
 class MachineIcon : public Icon
 {
@@ -13,4 +13,5 @@ public:
     MachineIcon(unsigned id, const char *name, QGraphicsItem *parent = nullptr);
 
 private:
+    Item *item;
 };
