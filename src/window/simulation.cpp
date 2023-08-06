@@ -20,6 +20,7 @@
 #include <QEvent>
 #include <QVBoxLayout>
 
+#include "qcustomplot.h"
 
 //CIRCLE PACKING
 #include "packcircles.h"
@@ -380,8 +381,6 @@ static node_t *placeCircles(node_t *firstnode, node_t *bb_topright, node_t *bb_b
 }
 
 
-
-
 Simulation::Simulation(QWidget *parent) :
       QWidget(parent),
       ui(new Ui::Simulation)
@@ -412,6 +411,7 @@ Simulation::Simulation(QWidget *parent) :
     createResultsFile(directory);
     resultsCommunication(directory);
     resultsProcessing(directory);
+    createStackedLineGraph(directory);
 
 }
 
@@ -548,7 +548,7 @@ void Simulation::createUser(QDir directory)
             for (int i = 0; i < usersArray.size(); i++)
             {
                 QJsonObject userObj = usersArray.at(i).toObject();
-                QString userName = userObj.value("name").toString();
+                QString userName = userObj.value("label").toString();
                 QString numberOfTasks = userObj.value("number_of_tasks").toString();
 
                 QJsonObject communicationObj = userObj.value("communication").toObject();
@@ -583,8 +583,6 @@ void Simulation::createUser(QDir directory)
         ui->textEdit_3->append("ERRO");
     }
 }
-
-
 
 void Simulation::on_pushButton_clicked()
 {
@@ -922,8 +920,8 @@ bool Simulation::eventFilter(QObject *obj, QEvent *event)
             int windowWidth = this->width();
             int windowHeight = this->height();
 
-            int newX = (windowWidth - 800) / 2; // Place the widgets in the center horizontally
-            int newY = ((windowHeight - 600) / 2) - 200;
+            int newX = (windowWidth - 800) / 2;
+            int newY = ((windowHeight - 600) / 2);
 
             ui->textEdit->move(newX, newY);
             ui->textEdit->resize(800, 600);
@@ -973,9 +971,7 @@ bool Simulation::eventFilter(QObject *obj, QEvent *event)
 
             ui->label->setPixmap(resizedPixmap);
             ui->label->move(newX, newY);
-*/
-
-
+            */
         }
         else
         {
@@ -1014,4 +1010,108 @@ bool Simulation::eventFilter(QObject *obj, QEvent *event)
 
     return QWidget::eventFilter(obj, event);
 }
+
+
+void Simulation::createStackedLineGraph(QDir directory)
+{
+    QFile file("results.json");
+
+    QString fileName = "results.json";
+    QString filePath = directory.filePath(fileName);
+
+    qDebug() << "File path of results.json: " << filePath;
+
+    if (!file.open(QIODevice::ReadOnly | QIODevice::Text))
+        return;
+
+    QString jsonString = file.readAll();
+    file.close();
+
+    QJsonDocument jsonDoc = QJsonDocument::fromJson(jsonString.toUtf8());
+    if (!jsonDoc.isObject())
+        return;
+
+    QJsonObject jsonObj = jsonDoc.object();
+
+    QCustomPlot *customPlotUsers = new QCustomPlot(this);
+    QCustomPlot *customPlotMachines = new QCustomPlot(this);
+    QCustomPlot *customPlotTasks = new QCustomPlot(this);
+
+    ui->verticalLayout_2->addWidget(customPlotUsers);
+    ui->verticalLayout_3->addWidget(customPlotMachines);
+    ui->verticalLayout->addWidget(customPlotTasks);
+
+    QVector<QColor> lineColors = {
+        Qt::red,
+        Qt::blue,
+        Qt::green,
+        Qt::cyan,
+        Qt::magenta,
+        Qt::yellow
+    };
+
+        auto createGraphs = [lineColors](QCustomPlot* customPlot, const QJsonArray& dataArray, const QString& yAxisLabel) {
+
+        QVector<QCPGraph*> graphs;
+        QVector<double> cumulativeYData(dataArray.size(), 0.0);
+
+        for (int i = 0; i < dataArray.size(); ++i)
+        {
+            QJsonObject item = dataArray.at(i).toObject();
+            QString itemName = item.value("label").toString();
+            QJsonArray computingPowerArray = item.value("computing_power").toArray();
+
+            QCPGraph *graph = customPlot->addGraph();
+            graph->setName(itemName);
+
+            int colorIndex = i % lineColors.size();
+            graph->setPen(QPen(lineColors[colorIndex]));
+
+            QVector<double> xData, yData;
+
+            for (int j = 0; j < computingPowerArray.size(); ++j)
+            {
+                QJsonObject point = computingPowerArray.at(j).toObject();
+                double x = point.value("time").toString().toDouble();
+                double y = point.value("rate").toDouble();
+
+                xData.append(x);
+                yData.append(y);
+            }
+
+            graph->setData(xData, yData);
+            graphs.append(graph);
+
+
+            QColor brushColor = lineColors[colorIndex];
+            brushColor.setAlpha(128);
+            graph->setBrush(QBrush(brushColor));
+
+        }
+
+        customPlot->xAxis->setLabel("Time (seconds)");
+        customPlot->yAxis->setLabel(yAxisLabel);
+
+        customPlot->legend->setVisible(true);
+        customPlot->legend->setBrush(QColor(255, 255, 255, 150));
+        customPlot->legend->setBorderPen(Qt::NoPen);
+
+        customPlot->rescaleAxes();
+        customPlot->replot();
+
+        customPlot->yAxis->setRange(0, customPlot->yAxis->range().upper * 1.2);
+
+    };
+    QJsonArray usersArray = jsonObj.value("users").toArray();
+    createGraphs(customPlotUsers, usersArray, "Rate of use of computing power for each user (%)");
+
+    QJsonArray machinesArray = jsonObj.value("machines").toArray();
+    createGraphs(customPlotMachines, machinesArray, "Rate of use of computing power for each machine (%)");
+
+    QJsonArray tasksArray = jsonObj.value("tasks").toArray();
+    createGraphs(customPlotTasks, tasksArray, "Rate of use of computing power for each task (%)");
+}
+
+
+
 

@@ -31,6 +31,9 @@ private:
     void resultsProcessing(QDir directory);
     void circlePacking(int flag,QDir directory);
 
+    void createStackedLineGraph(QDir directory);
+
+
     QPoint originalTextEditPos;
     QSize originalTextEditSize;
     QPoint originalLabelPos;

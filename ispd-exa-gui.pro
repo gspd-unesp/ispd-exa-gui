@@ -1,4 +1,5 @@
 SOURCES += \
+  qcustomplot.cpp \
   src/ispd-exa-gui.cpp \
   src/item/linkicon.cpp \
   src/item/machineicon.cpp \
@@ -41,9 +42,10 @@ HEADERS += \
   include/load/linkload.h \
   include/load/machineload.h \
   include/schema.h \
-  packCircles.h
+  packCircles.h \
+  qcustomplot.h
 
-QT += widgets svg
+QT += widgets svg printsupport
 
 CONFIG += c++17
 

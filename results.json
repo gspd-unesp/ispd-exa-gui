@@ -16,11 +16,12 @@
   },
   "users": [
     {
-      "name": "user1",
+      "label": "user1",
       "number_of_tasks": "2",
       "computing_power": [
-        { "time": "7.5", "rate": 100 },
-        { "time": "40", "rate": 100 }
+        { "time": "10", "rate": 110 },
+        { "time": "32.5", "rate": 110 },
+	{ "time": "42.5", "rate": 50 }
       ],
       "communication": {
         "queue_average_time": "12.1",
@@ -39,8 +40,8 @@
       "label": "mac0",
       "owner": "user1",
       "computing_power": [
-        { "time": "0", "rate": 100 },
-        { "time": "40", "rate": 100 }
+        { "time": "10", "rate": 90 },
+        { "time": "42.5", "rate": 90 }
       ],
       "processing_performed": "0.0",
       "communication_performed": "0.0",
@@ -50,8 +51,8 @@
       "label": "mac1",
       "owner": "user1",
       "computing_power": [
-        { "time": "7.5", "rate": 100 },
-        { "time": "40", "rate": 100 }
+        { "time": "10", "rate": 90 },
+        { "time": "32.5", "rate": 90 }
       ],
       "processing_performed": "22.222222",
       "communication_performed": "0.0",
@@ -74,17 +75,17 @@
   ],
   "tasks": [
     {
-      "name": "task1",
+      "label": "task1",
       "computing_power": [
-        { "time": "7.5", "rate": 100 },
-        { "time": "40", "rate": 100 }
+        { "time": "10", "rate": 55 },
+        { "time": "20", "rate": 55 }
       ]
     },
     {
-      "name": "task2",
+      "label": "task2",
       "computing_power": [
-        { "time": "7.5", "rate": 100 },
-        { "time": "45", "rate": 100 }
+        { "time": "10", "rate": 55 },
+        { "time": "42.5", "rate": 55 }
       ]
     }
   ]
