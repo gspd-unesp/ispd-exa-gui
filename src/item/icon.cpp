@@ -42,7 +42,6 @@ void Icon::saveConfiguration()
     configDialog->setCheckBoxState(this->configuration.checkBoxState);
 
     configDialog->show();
-
     connect(configDialog, &machineIconConfiguration::configurationClicked, this, [this, configDialog]() {
         this->configuration.labelEdit = configDialog->getLineEdit01Value();
         this->configuration.CompPower_lineEdit = configDialog->getLineEdit02Value();

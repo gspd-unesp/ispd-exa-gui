@@ -4,6 +4,8 @@
 #include <QPlainTextEdit>
 #include <QSettings>
 #include <QDialog>
+#include "window/users.h"
+
 
 namespace Ui {
 class machineIconConfiguration;
@@ -45,6 +47,7 @@ public:
     bool getCheckBoxState();
     void setCheckBoxState(bool checked);
 
+    void addUsersToOwnerComboBox(const QList<QString> &list1Data);
 private:
     Ui::machineIconConfiguration *ui;
 signals:

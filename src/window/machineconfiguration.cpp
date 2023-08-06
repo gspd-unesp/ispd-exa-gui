@@ -2,6 +2,8 @@
 #include "ui_machineconfiguration.h"
 #include <QSettings>
 #include <QDialog>
+#include "window/users.h"
+
 
 machineIconConfiguration::machineIconConfiguration(const QString &iconName, QWidget *parent) :
       QDialog(parent),
@@ -10,6 +12,7 @@ machineIconConfiguration::machineIconConfiguration(const QString &iconName, QWid
     ui->setupUi(this);
 
     connect(ui->okButton, &QPushButton::clicked, this, &machineIconConfiguration::configurationClicked);
+    // ui->Owner_ComboBox->addItems(userList);
 }
 
 QString machineIconConfiguration::getLineEdit01Value()
@@ -121,6 +124,12 @@ bool machineIconConfiguration::getCheckBoxState()
 void machineIconConfiguration::setCheckBoxState(bool checked)
 {
     ui->master_checkBox->setChecked(checked);
+}
+
+void machineIconConfiguration::addUsersToOwnerComboBox(const QList<QString> &list1Data)
+{
+    ui->Owner_ComboBox->clear();
+    ui->Owner_ComboBox->addItems(list1Data);
 }
 
 machineIconConfiguration::~machineIconConfiguration()

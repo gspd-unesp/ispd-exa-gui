@@ -11,6 +11,8 @@
 #include <QDialog>
 #include "window/machineconfiguration.h"
 #include <QGraphicsView>
+#include "window/users.h"
+
 
 class Link;
 
