@@ -21,3 +21,6 @@ ispd-exa-gui
 # Not usable for now
 documentation
 .gitmodules
+.DS_Store
+*.txt
+*.svg

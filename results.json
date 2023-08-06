@@ -1,0 +1,92 @@
+{
+  "total_simulated_time": "10",
+  "satisfaction": "90",
+  "idleness_processing": "5",
+  "idleness_communication": "3",
+  "efficiency": "80",
+  "communication": {
+    "queue_average_time": "10.5",
+    "communication_average_time": "20.3",
+    "system_average_time": "30.7"
+  },
+  "processing": {
+    "queue_average_time": "5.2",
+    "processing_average_time": "15.9",
+    "system_average_time": "25.4"
+  },
+  "users": [
+    {
+      "label": "user1",
+      "number_of_tasks": "2",
+      "computing_power": [
+        { "time": "10", "rate": 110 },
+        { "time": "32.5", "rate": 110 },
+	{ "time": "42.5", "rate": 50 }
+      ],
+      "communication": {
+        "queue_average_time": "12.1",
+        "communication_average_time": "18.6",
+        "system_average_time": "27.9"
+      },
+      "processing": {
+        "queue_average_time": "6.7",
+        "processing_average_time": "14.2",
+        "system_average_time": "22.8"
+      }
+    }
+  ],
+  "machines": [
+    {
+      "label": "mac0",
+      "owner": "user1",
+      "computing_power": [
+        { "time": "10", "rate": 90 },
+        { "time": "42.5", "rate": 90 }
+      ],
+      "processing_performed": "0.0",
+      "communication_performed": "0.0",
+      "Mflops": "1000"
+    },
+    {
+      "label": "mac1",
+      "owner": "user1",
+      "computing_power": [
+        { "time": "10", "rate": 90 },
+        { "time": "32.5", "rate": 90 }
+      ],
+      "processing_performed": "22.222222",
+      "communication_performed": "0.0",
+      "Mflops": "500"
+    }
+  ],
+  "links": [
+    {
+      "label": "link1",
+      "processing_performed": "0.0",
+      "communication_performed": "20.0",
+      "Mbits": "100"
+    },
+    {
+      "label": "link2",
+      "processing_performed": "0.0",
+      "communication_performed": "13.3333",
+      "Mbits": "200"
+    }
+  ],
+  "tasks": [
+    {
+      "label": "task1",
+      "computing_power": [
+        { "time": "10", "rate": 55 },
+        { "time": "20", "rate": 55 }
+      ]
+    },
+    {
+      "label": "task2",
+      "computing_power": [
+        { "time": "10", "rate": 55 },
+        { "time": "42.5", "rate": 55 }
+      ]
+    }
+  ]
+}

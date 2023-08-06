@@ -1,8 +1,8 @@
 #include "window/main.h"
+#include <window/simulation.h>
 
 #include <QApplication>
 #include <QScreen>
-
 
 int main(int argc, char **argv)
 {
