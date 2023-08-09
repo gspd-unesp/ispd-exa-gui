@@ -2,12 +2,15 @@
 #include "components/link.h"
 #include "components/machine.h"
 #include "components/schema.h"
+#include "components/switch.h"
 #include "icon/linkicon.h"
 #include "icon/schemaicon.h"
+#include "icon/switchicon.h"
 #include "qdebug.h"
 #include "qpushbutton.h"
 #include "qradiobutton.h"
 #include "utils/iconSize.h"
+#include "window/drawingtable/scene.h"
 #include "window/users.h"
 #include <QImage>
 #include <QPixmap>
@@ -66,17 +69,19 @@ DrawingTable::DrawingTable(Schema *schema, QWidget *parent) : QWidget{parent}
     this->buttonsLayout = new QHBoxLayout(buttonsRow);
     this->buttonsLayout->setAlignment(Qt::AlignLeft);
 
-    this->setupPcButton();
     this->setupNoneButton();
-    this->setupLinkButton();
+    this->setupPcButton();
     this->setupSchemaButton();
+    this->setupLinkButton();
+    this->setupSwitchButton();
 
     auto *mainLayout = new QVBoxLayout(this);
     mainLayout->addWidget(buttonsRow);
     mainLayout->addWidget(view);
 }
 
-void DrawingTable::receiveUserWindowData(const QList<QString> &list1Data, const QList<double> &list2Data)
+void DrawingTable::receiveUserWindowData(const QList<QString> &list1Data,
+                                         const QList<double>  &list2Data)
 {
     this->list1Data = list1Data;
     this->list2Data = list2Data;
@@ -108,6 +113,21 @@ void DrawingTable::setupNoneButton()
                      &QRadioButton::clicked,
                      this,
                      &DrawingTable::noneButtonClicked);
+}
+
+///
+/// @brief Creates the Switch option button and connects it to the scene
+///
+void DrawingTable::setupSwitchButton()
+{
+    noneButton = new QRadioButton(buttonsRow);
+    noneButton->setIcon(QIcon(QPixmap::fromImage(QImage(":icons/switch.svg"))));
+    noneButton->setIconSize(buttonSize);
+    buttonsLayout->addWidget(noneButton);
+    QObject::connect(noneButton,
+                     &QRadioButton::clicked,
+                     this,
+                     &DrawingTable::switchButtonClicked);
 }
 
 ///
@@ -157,6 +177,21 @@ MachineIcon *DrawingTable::addMachine()
 }
 
 ///
+/// @brief  Creates a Switch inside the DrawingTable's Schema
+///
+/// @return the switch's icon
+///
+SwitchIcon *DrawingTable::addSwitch()
+{
+    const unsigned switchId = schema->allocateNewSwitch();
+
+    // FOR DEBUG
+    printSchema(schema);
+
+    return schema->switches.at(switchId)->getIcon();
+}
+
+///
 /// @brief  Creates a Schema inside the DrawingTable's Schema
 ///
 /// @return the schema's icon
@@ -195,6 +230,15 @@ void DrawingTable::pcButtonClicked()
 }
 
 ///
+/// @brief  set the scene operator to the switch insert mode
+///
+void DrawingTable::switchButtonClicked()
+{
+    this->scene->pickOp = SWITCH;
+}
+
+
+///
 /// @brief  set the scene operator to the click mode
 ///
 void DrawingTable::noneButtonClicked()
@@ -231,6 +275,12 @@ void printSchema(Schema *schema)
                  << machine->second->icon->getName()->c_str();
     }
 
+    for (auto &[id, nswitch] : schema->switches) {
+
+        qDebug() << "Switch #" << id << ": "
+                 << nswitch->getIcon()->getName()->c_str();
+    }
+
     for (auto sch = schema->schemas.begin(); sch != schema->schemas.end();
          sch++) {
 
@@ -247,7 +297,11 @@ void printSchema(Schema *schema)
 }
 void DrawingTable::openUserWindowClicked()
 {
-    this->userWindow = new UserWindow(nullptr, this, list1Data, list2Data); // Pass the lists to UserWindow constructor
+    this->userWindow =
+        new UserWindow(nullptr,
+                       this,
+                       list1Data,
+                       list2Data); // Pass the lists to UserWindow constructor
 
     userWindow->show();
 }

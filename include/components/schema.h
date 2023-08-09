@@ -12,6 +12,7 @@ struct LinkConnections;
 class SchemaIcon;
 class Link;
 class Machine;
+class Switch;
 
 typedef struct IDS
 {
@@ -39,8 +40,10 @@ public:
     std::map<unsigned, std::unique_ptr<Machine>> machines;
     std::map<unsigned, std::unique_ptr<Link>>    links;
     std::map<unsigned, std::unique_ptr<Schema>>  schemas;
+    std::map<unsigned, std::unique_ptr<Switch>>  switches;
 
     unsigned allocateNewMachine();
+    unsigned allocateNewSwitch();
     unsigned allocateNewLink(LinkConnections connections);
     unsigned allocateNewSchema();
     void     deleteSchema(unsigned schemaId);

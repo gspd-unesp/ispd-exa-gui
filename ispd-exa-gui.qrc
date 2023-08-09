@@ -16,5 +16,6 @@
         <file>icons/engine.png</file>
         <file>icons/save.png</file>
         <file>icons/ethernet.png</file>
+        <file>icons/switch.svg</file>
     </qresource>
 </RCC>

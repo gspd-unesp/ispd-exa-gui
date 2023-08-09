@@ -12,6 +12,7 @@
 struct LinkConnections;
 class Schema;
 class SchemaIcon;
+class SwitchIcon;
 class LinkIcon;
 
 class DrawingTable : public QWidget
@@ -38,6 +39,7 @@ private:
     Simulation *simulationWindow;
 
     void setupPcButton();
+    void setupSwitchButton();
     void setupNoneButton();
     void setupSchemaButton();
     void setupLinkButton();
@@ -52,6 +54,7 @@ public:
     DrawingTable(Schema *schema, QWidget *parent = nullptr);
     Schema *schema;
 
+    void switchButtonClicked();
     void pcButtonClicked();
     void schemaButtonClicked();
     void linkButtonClicked();
@@ -62,6 +65,7 @@ public:
     void receiveUserWindowData(const QList<QString> &list1Data,
                                const QList<double>  &list2Data);
 
+    SwitchIcon  *addSwitch();
     MachineIcon *addMachine();
     SchemaIcon  *addSchema();
     Link        *addLink(LinkConnections connections);

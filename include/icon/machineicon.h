@@ -10,8 +10,14 @@ class MachineIcon : public Icon
 {
     Q_OBJECT
 public:
-    MachineIcon(unsigned id, const char *name, QGraphicsItem *parent = nullptr);
+    MachineIcon(unsigned       id,
+                const char    *name,
+                Machine       *owner,
+                QGraphicsItem *parent = nullptr);
+
+protected:
+    void mouseDoubleClickEvent(QGraphicsSceneMouseEvent *event) override;
 
 private:
-    Item *item;
+    Machine *owner;
 };

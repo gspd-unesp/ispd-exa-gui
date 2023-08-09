@@ -17,10 +17,10 @@
 class LinkIcon : public QGraphicsPolygonItem
 {
 public:
-    LinkIcon(Link *link, const char *name);
+    LinkIcon(Link *owner, const char *name);
     ~LinkIcon();
 
-    Link        *link;
+    Link        *owner;
     unsigned     id;
     Icon        *begin; ///< the \link Icon \endlink that the link comes from
     Icon        *end;   ///< the \link Icon \endlink that the link goes to

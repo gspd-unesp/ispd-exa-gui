@@ -14,15 +14,11 @@ class SchemaIcon : public Icon
 {
     Q_OBJECT
 public:
-    explicit SchemaIcon(const char    *name,
-                        Schema        *owner  = nullptr,
-                        QGraphicsItem *parent = nullptr);
-    Schema *owner;
+    SchemaIcon(const char    *name,
+               Schema        *owner,
+               QGraphicsItem *parent = nullptr);
     SchemaWindow *window;
 
-protected:
-
 private:
-    std::deque<MachineIcon> *machines;
-    std::deque<Link>        *innerLinks;
+    Schema       *owner;
 };
