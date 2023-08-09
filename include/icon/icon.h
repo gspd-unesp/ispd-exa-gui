@@ -1,25 +1,28 @@
 #ifndef ICON_H
 #define ICON_H
 
+#include "components/connection.h"
 #include "qgraphicsscene.h"
 #include "qgraphicssceneevent.h"
+#include "window/machineconfiguration.h"
+#include "window/users.h"
+#include <QDialog>
 #include <QGraphicsItem>
+#include <QGraphicsView>
 #include <QLabel>
 #include <QObject>
 #include <QVector>
 #include <map>
+#include <memory>
 #include <string>
-#include <QDialog>
-#include "window/machineconfiguration.h"
-#include <QGraphicsView>
-#include "window/users.h"
-
 
 class Link;
+class Connection;
 class Item;
 
 // Define a estrutura para armazenar as configurações do ícone
-struct IconConfiguration {
+struct IconConfiguration
+{
     QString CompPower_lineEdit;
     QString cores_lineEdit;
     QString energyconsumer_lineEdit;
@@ -29,19 +32,23 @@ struct IconConfiguration {
     QString primarystorage_lineEdit;
     QString secondaryStorage_lineEdit;
 
-    int ownercomboBoxIndex;
-    int schedulingcomboBoxIndex;
+    int  ownercomboBoxIndex;
+    int  schedulingcomboBoxIndex;
     bool checkBoxState;
     // Adicione mais campos aqui, se necessário
-    IconConfiguration() : ownercomboBoxIndex(0), schedulingcomboBoxIndex(0), checkBoxState(false) {
+    IconConfiguration()
+        : ownercomboBoxIndex(0), schedulingcomboBoxIndex(0),
+          checkBoxState(false)
+    {
         // Define os valores iniciais dos campos conforme necessário
-        labelEdit = ""; // Por exemplo, defina uma string vazia como valor inicial para textValue
-        CompPower_lineEdit = "";
-        cores_lineEdit = "";
-        energyconsumer_lineEdit = "";
-        lineEdit_4 = "";
-        loadFactor_lineEdit = "";
-        primarystorage_lineEdit = "";
+        labelEdit = ""; // Por exemplo, defina uma string vazia como valor
+                        // inicial para textValue
+        CompPower_lineEdit        = "";
+        cores_lineEdit            = "";
+        energyconsumer_lineEdit   = "";
+        lineEdit_4                = "";
+        loadFactor_lineEdit       = "";
+        primarystorage_lineEdit   = "";
         secondaryStorage_lineEdit = "";
     }
 };
@@ -50,46 +57,41 @@ class Icon : public QObject, public QGraphicsPixmapItem
 {
     Q_OBJECT
 public:
-    Icon(const char *name, QGraphicsItem *parent = nullptr);
-    Icon(QPixmap pixmap, QGraphicsItem *parent = nullptr);
-    ~Icon();
+    Icon(const char    *name,
+         Connection    *owner  = nullptr,
+         QGraphicsItem *parent = nullptr);
+    virtual ~Icon(){};
 
     bool                        isSelected;
     unsigned                    id;
     std::map<unsigned, Link *> *links;
-    bool             select;
+    bool                        select;
 
     std::string iconPath;
     std::string iconPathSelected;
 
-
-
     // Funções para salvar e carregar as configurações do ícone
-    void saveConfiguration();
-    void loadConfiguration();
-    void selection(bool select);
-    void deselect();
-    /* void                        deselect(); */
-    void                        setLinks(std::map<unsigned, Link *> *links);
-    std::map<unsigned, Link *> *getLinks();
+    void                        saveConfiguration();
+    void                        loadConfiguration();
+    Connection                 *getOwner();
+    void                        selection(bool select);
+    void                        deselect();
     void                        setOutputLabel(QLabel *label);
     std::string                *getName();
-
-    void setItem(Item *item);
 
 protected:
     void mouseReleaseEvent(QGraphicsSceneMouseEvent *event) override;
     void mousePressEvent(QGraphicsSceneMouseEvent *event) override;
     void mouseMoveEvent(QGraphicsSceneMouseEvent *event) override;
-    void mouseDoubleClickEvent(QGraphicsSceneMouseEvent *event) override;
 
 private:
-    void         updatePosition();
-    QString      positionString;
-    QLabel      *outputLabel;
-    std::string *name;
-    IconConfiguration configuration; // Adicione o membro de dados para armazenar a configuração
-    Item                       *item;
+    void                         updatePosition();
+    QString                      positionString;
+    QLabel                      *outputLabel;
+    std::unique_ptr<std::string> name;
+    IconConfiguration configuration; // Adicione o membro de dados para
+                                     // armazenar a configuração
+    Connection *owner;
 
 signals:
 };

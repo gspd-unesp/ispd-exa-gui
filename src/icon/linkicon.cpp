@@ -34,16 +34,17 @@ QPointF getMiddleOfIcon(Icon *a)
 ///  @param b     the Icon that the Link comes from
 ///  @param e     the Icon that the Link goes to
 ///
-LinkIcon::LinkIcon(Link *link, char const *name) : QGraphicsPolygonItem()
+LinkIcon::LinkIcon(Link *owner, char const *name) : QGraphicsPolygonItem()
 {
-    this->link  = link;
+    this->owner = owner;
     qDebug() << "Is it here?";
-    this->begin = this->link->connections.begin->getIcon();
-    this->end = this->link->connections.end->getIcon();
+    this->begin = this->owner->connections.begin->getIcon();
+    this->end   = this->owner->connections.end->getIcon();
     this->name  = std::make_unique<std::string>(name);
 }
 
-LinkIcon::~LinkIcon() {
+LinkIcon::~LinkIcon()
+{
     qDebug() << "Deleting the link icon of" << *this->name;
 }
 
@@ -78,14 +79,18 @@ void LinkIcon::draw()
 ///
 void LinkIcon::updatePositions()
 {
+    const char* cBegin = this->begin ? this->begin->getName()->c_str() : "NOT FOUND";
+    const char* cEnd = this->end ? this->end->getName()->c_str() : "NOT FOUND";
+    qDebug() << "LINK #" << this->id << ": begin=" << cBegin
+             << " end=" << cEnd;
     QPolygonF newLine;
     newLine << getMiddleOfIcon(this->begin) << getMiddleOfIcon(this->end);
     this->setPolygon(newLine);
 }
 
 void LinkIcon::paint(QPainter                       *painter,
-                 const QStyleOptionGraphicsItem *option,
-                 QWidget                        *widget)
+                     const QStyleOptionGraphicsItem *option,
+                     QWidget                        *widget)
 {
     QGraphicsPolygonItem::paint(painter, option, widget);
 

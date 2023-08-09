@@ -16,9 +16,7 @@ Machine::Machine(Schema *schema, unsigned id, const char *name)
     this->id              = id;
     this->connected_links = std::map<unsigned, Link *>();
 
-    this->icon = std::make_unique<MachineIcon>(id, name);
-    this->icon->setLinks(&this->connected_links);
-    this->icon->setItem(this);
+    this->icon = std::make_unique<MachineIcon>(id, name, this);
 }
 
 Machine::~Machine()

@@ -2,6 +2,7 @@
 #include "components/conf/machineconf.h"
 #include "components/link.h"
 #include "components/machine.h"
+#include "components/switch.h"
 #include "icon/linkicon.h"
 #include "icon/machineicon.h"
 #include "icon/schemaicon.h"
@@ -14,6 +15,7 @@ Schema::Schema(const char *name, Schema *parent)
     this->machines        = std::map<unsigned, std::unique_ptr<Machine>>();
     this->links           = std::map<unsigned, std::unique_ptr<Link>>();
     this->schemas         = std::map<unsigned, std::unique_ptr<Schema>>();
+    this->switches        = std::map<unsigned, std::unique_ptr<Switch>>();
     this->connected_links = std::map<unsigned, Link *>();
     this->window          = new SchemaWindow(this);
 
@@ -27,10 +29,7 @@ Schema::Schema(const char *name, Schema *parent)
     this->id = schemaIds->schemaId;
     this->schemaIds->schemaId++;
 
-    icon        = std::make_unique<SchemaIcon>(this->name->c_str(), this);
-    icon->id    = this->id;
-    icon->links = &this->connected_links;
-    icon->setItem(this);
+    icon = std::make_unique<SchemaIcon>(this->name->c_str(), this);
 }
 
 unsigned Schema::allocateNewMachine()
@@ -52,7 +51,8 @@ unsigned Schema::allocateNewLink(LinkConnections connections)
     const unsigned newLinkId = schemaIds->linkId;
     std::string    newLinkName("Link" + std::to_string(newLinkId));
 
-    auto newLink = std::make_unique<Link>(this, newLinkId, newLinkName.c_str(), connections);
+    auto newLink = std::make_unique<Link>(
+        this, newLinkId, newLinkName.c_str(), connections);
 
     links.insert(std::pair(newLinkId, std::move(newLink)));
 
@@ -70,6 +70,20 @@ unsigned Schema::allocateNewSchema()
     schemas.insert(std::pair(newSchemaId, std::move(newSchema)));
 
     return newSchemaId;
+}
+
+unsigned Schema::allocateNewSwitch()
+{
+    const unsigned newSwitchId = schemaIds->switchId;
+    std::string    newSwitchName("Switch" + std::to_string(newSwitchId));
+    auto           newSwitch =
+        std::make_unique<Switch>(this, newSwitchId, newSwitchName.c_str());
+
+    this->switches.insert(std::pair(newSwitchId, std::move(newSwitch)));
+
+    schemaIds->switchId++;
+
+    return newSwitchId;
 }
 
 void Schema::deleteMachine(unsigned machineId)

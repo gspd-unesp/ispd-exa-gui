@@ -14,7 +14,8 @@ typedef enum PICK_OP
     NONE,
     PC,
     SCHEMA,
-    LINK
+    LINK,
+    SWITCH
 } PICK_OP;
 
 class MachineIcon;
