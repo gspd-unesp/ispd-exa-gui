@@ -1,8 +1,8 @@
 #ifndef SCENE_H
 #define SCENE_H
 
-#include "icon/icon.h"
 #include "components/machine.h"
+#include "icon/icon.h"
 #include "qglobal.h"
 #include "qvector.h"
 #include "window/users.h"
@@ -29,9 +29,8 @@ class Scene : public QGraphicsScene
 protected:
     void mousePressEvent(QGraphicsSceneMouseEvent *event) override;
     void keyPressEvent(QKeyEvent *event) override;
-    void mouseMoveEvent(QGraphicsSceneMouseEvent *event);
-    void mouseReleaseEvent(QGraphicsSceneMouseEvent *event);
-
+    void mouseMoveEvent(QGraphicsSceneMouseEvent *event) override;
+    void mouseReleaseEvent(QGraphicsSceneMouseEvent *event) override;
 
 public:
     Scene(DrawingTable *parent);
@@ -46,21 +45,21 @@ public:
     QLabel *machineDescriptionLabel;
 
 private:
-    DrawingTable *table;
-    Schema       *schema;
-    Connection   *lBegin;
-    Connection   *lEnd;
-    void          addLink(Link *link, Connection *a, Connection *b);
-    Connection   *whichConnection(QPointF pos);
-    std::string   getNewMachineName();
-    std::string   getNewLinkName();
-    std::string   getNewClusterName();
-    void          removeMachine(Machine *machine);
-    void          removeLink(Link *link);
-    void          removeItemIcon(Item *item);
-    void          deleteItems();
-    UserWindow   *userWindow;
-    QPointF startSelection;
+    DrawingTable      *table;
+    Schema            *schema;
+    Connection        *lBegin;
+    Connection        *lEnd;
+    void               addLink(Link *link);
+    Connection        *whichConnection(QPointF pos);
+    std::string        getNewMachineName();
+    std::string        getNewLinkName();
+    std::string        getNewClusterName();
+    void               removeMachine(Machine *machine);
+    void               removeLink(Link *link);
+    void               removeItemIcon(Item *item);
+    void               deleteItems();
+    UserWindow        *userWindow;
+    QPointF            startSelection;
     QGraphicsRectItem *selectionRect;
 
     void selectionArea(QGraphicsSceneMouseEvent *event);

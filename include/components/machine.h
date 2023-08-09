@@ -1,14 +1,15 @@
 #pragma once
 
+#include <algorithm>
 #include <map>
 #include <string>
 #include <vector>
 
 #include "components/connection.h"
 #include "components/item.h"
+#include "icon/machineicon.h"
 
 class MachineLoad;
-class MachineIcon;
 class Schema;
 class Link;
 
@@ -16,17 +17,21 @@ class Machine : public Item, public Connection
 {
 public:
     Machine(Schema *schema, unsigned id, const char *name);
+    Machine(Machine &machine);
     virtual ~Machine();
 
-    std::map<unsigned, Link *> *get_connected_links()        override;
-    void set_connectedLinks(std::map<unsigned, Link *> *map) override;
+    std::map<unsigned, Link *> *getConnectedLinks() override;
+    void setConnectedLinks(std::map<unsigned, Link *> *map) override;
+    void removeConnectedLink(Link *link) override;
+    void addConnectedLink(Link *link) override;
 
     void  showConfiguration() override;
-    Icon *getIcon() override;
+    MachineIcon *getIcon() override;
 
-    std::map<unsigned, Link *> *connected_links;
-    Schema                     *schema;
-    MachineLoad                *load;
-    MachineIcon                *icon;
-    unsigned                    id;
+    std::string                  name;
+    std::map<unsigned, Link *>   connected_links;
+    Schema                      *schema;
+    MachineLoad                 *load;
+    std::unique_ptr<MachineIcon> icon;
+    unsigned                     id;
 };

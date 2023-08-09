@@ -153,7 +153,7 @@ MachineIcon *DrawingTable::addMachine()
 {
     const unsigned machineId = schema->allocateNewMachine();
 
-    return schema->machines->at(machineId)->icon;
+    return schema->machines.at(machineId)->getIcon();
 }
 
 ///
@@ -168,7 +168,7 @@ SchemaIcon *DrawingTable::addSchema()
     // FOR DEBUG
     printSchema(schema);
 
-    return schema->schemas->at(schemaId)->icon;
+    return schema->schemas.at(schemaId)->getIcon();
 }
 
 ///
@@ -176,14 +176,14 @@ SchemaIcon *DrawingTable::addSchema()
 ///
 /// @return the link's line
 ///
-Link *DrawingTable::addLink()
+Link *DrawingTable::addLink(LinkConnections connections)
 {
-    const unsigned linkId = schema->allocateNewLink();
+    const unsigned linkId = schema->allocateNewLink(connections);
 
     // FOR DEBUG
     printSchema(schema);
 
-    return schema->links->at(linkId);
+    return schema->links.at(linkId).get();
 }
 
 ///
@@ -223,22 +223,22 @@ void DrawingTable::schemaButtonClicked()
 ///
 void printSchema(Schema *schema)
 {
-    for (auto machine = schema->machines->begin();
-         machine != schema->machines->end();
+    for (auto machine = schema->machines.begin();
+         machine != schema->machines.end();
          machine++) {
 
         qDebug() << "Machine #" << machine->second->id << ": "
                  << machine->second->icon->getName()->c_str();
     }
 
-    for (auto sch = schema->schemas->begin(); sch != schema->schemas->end();
+    for (auto sch = schema->schemas.begin(); sch != schema->schemas.end();
          sch++) {
 
         qDebug() << "Schema #" << sch->second->id << ": "
                  << sch->second->icon->getName()->c_str();
     }
 
-    for (auto link = schema->links->begin(); link != schema->links->end();
+    for (auto link = schema->links.begin(); link != schema->links.end();
          link++) {
 
         qDebug() << "Link #" << link->second->id << ": "

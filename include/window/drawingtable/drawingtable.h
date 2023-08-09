@@ -1,15 +1,15 @@
 #pragma once
-#include "window/drawingtable/view.h"
 #include "icon/machineicon.h"
+#include "window/drawingtable/view.h"
 #include "window/simulation.h"
 #include "window/users.h"
+#include <QListWidget>
 #include <QPushButton>
 #include <QRadioButton>
 #include <QVBoxLayout>
 #include <QWidget>
-#include <QListWidget>
 
-
+struct LinkConnections;
 class Schema;
 class SchemaIcon;
 class LinkIcon;
@@ -22,7 +22,7 @@ private:
     View  *view;
 
     QList<QString> list1Data;
-    QList<double> list2Data;
+    QList<double>  list2Data;
 
     QWidget      *buttonsRow;
     QHBoxLayout  *buttonsLayout;
@@ -42,8 +42,9 @@ private:
     void setupSchemaButton();
     void setupLinkButton();
 
-    QGraphicsRectItem* selectionRectItem = nullptr; // Novo membro para o retângulo de seleção
-    void addSelectionRectToScene(const QRectF& rect);
+    QGraphicsRectItem *selectionRectItem =
+        nullptr; // Novo membro para o retângulo de seleção
+    void addSelectionRectToScene(const QRectF &rect);
     void removeSelectionRectFromScene();
 
 public:
@@ -58,9 +59,10 @@ public:
     void openUserWindowClicked();
     void openSimulationWindowClicked();
 
-    void receiveUserWindowData(const QList<QString> &list1Data, const QList<double> &list2Data);
+    void receiveUserWindowData(const QList<QString> &list1Data,
+                               const QList<double>  &list2Data);
 
     MachineIcon *addMachine();
     SchemaIcon  *addSchema();
-    Link        *addLink();
+    Link        *addLink(LinkConnections connections);
 };
