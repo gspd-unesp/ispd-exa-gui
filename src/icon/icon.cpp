@@ -224,8 +224,6 @@ void Icon::selection(bool select) {
 
 Icon::~Icon()
 {
-    delete this->name;
-    delete this->links;
 }
 
 void Icon::mouseDoubleClickEvent(QGraphicsSceneMouseEvent *event)

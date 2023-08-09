@@ -5,28 +5,31 @@
 #include "icon/linkicon.h"
 #include "qdebug.h"
 #include <iterator>
+#include <memory>
 
-Link::Link(unsigned id)
+Link::Link(Schema         *schema,
+           unsigned        id,
+           const char     *name,
+           LinkConnections connections)
 {
-    this->id = id;
+    this->id          = id;
+    this->connections = connections;
+    this->schema      = schema;
+    this->name        = std::make_unique<std::string>(name);
+    this->icon        = std::make_unique<LinkIcon>(this, name);
 }
 
 Link::~Link()
-{}
-
-void Link::addLine(Connection *a, Connection *b)
 {
-    this->begin = a;
-    this->end   = b;
+    qDebug() << "Deleting " << *this->name;
+}
 
-    qDebug() << "Adicionado begin e end ao link " << this->id;
+void Link::addLine()
+{
+    this->connections.begin->getConnectedLinks()->insert(
+        std::pair(this->id, this));
+    this->connections.end->getConnectedLinks()->insert(
+        std::pair(this->id, this));
 
-    this->begin->get_connected_links()->insert(std::pair(this->id, this));
-    this->end->get_connected_links()->insert(std::pair(this->id, this));
-
-    qDebug() << "Adicionado o link " << this->id << " ao Item begin e end.";
-
-    this->icon->draw(this->begin->getIcon(), this->end->getIcon());
-
-    qDebug() << "Adicionado o icon do link  " << this->id << " a grid.";
+    this->icon->draw();
 }

@@ -8,7 +8,9 @@ class Icon;
 class Connection
 {
 public:
-    virtual std::map<unsigned, Link *> *get_connected_links()        = 0;
+    virtual std::map<unsigned, Link *> *getConnectedLinks()        = 0;
     virtual Icon *getIcon() = 0;
-    virtual void set_connectedLinks(std::map<unsigned, Link *> *map) = 0;
+    virtual void setConnectedLinks(std::map<unsigned, Link *> *map) = 0;
+    virtual void removeConnectedLink(Link *link) = 0;
+    virtual void addConnectedLink(Link *link) = 0;
 };

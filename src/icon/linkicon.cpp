@@ -1,4 +1,6 @@
 #include "icon/linkicon.h"
+#include "components/connection.h"
+#include "components/link.h"
 #include "icon/icon.h"
 #include "qdebug.h"
 #include <QGraphicsDropShadowEffect>
@@ -7,6 +9,7 @@
 #include <QPainter>
 #include <QPen>
 #include <cmath>
+#include <memory>
 
 ///
 /// Helper function to get the middle point of an icon
@@ -31,18 +34,21 @@ QPointF getMiddleOfIcon(Icon *a)
 ///  @param b     the Icon that the Link comes from
 ///  @param e     the Icon that the Link goes to
 ///
-LinkIcon::LinkIcon(char const *name) : QGraphicsPolygonItem()
+LinkIcon::LinkIcon(Link *link, char const *name) : QGraphicsPolygonItem()
 {
-    this->name  = new std::string(name);
-    this->begin = nullptr;
-    this->end   = nullptr;
+    this->link  = link;
+    qDebug() << "Is it here?";
+    this->begin = this->link->connections.begin->getIcon();
+    this->end = this->link->connections.end->getIcon();
+    this->name  = std::make_unique<std::string>(name);
 }
 
-void LinkIcon::draw(Icon *b, Icon *e)
-{
-    this->begin = b;
-    this->end   = e;
+LinkIcon::~LinkIcon() {
+    qDebug() << "Deleting the link icon of" << *this->name;
+}
 
+void LinkIcon::draw()
+{
     // QPen pen;
     linkPen.setWidth(2);
     linkPen.setColor(QColor(9, 132, 227));
@@ -121,20 +127,20 @@ void LinkIcon::select()
 
 std::string *LinkIcon::getName()
 {
-    return name;
+    return name.get();
 }
 
-LinkIcon::~LinkIcon()
-{
-    delete this->name;
-
-    Icon *icons[] = {this->begin, this->end};
-
-    for (size_t i = 0; i < std::size(icons); i++) {
-        if (icons[i]) {
-            if (icons[i]->links) {
-                icons[i]->links->erase(this->id);
-            }
-        }
-    }
-}
+/* LinkIcon::~LinkIcon() */
+/* { */
+/*     delete this->name; */
+/*  */
+/*     Icon *icons[] = {this->begin, this->end}; */
+/*  */
+/*     for (size_t i = 0; i < std::size(icons); i++) { */
+/*         if (icons[i]) { */
+/*             if (icons[i]->links) { */
+/*                 icons[i]->links->erase(this->id); */
+/*             } */
+/*         } */
+/*     } */
+/* } */
