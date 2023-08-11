@@ -9,8 +9,7 @@ class SwitchIcon : public Icon
 {
     Q_OBJECT
 public:
-    SwitchIcon(const char    *name,
-               Switch        *owner,
+    explicit SwitchIcon(Switch        *owner,
                QGraphicsItem *parent = nullptr);
 
 private:

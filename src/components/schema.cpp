@@ -13,13 +13,13 @@
 
 Schema::Schema(const char *name, Schema *parent)
 {
-    this->name            = name;
-    this->machines        = std::map<unsigned, std::unique_ptr<Machine>>();
-    this->links           = std::map<unsigned, std::unique_ptr<Link>>();
-    this->schemas         = std::map<unsigned, std::unique_ptr<Schema>>();
-    this->switches        = std::map<unsigned, std::unique_ptr<Switch>>();
-    this->connected_links = std::map<unsigned, Link *>();
-    this->window          = std::make_unique<SchemaWindow>(this);
+    this->name           = name;
+    this->machines       = std::map<unsigned, std::unique_ptr<Machine>>();
+    this->links          = std::map<unsigned, std::unique_ptr<Link>>();
+    this->schemas        = std::map<unsigned, std::unique_ptr<Schema>>();
+    this->switches       = std::map<unsigned, std::unique_ptr<Switch>>();
+    this->connectedLinks = std::map<unsigned, Link *>();
+    this->window         = std::make_unique<SchemaWindow>(this);
 
     if (parent) {
         schemaIds = parent->schemaIds;
@@ -31,7 +31,20 @@ Schema::Schema(const char *name, Schema *parent)
     this->id = schemaIds->schemaId;
     this->schemaIds->schemaId++;
 
-    icon = std::make_unique<SchemaIcon>(this->name.c_str(), this);
+    icon = std::make_unique<SchemaIcon>(this);
+}
+
+Schema::~Schema()
+{
+    for (auto [linkId, link] : this->connectedLinks) {
+        Connection *otherIcon = (link->connections.begin == this)
+                                    ? link->connections.end
+                                    : link->connections.begin;
+
+        otherIcon->removeConnectedLink(link);
+
+        this->deleteLink(linkId);
+    }
 }
 
 unsigned Schema::allocateNewMachine()
@@ -53,8 +66,10 @@ unsigned Schema::allocateNewLink(LinkConnections connections)
     const unsigned newLinkId = schemaIds->linkId;
     std::string    newLinkName("Link" + std::to_string(newLinkId));
 
+    qDebug() << "BEFORE MAKING UNIQUE OF LINK";
     auto newLink = std::make_unique<Link>(
         this, newLinkId, newLinkName.c_str(), connections);
+    qDebug() << "AFTER MAKING UNIQUE OF LINK";
 
     links.insert(std::pair(newLinkId, std::move(newLink)));
 
@@ -131,7 +146,7 @@ void Schema::showConfiguration()
 
 std::map<unsigned, Link *> *Schema::getConnectedLinks()
 {
-    return &this->connected_links;
+    return &this->connectedLinks;
 }
 
 SchemaIcon *Schema::getIcon()
@@ -141,36 +156,36 @@ SchemaIcon *Schema::getIcon()
 
 void Schema::setConnectedLinks(std::map<unsigned, Link *> *map)
 {
-    this->connected_links = *map;
+    this->connectedLinks = *map;
 }
 
 void Schema::removeConnectedLink(Link *link)
 {
-    auto linkToRemove = this->connected_links.find(link->id);
+    auto linkToRemove = this->connectedLinks.find(link->id);
 
-    if (linkToRemove != connected_links.end()) {
-        this->connected_links.erase(linkToRemove);
+    if (linkToRemove != connectedLinks.end()) {
+        this->connectedLinks.erase(linkToRemove);
     }
 }
 void Schema::addConnectedLink(Link *link)
 {
-    auto linkToAdd = this->connected_links.find(link->id);
+    auto linkToAdd = this->connectedLinks.find(link->id);
 
-    if (linkToAdd == connected_links.end()) {
-        this->connected_links.insert(std::pair(link->id, link));
+    if (linkToAdd == connectedLinks.end()) {
+        this->connectedLinks.insert(std::pair(link->id, link));
     }
 }
 
-Schema::Schema(Schema& schema) {
+Schema::Schema(Schema &schema)
+{
     qDebug() << "Begin to copy a schema.";
-    this->schemaIds = schema.schemaIds;
-    this->id = schema.id;
-    this->connected_links = schema.connected_links;
+    this->schemaIds      = schema.schemaIds;
+    this->id             = schema.id;
+    this->connectedLinks = schema.connectedLinks;
     qDebug() << "SCHEMA ICON POS " << schema.icon->pos();
-    this->icon = std::make_unique<SchemaIcon>("", this, nullptr);
+    this->icon = std::make_unique<SchemaIcon>(this);
     this->icon->configurate(schema.icon->getConf());
     this->window = std::make_unique<SchemaWindow>(this);
-
 
     qDebug() << "Begin to copy a schema's machines.";
     unsigned lI = 0;
@@ -204,7 +219,8 @@ Schema::Schema(Schema& schema) {
     this->name = "";
 }
 
-void Schema::drawItems() {
+void Schema::drawItems()
+{
     std::vector<Item *> machineVector;
     for (auto &it : this->machines) {
         machineVector.push_back(it.second.get());

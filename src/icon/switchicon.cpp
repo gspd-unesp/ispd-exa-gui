@@ -1,11 +1,11 @@
 #include "icon/switchicon.h"
 #include "components/link.h"
+#include "components/switch.h"
 #include "icon/linkicon.h"
 #include "utils/iconSize.h"
-#include "components/switch.h"
 
-SwitchIcon::SwitchIcon(const char *name, Switch *owner, QGraphicsItem *parent)
-    : Icon{name, owner, parent}
+SwitchIcon::SwitchIcon(Switch *owner, QGraphicsItem *parent)
+    : Icon{owner, parent}
 {
     this->owner            = owner;
     this->iconPath         = ":icons/switch.svg";

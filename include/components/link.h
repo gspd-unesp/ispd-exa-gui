@@ -2,6 +2,7 @@
 
 #include "components/item.h"
 #include <memory>
+#include <string>
 
 class LinkIcon;
 class Icon;
@@ -18,21 +19,21 @@ class Link : public Item
 {
 public:
     explicit Link(Schema         *schema,
-         unsigned        id,
-         const char     *name,
-         LinkConnections connections);
+                  unsigned        id,
+                  const char     *name,
+                  LinkConnections connections);
     virtual ~Link();
 
-    void addLine();
-    void draw();
-    void showConfiguration() override;
+    void  addLine();
+    void  draw();
+    void  showConfiguration() override;
     Icon *getIcon() override;
 
     Schema *schema;
 
     LinkConnections connections;
 
-    std::unique_ptr<std::string> name;
+    std::string name;
 
     unsigned                  id;
     std::unique_ptr<LinkIcon> icon;

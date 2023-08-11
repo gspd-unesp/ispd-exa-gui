@@ -7,11 +7,10 @@
 #include "components/schema.h"
 #include <QGraphicsItem>
 
-SchemaIcon::SchemaIcon(const char *name, Schema *owner, QGraphicsItem *parent)
-    : Icon{name, owner, parent}
+SchemaIcon::SchemaIcon(Schema *owner, QGraphicsItem *parent)
+    : Icon{owner, parent}
 {
     this->owner      = owner;
-    this->window     = std::make_unique<SchemaWindow>(this->owner);
     iconPath         = ":icons/cluster.png";
     iconPathSelected = ":icons/clusterSelected.png";
     

@@ -28,6 +28,7 @@ public:
     ids *schemaIds;
     explicit Schema(const char *name, Schema *parent = nullptr);
     Schema(Schema &schema);
+    ~Schema();
 
     Schema(Schema &&)                                = default;
     Schema                     &operator=(Schema &&) = default;
@@ -37,7 +38,7 @@ public:
 
     std::unique_ptr<SchemaWindow> window;
 
-    std::map<unsigned, Link *>                   connected_links;
+    std::map<unsigned, Link *>                   connectedLinks;
     std::map<unsigned, std::unique_ptr<Machine>> machines;
     std::map<unsigned, std::unique_ptr<Link>>    links;
     std::map<unsigned, std::unique_ptr<Schema>>  schemas;

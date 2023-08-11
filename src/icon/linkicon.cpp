@@ -3,11 +3,13 @@
 #include "components/link.h"
 #include "icon/icon.h"
 #include "qdebug.h"
+#include "qgraphicsitem.h"
 #include <QGraphicsDropShadowEffect>
 #include <QGraphicsEffect>
 #include <QGraphicsItem>
 #include <QPainter>
 #include <QPen>
+#include <algorithm>
 #include <cmath>
 #include <memory>
 
@@ -29,23 +31,20 @@ QPointF getMiddleOfIcon(Icon *a)
 ///
 ///  @brief Default constructor for Link
 ///
-///  @see Icon
-///  @param name  the name of the Link
-///  @param b     the Icon that the Link comes from
-///  @param e     the Icon that the Link goes to
+///  @see Link
+///  @param owner  the Link that owns this icon.
 ///
-LinkIcon::LinkIcon(Link *owner, char const *name) : Icon()
+LinkIcon::LinkIcon(Link *owner) : QGraphicsPolygonItem()
 {
     this->owner = owner;
     qDebug() << "Is it here?";
     this->begin = this->owner->connections.begin->getIcon();
     this->end   = this->owner->connections.end->getIcon();
-    this->name  = std::make_unique<std::string>(name);
 }
 
 LinkIcon::~LinkIcon()
 {
-    qDebug() << "Deleting the link icon of" << this->name->c_str();
+    qDebug() << "Deleting the link icon of" << this->owner->name.c_str();
 }
 
 void LinkIcon::draw()
@@ -79,12 +78,10 @@ void LinkIcon::draw()
 ///
 void LinkIcon::updatePositions()
 {
-    const char* cBegin = this->begin ? this->begin->getName()->c_str() : "NOT FOUND";
-    const char* cEnd = this->end ? this->end->getName()->c_str() : "NOT FOUND";
-    qDebug() << "LINK #" << this->id << ": begin=" << cBegin
-             << " end=" << cEnd;
     QPolygonF newLine;
+
     newLine << getMiddleOfIcon(this->begin) << getMiddleOfIcon(this->end);
+
     this->setPolygon(newLine);
 }
 
@@ -116,36 +113,16 @@ void LinkIcon::mousePressEvent(QGraphicsSceneMouseEvent *event)
 
 void LinkIcon::select()
 {
-    if (begin->isSelected == false) {
-        begin->isSelected = true;
-        end->isSelected   = true;
+    if (begin->isSelected()) {
+        begin->setSelected(true);
+        end->setSelected(true);
         linkPen.setColor(QColor(9, 132, 227));
         this->setPen(linkPen);
     }
     else {
-        begin->isSelected = false;
-        end->isSelected   = false;
+        begin->setSelected(false);
+        end->setSelected(false);
         linkPen.setColor(QColor(245, 69, 55));
         this->setPen(linkPen);
     }
 }
-
-std::string *LinkIcon::getName()
-{
-    return name.get();
-}
-
-/* LinkIcon::~LinkIcon() */
-/* { */
-/*     delete this->name; */
-/*  */
-/*     Icon *icons[] = {this->begin, this->end}; */
-/*  */
-/*     for (size_t i = 0; i < std::size(icons); i++) { */
-/*         if (icons[i]) { */
-/*             if (icons[i]->links) { */
-/*                 icons[i]->links->erase(this->id); */
-/*             } */
-/*         } */
-/*     } */
-/* } */

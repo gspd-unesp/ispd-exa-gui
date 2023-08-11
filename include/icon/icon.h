@@ -26,49 +26,46 @@ struct Conf
 };
 
 // Define a estrutura para armazenar as configurações do ícone
-struct IconConfiguration
-{
-    QString CompPower_lineEdit;
-    QString cores_lineEdit;
-    QString energyconsumer_lineEdit;
-    QString labelEdit;
-    QString lineEdit_4;
-    QString loadFactor_lineEdit;
-    QString primarystorage_lineEdit;
-    QString secondaryStorage_lineEdit;
+/* struct IconConfiguration */
+/* { */
+/*     QString CompPower_lineEdit; */
+/*     QString cores_lineEdit; */
+/*     QString energyconsumer_lineEdit; */
+/*     QString labelEdit; */
+/*     QString lineEdit_4; */
+/*     QString loadFactor_lineEdit; */
+/*     QString primarystorage_lineEdit; */
+/*     QString secondaryStorage_lineEdit; */
+/*  */
+/*     int  ownercomboBoxIndex; */
+/*     int  schedulingcomboBoxIndex; */
+/*     bool checkBoxState; */
+/*     // Adicione mais campos aqui, se necessário */
+/*     IconConfiguration() */
+/*         : ownercomboBoxIndex(0), schedulingcomboBoxIndex(0), */
+/*           checkBoxState(false) */
+/*     { */
+/*         // Define os valores iniciais dos campos conforme necessário */
+/*         labelEdit = ""; // Por exemplo, defina uma string vazia como valor */
+/*                         // inicial para textValue */
+/*         CompPower_lineEdit        = ""; */
+/*         cores_lineEdit            = ""; */
+/*         energyconsumer_lineEdit   = ""; */
+/*         lineEdit_4                = ""; */
+/*         loadFactor_lineEdit       = ""; */
+/*         primarystorage_lineEdit   = ""; */
+/*         secondaryStorage_lineEdit = ""; */
+/*     } */
+/* }; */
 
-    int  ownercomboBoxIndex;
-    int  schedulingcomboBoxIndex;
-    bool checkBoxState;
-    // Adicione mais campos aqui, se necessário
-    IconConfiguration()
-        : ownercomboBoxIndex(0), schedulingcomboBoxIndex(0),
-          checkBoxState(false)
-    {
-        // Define os valores iniciais dos campos conforme necessário
-        labelEdit = ""; // Por exemplo, defina uma string vazia como valor
-                        // inicial para textValue
-        CompPower_lineEdit        = "";
-        cores_lineEdit            = "";
-        energyconsumer_lineEdit   = "";
-        lineEdit_4                = "";
-        loadFactor_lineEdit       = "";
-        primarystorage_lineEdit   = "";
-        secondaryStorage_lineEdit = "";
-    }
-};
-
-class Icon : public QObject, public QGraphicsItem
+class Icon : public QObject, public QGraphicsPixmapItem
 {
     Q_OBJECT
 public:
-    Icon(const char    *name,
-         Connection    *owner  = nullptr,
-         QGraphicsItem *parent = nullptr);
+    explicit Icon(Connection *owner = nullptr, QGraphicsItem *parent = nullptr);
     Icon(Icon &icon);
     virtual ~Icon(){};
 
-    bool     isSelected;
     unsigned id;
     bool     select;
 
@@ -76,13 +73,12 @@ public:
     std::string iconPathSelected;
 
     // Funções para salvar e carregar as configurações do ícone
-    void         saveConfiguration();
-    void         loadConfiguration();
+    /* void         saveConfiguration(); */
+    /* void         loadConfiguration(); */
     Connection  *getOwner();
     void         toggleSelect();
     void         deselect();
     void         setOutputLabel(QLabel *label);
-    std::string *getName();
     void         configurate(Conf conf);
     Conf         getConf();
 
@@ -95,9 +91,8 @@ private:
     void                         updatePosition();
     QString                      positionString;
     QLabel                      *outputLabel;
-    std::unique_ptr<std::string> name;
-    IconConfiguration configuration; // Adicione o membro de dados para
-                                     // armazenar a configuração
+    /* IconConfiguration configuration; // Adicione o membro de dados para */
+    // armazenar a configuração
     Connection *owner;
 
 signals:

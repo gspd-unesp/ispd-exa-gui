@@ -8,6 +8,7 @@ class Switch : public Connection
 {
 public:
     Switch(Schema *schema, unsigned id, const char *name);
+    ~Switch();
     std::map<unsigned, Link *> *getConnectedLinks() override;
     SwitchIcon                 *getIcon() override;
     void        setConnectedLinks(std::map<unsigned, Link *> *map) override;

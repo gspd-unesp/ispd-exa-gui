@@ -8,11 +8,10 @@
 #include <QGraphicsSceneMouseEvent>
 #include <QKeyEvent>
 
-MachineIcon::MachineIcon(unsigned id, const char *name, Machine *owner, QGraphicsItem *parent)
-    : Icon{name, owner, parent}
+MachineIcon::MachineIcon(Machine *owner, QGraphicsItem *parent)
+    : Icon{owner, parent}
 {
     this->owner            = owner;
-    this->id               = id;
     this->iconPath         = ":icons/pc.png";
     this->iconPathSelected = ":icons/pcSelected.png";
 
@@ -27,7 +26,4 @@ void MachineIcon::mouseDoubleClickEvent(QGraphicsSceneMouseEvent *event)
     this->owner->showConfiguration();
     
     QGraphicsPixmapItem::mouseDoubleClickEvent(event);
-}
-
-MachineIcon::MachineIcon(MachineIcon& icon) : Icon{icon} {
 }

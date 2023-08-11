@@ -1,5 +1,6 @@
 #include "components/switch.h"
 #include "components/link.h"
+#include "components/schema.h"
 #include <memory>
 
 Switch::Switch(Schema *schema, unsigned id, const char *name)
@@ -8,7 +9,19 @@ Switch::Switch(Schema *schema, unsigned id, const char *name)
     this->id     = id;
     this->name   = name;
 
-    this->icon = std::make_unique<SwitchIcon>(name, this);
+    this->icon = std::make_unique<SwitchIcon>(this);
+}
+
+Switch::~Switch() {
+    for (auto [linkId, link] : this->connectedLinks) {
+        Connection *otherIcon = (link->connections.begin == this)
+                                    ? link->connections.end
+                                    : link->connections.begin;
+
+        otherIcon->removeConnectedLink(link);
+
+        this->schema->deleteLink(linkId);
+    }
 }
 
 std::map<unsigned, Link *> *Switch::getConnectedLinks()

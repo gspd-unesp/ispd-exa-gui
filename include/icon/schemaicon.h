@@ -15,11 +15,9 @@ class SchemaIcon : public Icon
 {
     Q_OBJECT
 public:
-    SchemaIcon(const char    *name,
-               Schema        *owner,
+    explicit SchemaIcon(Schema        *owner,
                QGraphicsItem *parent = nullptr);
     SchemaIcon(SchemaIcon &icon);
-    std::unique_ptr<SchemaWindow> window;
 
 protected:
     void mouseDoubleClickEvent(QGraphicsSceneMouseEvent *event) override;

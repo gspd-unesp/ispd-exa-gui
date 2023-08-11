@@ -14,14 +14,13 @@
 /// their behavior; it moves when they move, for example.
 ///
 /// @see Icon
-class LinkIcon : public Icon, public QGraphicsPolygonItem
+class LinkIcon : public QGraphicsPolygonItem
 {
 public:
-    LinkIcon(Link *owner, const char *name);
+    explicit LinkIcon(Link *owner);
     ~LinkIcon();
 
     Link        *owner;
-    unsigned     id;
     Icon        *begin; ///< the \link Icon \endlink that the link comes from
     Icon        *end;   ///< the \link Icon \endlink that the link goes to
     void         mousePressEvent(QGraphicsSceneMouseEvent *event) override;
@@ -38,7 +37,6 @@ protected:
     void select();
 
 private:
-    std::unique_ptr<std::string> name; ///< the name of the \link Link \endlink
     QGraphicsPolygonItem        *arrow;
     QPen                         linkPen;
 };

@@ -271,27 +271,27 @@ void printSchema(Schema *schema)
          machine++) {
 
         qDebug() << "Machine #" << machine->second->id << ": "
-                 << machine->second->icon->getName()->c_str();
+                 << machine->second->name.c_str();
     }
 
     for (auto &[id, nswitch] : schema->switches) {
 
         qDebug() << "Switch #" << id << ": "
-                 << nswitch->getIcon()->getName()->c_str();
+                 << nswitch->getName().c_str();
     }
 
     for (auto sch = schema->schemas.begin(); sch != schema->schemas.end();
          sch++) {
 
         qDebug() << "Schema #" << sch->second->id << ": "
-                 << sch->second->icon->getName()->c_str();
+                 << sch->second->name.c_str();
     }
 
     for (auto link = schema->links.begin(); link != schema->links.end();
          link++) {
 
         qDebug() << "Link #" << link->second->id << ": "
-                 << link->second->icon->getName()->c_str();
+                 << link->second->name.c_str();
     }
 }
 void DrawingTable::openUserWindowClicked()

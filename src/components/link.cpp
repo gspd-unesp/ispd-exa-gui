@@ -15,13 +15,15 @@ Link::Link(Schema         *schema,
     this->id          = id;
     this->connections = connections;
     this->schema      = schema;
-    this->name        = std::make_unique<std::string>(name);
-    this->icon        = std::make_unique<LinkIcon>(this, name);
+    this->name        = name;
+    qDebug() << "BEFORE MAKING UNIQUE ICON OF LINK";
+    this->icon        = std::make_unique<LinkIcon>(this);
+    qDebug() << "AFTER MAKING UNIQUE ICON OF LINK";
 }
 
 Link::~Link()
 {
-    qDebug() << "Deleting " << this->name->c_str();
+    qDebug() << "Deleting " << this->name.c_str();
 }
 
 void Link::addLine()

@@ -47,7 +47,7 @@ void SchemaCloner::generateMachines(
     for (auto &it : this->machines) {
         std::unique_ptr<Item> newMachine = it->clone();
         unsigned              id = static_cast<Machine *>(newMachine.get())->id;
-        machines.insert(id, std::move(newMachine));
+        /* machines.insert(id, newMachine); */
     }
     qDebug() << "Ended generating new schema machines.";
 }

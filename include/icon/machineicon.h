@@ -10,9 +10,7 @@ class MachineIcon : public Icon
 {
     Q_OBJECT
 public:
-    MachineIcon(unsigned       id,
-                const char    *name,
-                Machine       *owner,
+    explicit MachineIcon(Machine       *owner,
                 QGraphicsItem *parent = nullptr);
 
     MachineIcon(MachineIcon& icon);
