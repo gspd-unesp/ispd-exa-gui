@@ -2,7 +2,9 @@
 #include "components/item.h"
 #include "components/link.h"
 #include "icon/linkicon.h"
+#include "qgraphicsitem.h"
 #include "qgraphicssceneevent.h"
+#include "qobject.h"
 #include "utils/iconSize.h"
 #include <QDebug>
 #include <QGraphicsItem>
@@ -121,8 +123,7 @@ void Icon::updatePosition()
  */
 void Icon::mousePressEvent(QGraphicsSceneMouseEvent *event)
 {
-    qDebug() << "(" << this->pos().x() << " , " << this->pos().y() << ")"
-             << "\n";
+    qDebug() << this->pos();
     
     QGraphicsPixmapItem::mousePressEvent(event);
     if (event->modifiers() & Qt::ShiftModifier) {
@@ -208,6 +209,8 @@ Connection *Icon::getOwner() {
     return owner;
 }
 
-Icon::Icon(Icon& icon) {
+Icon::Icon(Icon& icon) : QObject(&icon), QGraphicsPixmapItem{&icon} {
     this->owner = icon.owner;
+    this->setPos(icon.pos());
 }
+

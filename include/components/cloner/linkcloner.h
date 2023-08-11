@@ -8,4 +8,5 @@ public:
     LinkCloner(Link *base, SchemaCloner *parent);
 private:
     Link *base;
+    SchemaCloner *parent;
 };

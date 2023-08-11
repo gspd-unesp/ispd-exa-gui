@@ -8,5 +8,6 @@ public:
     SwitchCloner(Switch *base, SchemaCloner *parent);
 private:
     Switch *base;
+    SchemaCloner *parent;
 };
 

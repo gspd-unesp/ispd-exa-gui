@@ -60,24 +60,24 @@ public:
     Icon(const char    *name,
          Connection    *owner  = nullptr,
          QGraphicsItem *parent = nullptr);
-    Icon(Icon& icon);
+    Icon(Icon &icon);
     virtual ~Icon(){};
 
-    bool                        isSelected;
-    unsigned                    id;
-    bool                        select;
+    bool     isSelected;
+    unsigned id;
+    bool     select;
 
     std::string iconPath;
     std::string iconPathSelected;
 
     // Funções para salvar e carregar as configurações do ícone
-    void                        saveConfiguration();
-    void                        loadConfiguration();
-    Connection                 *getOwner();
-    void                        selection(bool select);
-    void                        deselect();
-    void                        setOutputLabel(QLabel *label);
-    std::string                *getName();
+    void         saveConfiguration();
+    void         loadConfiguration();
+    Connection  *getOwner();
+    void         selection(bool select);
+    void         deselect();
+    void         setOutputLabel(QLabel *label);
+    std::string *getName();
 
 protected:
     void mouseReleaseEvent(QGraphicsSceneMouseEvent *event) override;

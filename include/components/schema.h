@@ -22,20 +22,20 @@ typedef struct IDS
     unsigned switchId;
 } ids;
 
-class Schema : public Item, public Connection
+class Schema : public Connection
 {
 public:
     ids *schemaIds;
     Schema(const char *name, Schema *parent = nullptr);
-    Schema(Schema& schema);
+    Schema(Schema &schema);
 
     Schema(Schema &&)                                = default;
     Schema                     &operator=(Schema &&) = default;
     unsigned                    id;
     std::unique_ptr<SchemaIcon> icon;
-    std::string                *name;
+    std::string                 name;
 
-    SchemaWindow *window;
+    std::unique_ptr<SchemaWindow> window;
 
     std::map<unsigned, Link *>                   connected_links;
     std::map<unsigned, std::unique_ptr<Machine>> machines;

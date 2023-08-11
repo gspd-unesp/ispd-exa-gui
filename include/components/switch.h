@@ -13,6 +13,7 @@ public:
     void        setConnectedLinks(std::map<unsigned, Link *> *map) override;
     void        removeConnectedLink(Link *link) override;
     void        addConnectedLink(Link *link) override;
+    void        showConfiguration() override;
     std::string getName();
 
 private:

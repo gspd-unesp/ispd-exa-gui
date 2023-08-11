@@ -11,7 +11,7 @@ SchemaIcon::SchemaIcon(const char *name, Schema *owner, QGraphicsItem *parent)
     : Icon{name, owner, parent}
 {
     this->owner      = owner;
-    this->window     = new SchemaWindow(this->owner);
+    this->window     = std::make_unique<SchemaWindow>(this->owner);
     iconPath         = ":icons/cluster.png";
     iconPathSelected = ":icons/clusterSelected.png";
     
@@ -19,4 +19,23 @@ SchemaIcon::SchemaIcon(const char *name, Schema *owner, QGraphicsItem *parent)
         QPixmap::fromImage(QImage(this->iconPath.c_str())).scaled(iconSize);
     
     this->setPixmap(pixmap);
+}
+
+SchemaIcon::SchemaIcon(SchemaIcon &icon) : Icon(icon) {
+    this->owner = icon.owner;
+}
+
+void SchemaIcon::mouseDoubleClickEvent(QGraphicsSceneMouseEvent *event) {
+    this->owner->showConfiguration();
+}
+
+Conf SchemaIcon::getConf() {
+    qDebug() << "POS " << this->scenePos();
+    return Conf {
+        this->scenePos(),
+    };
+}
+
+void SchemaIcon::configurate(Conf conf) {
+    this->setPos(conf.pos);
 }

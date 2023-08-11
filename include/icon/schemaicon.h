@@ -5,10 +5,16 @@
 #include "window/schemawindow.h"
 #include <QObject>
 #include <deque>
+#include <memory>
 #include <string>
 
 class Schema;
 class MachineIcon;
+
+struct Conf
+{
+    QPointF pos;
+};
 
 class SchemaIcon : public Icon
 {
@@ -17,8 +23,14 @@ public:
     SchemaIcon(const char    *name,
                Schema        *owner,
                QGraphicsItem *parent = nullptr);
-    SchemaWindow *window;
+    SchemaIcon(SchemaIcon &icon);
+    std::unique_ptr<SchemaWindow> window;
+    void                          configurate(Conf conf);
+    Conf                          getConf();
+
+protected:
+    void mouseDoubleClickEvent(QGraphicsSceneMouseEvent *event) override;
 
 private:
-    Schema       *owner;
+    Schema *owner;
 };

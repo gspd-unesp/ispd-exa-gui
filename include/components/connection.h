@@ -1,11 +1,12 @@
 #pragma once
+#include "components/item.h"
 #include <map>
 #include <memory>
 
 class Link;
 class Icon;
 
-class Connection
+class Connection : public Item
 {
 public:
     virtual std::map<unsigned, Link *> *getConnectedLinks()        = 0;

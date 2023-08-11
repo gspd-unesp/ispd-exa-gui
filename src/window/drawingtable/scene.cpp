@@ -2,6 +2,7 @@
 #include "components/link.h"
 #include "components/schema.h"
 #include "components/switch.h"
+#include "components/cloner/schemacloner.h"
 #include "icon/linkicon.h"
 #include "icon/machineicon.h"
 #include "icon/schemaicon.h"
@@ -18,6 +19,7 @@
 #include <QKeyEvent>
 #include <QMouseEvent>
 #include <iostream>
+#include <memory>
 #include <string>
 
 ///
@@ -62,6 +64,15 @@ void Scene::addLink(Link *link)
     this->addItem(link->icon.get());
 }
 
+Schema *findScheme(Schema *schema) {
+    for (auto &it : schema->schemas) {
+        if (it.second->getIcon()->isSelected) {
+            return it.second.release();
+        }
+    }
+    return nullptr;
+}
+
 ///
 /// @brief Handles a keyboard keypress.
 ///
@@ -71,6 +82,16 @@ void Scene::keyPressEvent(QKeyEvent *event)
 {
     if (event->key() == Qt::Key_Delete) {
         this->deleteItems();
+    } else if (event->key() == Qt::Key_C) {
+        qDebug() << "Aconteceu algo?";
+        this->sCloner = new SchemaCloner(findScheme(this->schema));
+    } else if (event->key() == Qt::Key_V) {
+        auto clone = this->sCloner->clone();
+        auto id = clone->id;
+
+        this->schema->schemas.insert(std::pair(id, std::move(clone)));
+        this->addItem(this->schema->schemas.at(id)->getIcon());
+        qDebug() << this->schema->schemas.at(id)->getIcon()->pos();
     }
 
     QGraphicsScene::keyPressEvent(event);
@@ -166,7 +187,7 @@ void Scene::mousePressEvent(QGraphicsSceneMouseEvent *event)
 {
     switch (this->pickOp) {
     case NONE: {
-        selectionArea(event);
+        /* selectionArea(event); */
         QGraphicsScene::mousePressEvent(event);
         return;
     }

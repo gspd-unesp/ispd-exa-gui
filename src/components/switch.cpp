@@ -5,8 +5,8 @@
 Switch::Switch(Schema *schema, unsigned id, const char *name)
 {
     this->schema = schema;
-    this->id = id;
-    this->name = name;
+    this->id     = id;
+    this->name   = name;
 
     this->icon = std::make_unique<SwitchIcon>(name, this);
 }
@@ -44,6 +44,10 @@ void Switch::addConnectedLink(Link *link)
     }
 }
 
-std::string Switch::getName() {
+std::string Switch::getName()
+{
     return this->name;
 }
+
+void Switch::showConfiguration()
+{}

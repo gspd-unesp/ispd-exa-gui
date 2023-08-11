@@ -11,13 +11,13 @@
 
 Schema::Schema(const char *name, Schema *parent)
 {
-    this->name            = new std::string(name);
+    this->name            = name;
     this->machines        = std::map<unsigned, std::unique_ptr<Machine>>();
     this->links           = std::map<unsigned, std::unique_ptr<Link>>();
     this->schemas         = std::map<unsigned, std::unique_ptr<Schema>>();
     this->switches        = std::map<unsigned, std::unique_ptr<Switch>>();
     this->connected_links = std::map<unsigned, Link *>();
-    this->window          = new SchemaWindow(this);
+    this->window          = std::make_unique<SchemaWindow>(this);
 
     if (parent) {
         schemaIds = parent->schemaIds;
@@ -29,7 +29,7 @@ Schema::Schema(const char *name, Schema *parent)
     this->id = schemaIds->schemaId;
     this->schemaIds->schemaId++;
 
-    icon = std::make_unique<SchemaIcon>(this->name->c_str(), this);
+    icon = std::make_unique<SchemaIcon>(this->name.c_str(), this);
 }
 
 unsigned Schema::allocateNewMachine()
@@ -160,5 +160,44 @@ void Schema::addConnectedLink(Link *link)
 }
 
 Schema::Schema(Schema& schema) {
+    qDebug() << "Begin to copy a schema.";
     this->schemaIds = schema.schemaIds;
+    this->id = schema.id;
+    this->connected_links = schema.connected_links;
+    qDebug() << "SCHEMA ICON POS " << schema.icon->pos();
+    this->icon = std::make_unique<SchemaIcon>("", this, nullptr);
+    this->icon->configurate(schema.icon->getConf());
+    this->window = std::make_unique<SchemaWindow>(this);
+
+
+    qDebug() << "Begin to copy a schema's machines.";
+    unsigned lI = 0;
+    for (auto &it : schema.links) {
+        this->links.insert(std::pair(lI, it.second.get()));
+
+        lI++;
+    }
+
+    unsigned mI = 0;
+    for (auto &it : schema.machines) {
+        this->machines.insert(std::pair(mI, it.second.get()));
+
+        mI++;
+    }
+
+    unsigned schI = 0;
+    for (auto &it : schema.schemas) {
+        this->schemas.insert(std::pair(schI, it.second.get()));
+
+        schI++;
+    }
+
+    unsigned swI = 0;
+    for (auto &it : schema.switches) {
+        this->switches.insert(std::pair(swI, it.second.get()));
+
+        swI++;
+    }
+
+    this->name = "";
 }

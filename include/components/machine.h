@@ -13,7 +13,7 @@ class MachineLoad;
 class Schema;
 class Link;
 
-class Machine : public Item, public Connection
+class Machine : public Connection
 {
 public:
     Machine(Schema *schema, unsigned id, const char *name);
