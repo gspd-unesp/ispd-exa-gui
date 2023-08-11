@@ -1,13 +1,18 @@
-#include <memory>
-class SchemaCloner;
-class Machine;
+#pragma once
 
-class MachineCloner
+#include "components/cloner/cloner.h"
+#include "components/machine.h"
+#include <memory>
+
+class SchemaCloner;
+
+class MachineCloner : public Cloner
 {
 public:
     MachineCloner(Machine *base, SchemaCloner *parent);
-    std::unique_ptr<Machine> clone();
+    std::unique_ptr<Item> clone() override;
 
 private:
-    Machine *base;
+    Machine      *base;
+    SchemaCloner *parent;
 };

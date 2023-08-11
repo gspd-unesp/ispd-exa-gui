@@ -20,6 +20,11 @@ class Link;
 class Connection;
 class Item;
 
+struct Conf
+{
+    QPointF pos;
+};
+
 // Define a estrutura para armazenar as configurações do ícone
 struct IconConfiguration
 {
@@ -53,7 +58,7 @@ struct IconConfiguration
     }
 };
 
-class Icon : public QObject, public QGraphicsPixmapItem
+class Icon : public QObject, public QGraphicsItem
 {
     Q_OBJECT
 public:
@@ -74,10 +79,12 @@ public:
     void         saveConfiguration();
     void         loadConfiguration();
     Connection  *getOwner();
-    void         selection(bool select);
+    void         toggleSelect();
     void         deselect();
     void         setOutputLabel(QLabel *label);
     std::string *getName();
+    void         configurate(Conf conf);
+    Conf         getConf();
 
 protected:
     void mouseReleaseEvent(QGraphicsSceneMouseEvent *event) override;

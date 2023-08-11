@@ -14,7 +14,7 @@
 /// their behavior; it moves when they move, for example.
 ///
 /// @see Icon
-class LinkIcon : public QGraphicsPolygonItem
+class LinkIcon : public Icon, public QGraphicsPolygonItem
 {
 public:
     LinkIcon(Link *owner, const char *name);

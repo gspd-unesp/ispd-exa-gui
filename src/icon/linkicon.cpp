@@ -34,7 +34,7 @@ QPointF getMiddleOfIcon(Icon *a)
 ///  @param b     the Icon that the Link comes from
 ///  @param e     the Icon that the Link goes to
 ///
-LinkIcon::LinkIcon(Link *owner, char const *name) : QGraphicsPolygonItem()
+LinkIcon::LinkIcon(Link *owner, char const *name) : Icon()
 {
     this->owner = owner;
     qDebug() << "Is it here?";

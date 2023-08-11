@@ -65,7 +65,9 @@ Machine::Machine(Machine &machine) {
     this->name = "";
     this->schema = nullptr;
     this->load = machine.load;
-    this->icon = std::make_unique<MachineIcon>(*machine.icon.get());
+    this->connected_links = machine.connected_links;
+    this->icon = std::make_unique<MachineIcon>(0, "", this);
+    this->icon->configurate(machine.getIcon()->getConf());
     this->id = 0;
 }
 

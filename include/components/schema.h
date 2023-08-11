@@ -26,7 +26,7 @@ class Schema : public Connection
 {
 public:
     ids *schemaIds;
-    Schema(const char *name, Schema *parent = nullptr);
+    explicit Schema(const char *name, Schema *parent = nullptr);
     Schema(Schema &schema);
 
     Schema(Schema &&)                                = default;
@@ -43,6 +43,7 @@ public:
     std::map<unsigned, std::unique_ptr<Schema>>  schemas;
     std::map<unsigned, std::unique_ptr<Switch>>  switches;
 
+    void     drawItems();
     unsigned allocateNewMachine();
     unsigned allocateNewSwitch();
     unsigned allocateNewLink(LinkConnections connections);

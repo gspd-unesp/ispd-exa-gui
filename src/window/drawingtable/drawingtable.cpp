@@ -237,7 +237,6 @@ void DrawingTable::switchButtonClicked()
     this->scene->pickOp = SWITCH;
 }
 
-
 ///
 /// @brief  set the scene operator to the click mode
 ///
@@ -310,4 +309,11 @@ void DrawingTable::openSimulationWindowClicked()
 {
     this->simulationWindow = new Simulation();
     simulationWindow->show();
+}
+
+void DrawingTable::addIcons(std::vector<Item *> *items)
+{
+    for (auto it : *items) {
+        this->scene->addIcon(it->getIcon(), it->getIcon()->pos());
+    }
 }

@@ -21,7 +21,7 @@ typedef enum PICK_OP
 class MachineIcon;
 class LinkIcon;
 class DrawingTable;
-
+class Cloner;
 class SchemaCloner;
 
 class Scene : public QGraphicsScene
@@ -48,18 +48,19 @@ public:
     QLabel *machineDescriptionLabel;
 
 private:
-    DrawingTable                 *table;
-    Schema                       *schema;
-    Connection                   *lBegin;
-    Connection                   *lEnd;
-    void                          addLink(Link *link);
-    Connection                   *whichConnection(QPointF pos);
-    void                          removeLink(Link *link);
-    void                          deleteItems();
-    UserWindow                   *userWindow;
-    QPointF                       startSelection;
-    QGraphicsRectItem            *selectionRect;
-    SchemaCloner *sCloner;
+    QPointF            getScenePosition();
+    DrawingTable      *table;
+    Schema            *schema;
+    Connection        *lBegin;
+    Connection        *lEnd;
+    void               addLink(Link *link);
+    Connection        *whichConnection(QPointF pos);
+    void               removeLink(Link *link);
+    void               deleteItems();
+    UserWindow        *userWindow;
+    QPointF            startSelection;
+    QGraphicsRectItem *selectionRect;
+    Cloner            *sCloner;
 
     void selectionArea(QGraphicsSceneMouseEvent *event);
 signals:

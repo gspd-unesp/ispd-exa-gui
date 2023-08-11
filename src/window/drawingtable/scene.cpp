@@ -1,13 +1,15 @@
 #include "window/drawingtable/scene.h"
+#include "components/cloner/schemacloner.h"
 #include "components/link.h"
 #include "components/schema.h"
 #include "components/switch.h"
-#include "components/cloner/schemacloner.h"
 #include "icon/linkicon.h"
 #include "icon/machineicon.h"
 #include "icon/schemaicon.h"
 #include "icon/switchicon.h"
+#include "components/cloner/cloner.h"
 #include "qgraphicsitem.h"
+#include "qpoint.h"
 #include "window/drawingtable/drawingtable.h"
 #include "window/machineconfiguration.h"
 #include "window/users.h"
@@ -37,6 +39,15 @@ Scene::Scene(DrawingTable *parent) : QGraphicsScene{parent}
     drawBackgroundLines();
 }
 
+QPointF Scene::getScenePosition()
+{
+    QGraphicsView *view           = this->views().first();
+    QPoint         globalMousePos = QCursor::pos();
+    QPointF        sceneMousePos =
+        view->mapToScene(view->mapFromGlobal(globalMousePos));
+    return sceneMousePos;
+}
+
 ///
 /// @brief Add an Icon to the position specified.
 ///
@@ -64,7 +75,8 @@ void Scene::addLink(Link *link)
     this->addItem(link->icon.get());
 }
 
-Schema *findScheme(Schema *schema) {
+Schema *findScheme(Schema *schema)
+{
     for (auto &it : schema->schemas) {
         if (it.second->getIcon()->isSelected) {
             return it.second.release();
@@ -82,16 +94,13 @@ void Scene::keyPressEvent(QKeyEvent *event)
 {
     if (event->key() == Qt::Key_Delete) {
         this->deleteItems();
-    } else if (event->key() == Qt::Key_C) {
+    }
+    else if (event->key() == Qt::Key_C) {
         qDebug() << "Aconteceu algo?";
         this->sCloner = new SchemaCloner(findScheme(this->schema));
-    } else if (event->key() == Qt::Key_V) {
+    }
+    else if (event->key() == Qt::Key_V) {
         auto clone = this->sCloner->clone();
-        auto id = clone->id;
-
-        this->schema->schemas.insert(std::pair(id, std::move(clone)));
-        this->addItem(this->schema->schemas.at(id)->getIcon());
-        qDebug() << this->schema->schemas.at(id)->getIcon()->pos();
     }
 
     QGraphicsScene::keyPressEvent(event);
@@ -268,13 +277,13 @@ void Scene::mouseReleaseEvent(QGraphicsSceneMouseEvent *event)
         for (auto item : this->items()) {
             if (Icon *icon = dynamic_cast<Icon *>(item)) {
                 if (selectionAreaRect.contains(icon->sceneBoundingRect())) {
-                    icon->selection(true);
+                    icon->toggleSelect(true);
                 }
                 else {
                     if (event->modifiers() & Qt::ShiftModifier) {
                     }
                     else {
-                        icon->selection(false);
+                        icon->toggleSelect(false);
                     }
                 }
             }

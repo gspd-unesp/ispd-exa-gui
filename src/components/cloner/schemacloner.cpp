@@ -1,28 +1,34 @@
 #include "components/cloner/schemacloner.h"
-#include "components/cloner/machinecloner.h"
 #include "components/cloner/linkcloner.h"
+#include "components/cloner/machinecloner.h"
 #include "components/cloner/switchcloner.h"
+#include "components/link.h"
+#include "components/machine.h"
 #include "components/schema.h"
 #include "components/switch.h"
-#include "components/machine.h"
-#include "components/link.h"
+#include <algorithm>
 #include <memory>
 
 SchemaCloner::SchemaCloner(Schema *base, SchemaCloner *parent)
 {
-    this->base = base;
+    this->base   = base;
     this->parent = parent;
-    this->setMachines(&base->machines);
+    this->setMachines();
 }
 
-std::unique_ptr<Schema> SchemaCloner::clone()
+std::unique_ptr<Item> SchemaCloner::clone()
 {
     qDebug() << "Begin to clone a schema.";
-    std::unique_ptr<Schema> clonedSchema = std::make_unique<Schema>(*this->base);
-    clonedSchema->id = this->base->schemaIds->schemaId++;
+    auto clonedSchema = std::make_unique<Schema>(*this->base);
+    clonedSchema->id  = this->base->schemaIds->schemaId++;
 
     qDebug() << "Generating new schema machines.";
     this->generateMachines(clonedSchema->machines);
+    for (auto const &it : clonedSchema->machines) {
+        qDebug() << "MACHINE FROM CLONED SCHEMA " << it.second->id;
+    }
+    clonedSchema->drawItems();
+
     qDebug() << "Generating new schema schemas.";
     /* this->generateSchemas(clonedSchema->schemas); */
     qDebug() << "Generating new schema switches.";
@@ -31,69 +37,62 @@ std::unique_ptr<Schema> SchemaCloner::clone()
     /* this->generateLinks(clonedSchema->links); */
 
     qDebug() << "Returning the cloned schema.";
+
     return clonedSchema;
 }
 
-void SchemaCloner::generateMachines(std::map<unsigned, std::unique_ptr<Machine>> &machines)
+void SchemaCloner::generateMachines(
+    std::map<unsigned, std::unique_ptr<Machine>> &machines)
 {
-
     for (auto &it : this->machines) {
-        machines.insert(std::pair(this->base->schemaIds->machineId++, it.second->clone()));
+        std::unique_ptr<Item> newMachine = it->clone();
+        unsigned              id = static_cast<Machine *>(newMachine.get())->id;
+        machines.insert(id, std::move(newMachine));
     }
     qDebug() << "Ended generating new schema machines.";
 }
 
-void SchemaCloner::generateSchemas(std::map<unsigned, std::unique_ptr<Schema>> &schemas)
-{
-}
-
-void SchemaCloner::generateLinks(std::map<unsigned, std::unique_ptr<Link>> &links)
+void SchemaCloner::generateSchemas(
+    std::map<unsigned, std::unique_ptr<Schema>> &schemas)
 {}
 
-void SchemaCloner::generateSwitches(std::map<unsigned, std::unique_ptr<Switch>> &switches)
+void SchemaCloner::generateLinks(
+    std::map<unsigned, std::unique_ptr<Link>> &links)
 {}
 
-void SchemaCloner::setMachines(std::map<unsigned, std::unique_ptr<Machine>> *baseMachines)
-{
-    unsigned key = 0;
-    auto it = baseMachines->begin();
-    while (it != baseMachines->end()) {
-        this->machines.insert(std::pair(key, std::make_unique<MachineCloner>(it->second.get(), this)));
+void SchemaCloner::generateSwitches(
+    std::map<unsigned, std::unique_ptr<Switch>> &switches)
+{}
 
-        it++;
-        key++;
+void SchemaCloner::setMachines()
+{
+    for (auto &it : this->base->machines) {
+        this->machines.push_back(
+            std::make_unique<MachineCloner>(it.second.get(), this));
     }
 }
 
-void SchemaCloner::setSchemas(std::map<unsigned, std::unique_ptr<Schema>> baseSchemas)
+void SchemaCloner::setSchemas()
 {
-    unsigned key = 0;
-    auto it = baseSchemas.begin();
-    while (it != baseSchemas.end()) {
-        this->schemas.insert(std::pair(key, std::make_unique<SchemaCloner>(it->second.get(), this)));
+    for (auto &it : this->base->schemas) {
 
-        key++;
+        this->schemas.push_back(
+            std::make_unique<SchemaCloner>(it.second.get(), this));
     }
 }
 
-void SchemaCloner::setLinks(std::map<unsigned, std::unique_ptr<Link>> baseLinks)
+void SchemaCloner::setLinks()
 {
-    unsigned key = 0;
-    auto it = baseLinks.begin();
-    while (it != baseLinks.end()) {
-        this->links.insert(std::pair(key, std::make_unique<LinkCloner>(it->second.get(), this)));
-
-        key++;
+    for (auto &it : this->base->links) {
+        this->links.push_back(
+            std::make_unique<LinkCloner>(it.second.get(), this));
     }
 }
 
-void SchemaCloner::setSwitches(std::map<unsigned, std::unique_ptr<Switch>> baseSwitches)
+void SchemaCloner::setSwitches()
 {
-    unsigned key = 0;
-    auto it = baseSwitches.begin();
-    while (it != baseSwitches.end()) {
-        this->switches.insert(std::pair(key, std::make_unique<SwitchCloner>(it->second.get(), this)));
-
-        key++;
+    for (auto &it : this->base->switches) {
+        this->switches.push_back(
+            std::make_unique<SwitchCloner>(it.second.get(), this));
     }
 }

@@ -29,13 +29,3 @@ void SchemaIcon::mouseDoubleClickEvent(QGraphicsSceneMouseEvent *event) {
     this->owner->showConfiguration();
 }
 
-Conf SchemaIcon::getConf() {
-    qDebug() << "POS " << this->scenePos();
-    return Conf {
-        this->scenePos(),
-    };
-}
-
-void SchemaIcon::configurate(Conf conf) {
-    this->setPos(conf.pos);
-}

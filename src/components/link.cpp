@@ -37,3 +37,7 @@ void Link::addLine()
 void Link::showConfiguration() {
     // TODO IMPLEMENT
 }
+
+Icon *Link::getIcon() {
+    return nullptr;
+}

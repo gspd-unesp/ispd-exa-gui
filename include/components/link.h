@@ -26,6 +26,7 @@ public:
     void addLine();
     void draw();
     void showConfiguration() override;
+    Icon *getIcon() override;
 
     Schema *schema;
 

@@ -6,6 +6,8 @@
 #include "icon/linkicon.h"
 #include "icon/machineicon.h"
 #include "icon/schemaicon.h"
+#include "window/drawingtable/drawingtable.h"
+#include "window/users.h"
 #include <algorithm>
 #include <memory>
 
@@ -200,4 +202,12 @@ Schema::Schema(Schema& schema) {
     }
 
     this->name = "";
+}
+
+void Schema::drawItems() {
+    std::vector<Item *> machineVector;
+    for (auto &it : this->machines) {
+        machineVector.push_back(it.second.get());
+    }
+    this->window->drawingTable->addIcons(&machineVector);
 }

@@ -45,7 +45,7 @@ void View::mousePressEvent(QMouseEvent *event)
         if (!clickedItem) {
             for (auto item : this->items()) {
                 if (Icon* icon = dynamic_cast<Icon*>(item)) {
-                    icon->selection(false);
+                    icon->toggleSelect(false);
                 }
             }
         }

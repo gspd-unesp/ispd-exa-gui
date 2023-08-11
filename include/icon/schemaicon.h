@@ -11,11 +11,6 @@
 class Schema;
 class MachineIcon;
 
-struct Conf
-{
-    QPointF pos;
-};
-
 class SchemaIcon : public Icon
 {
     Q_OBJECT
@@ -25,8 +20,6 @@ public:
                QGraphicsItem *parent = nullptr);
     SchemaIcon(SchemaIcon &icon);
     std::unique_ptr<SchemaWindow> window;
-    void                          configurate(Conf conf);
-    Conf                          getConf();
 
 protected:
     void mouseDoubleClickEvent(QGraphicsSceneMouseEvent *event) override;

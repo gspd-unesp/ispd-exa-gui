@@ -7,6 +7,7 @@
 #include "qobject.h"
 #include "utils/iconSize.h"
 #include <QDebug>
+#include <QDialog>
 #include <QGraphicsItem>
 #include <QGraphicsScene>
 #include <QGraphicsSceneMouseEvent>
@@ -16,11 +17,10 @@
 #include <map>
 #include <memory>
 #include <string>
-#include <QDialog>
 #include <vector>
 
 Icon::Icon(const char *name, Connection *owner, QGraphicsItem *parent)
-    : QGraphicsPixmapItem{parent}
+    : QGraphicsItem{parent}
 {
     this->setFlag(QGraphicsItem::ItemIsMovable);
     this->name       = std::make_unique<std::string>(name);
@@ -32,49 +32,69 @@ Icon::Icon(const char *name, Connection *owner, QGraphicsItem *parent)
 
 void Icon::saveConfiguration()
 {
-    machineIconConfiguration *configDialog = new machineIconConfiguration(this->getName()->c_str());
+    machineIconConfiguration *configDialog =
+        new machineIconConfiguration(this->getName()->c_str());
 
     configDialog->setLineEdit01Value(this->configuration.labelEdit);
     configDialog->setLineEdit02Value(this->configuration.CompPower_lineEdit);
     configDialog->setLineEdit03Value(this->configuration.cores_lineEdit);
-    configDialog->setLineEdit04Value(this->configuration.energyconsumer_lineEdit);
+    configDialog->setLineEdit04Value(
+        this->configuration.energyconsumer_lineEdit);
     configDialog->setLineEdit05Value(this->configuration.lineEdit_4);
     configDialog->setLineEdit06Value(this->configuration.loadFactor_lineEdit);
-    configDialog->setLineEdit07Value(this->configuration.primarystorage_lineEdit);
-    configDialog->setLineEdit08Value(this->configuration.secondaryStorage_lineEdit);
+    configDialog->setLineEdit07Value(
+        this->configuration.primarystorage_lineEdit);
+    configDialog->setLineEdit08Value(
+        this->configuration.secondaryStorage_lineEdit);
 
     configDialog->setOwnerComboBoxIndex(this->configuration.ownercomboBoxIndex);
-    configDialog->setSchedulingComboBoxIndex(this->configuration.schedulingcomboBoxIndex);
+    configDialog->setSchedulingComboBoxIndex(
+        this->configuration.schedulingcomboBoxIndex);
     configDialog->setCheckBoxState(this->configuration.checkBoxState);
 
     configDialog->show();
-    connect(configDialog, &machineIconConfiguration::configurationClicked, this, [this, configDialog]() {
-        this->configuration.labelEdit = configDialog->getLineEdit01Value();
-        this->configuration.CompPower_lineEdit = configDialog->getLineEdit02Value();
-        this->configuration.cores_lineEdit = configDialog->getLineEdit03Value();
-        this->configuration.energyconsumer_lineEdit = configDialog->getLineEdit04Value();
-        this->configuration.lineEdit_4 = configDialog->getLineEdit05Value();
-        this->configuration.loadFactor_lineEdit = configDialog->getLineEdit06Value();
-        this->configuration.primarystorage_lineEdit = configDialog->getLineEdit07Value();
-        this->configuration.secondaryStorage_lineEdit = configDialog->getLineEdit08Value();
+    connect(configDialog,
+            &machineIconConfiguration::configurationClicked,
+            this,
+            [this, configDialog]() {
+                this->configuration.labelEdit =
+                    configDialog->getLineEdit01Value();
+                this->configuration.CompPower_lineEdit =
+                    configDialog->getLineEdit02Value();
+                this->configuration.cores_lineEdit =
+                    configDialog->getLineEdit03Value();
+                this->configuration.energyconsumer_lineEdit =
+                    configDialog->getLineEdit04Value();
+                this->configuration.lineEdit_4 =
+                    configDialog->getLineEdit05Value();
+                this->configuration.loadFactor_lineEdit =
+                    configDialog->getLineEdit06Value();
+                this->configuration.primarystorage_lineEdit =
+                    configDialog->getLineEdit07Value();
+                this->configuration.secondaryStorage_lineEdit =
+                    configDialog->getLineEdit08Value();
 
-        this->configuration.ownercomboBoxIndex = configDialog->getOwnerComboBoxIndex();
-        this->configuration.schedulingcomboBoxIndex = configDialog->getSchedulingComboBoxIndex();
-        this->configuration.checkBoxState = configDialog->getCheckBoxState();
-    });
+                this->configuration.ownercomboBoxIndex =
+                    configDialog->getOwnerComboBoxIndex();
+                this->configuration.schedulingcomboBoxIndex =
+                    configDialog->getSchedulingComboBoxIndex();
+                this->configuration.checkBoxState =
+                    configDialog->getCheckBoxState();
+            });
 }
 
 void Icon::loadConfiguration()
 {
-    if (!configuration.labelEdit.isEmpty()
-        || !configuration.CompPower_lineEdit.isEmpty()
-        || !configuration.cores_lineEdit.isEmpty()
-        || !configuration.energyconsumer_lineEdit.isEmpty()
-        || !configuration.lineEdit_4.isEmpty()
-        || !configuration.loadFactor_lineEdit.isEmpty()
-        || !configuration.primarystorage_lineEdit.isEmpty()
-        || !configuration.secondaryStorage_lineEdit.isEmpty()) {
-        machineIconConfiguration *configDialog = new machineIconConfiguration(this->getName()->c_str());
+    if (!configuration.labelEdit.isEmpty() ||
+        !configuration.CompPower_lineEdit.isEmpty() ||
+        !configuration.cores_lineEdit.isEmpty() ||
+        !configuration.energyconsumer_lineEdit.isEmpty() ||
+        !configuration.lineEdit_4.isEmpty() ||
+        !configuration.loadFactor_lineEdit.isEmpty() ||
+        !configuration.primarystorage_lineEdit.isEmpty() ||
+        !configuration.secondaryStorage_lineEdit.isEmpty()) {
+        machineIconConfiguration *configDialog =
+            new machineIconConfiguration(this->getName()->c_str());
 
         configDialog->setLineEdit01Value(configuration.labelEdit);
         configDialog->setLineEdit02Value(configuration.CompPower_lineEdit);
@@ -83,15 +103,18 @@ void Icon::loadConfiguration()
         configDialog->setLineEdit05Value(configuration.lineEdit_4);
         configDialog->setLineEdit06Value(configuration.loadFactor_lineEdit);
         configDialog->setLineEdit07Value(configuration.primarystorage_lineEdit);
-        configDialog->setLineEdit08Value(configuration.secondaryStorage_lineEdit);
+        configDialog->setLineEdit08Value(
+            configuration.secondaryStorage_lineEdit);
 
         configDialog->setOwnerComboBoxIndex(configuration.ownercomboBoxIndex);
-        configDialog->setSchedulingComboBoxIndex(configuration.schedulingcomboBoxIndex);
+        configDialog->setSchedulingComboBoxIndex(
+            configuration.schedulingcomboBoxIndex);
         configDialog->setCheckBoxState(configuration.checkBoxState);
 
         configDialog->show();
         delete configDialog;
-    } else {
+    }
+    else {
     }
 }
 
@@ -103,7 +126,7 @@ void Icon::loadConfiguration()
  */
 void Icon::mouseMoveEvent(QGraphicsSceneMouseEvent *event)
 {
-    QGraphicsPixmapItem::mouseMoveEvent(event);
+    QGraphicsItem::mouseMoveEvent(event);
     this->updatePosition();
 }
 
@@ -124,17 +147,18 @@ void Icon::updatePosition()
 void Icon::mousePressEvent(QGraphicsSceneMouseEvent *event)
 {
     qDebug() << this->pos();
-    
-    QGraphicsPixmapItem::mousePressEvent(event);
+
+    QGraphicsItem::mousePressEvent(event);
     if (event->modifiers() & Qt::ShiftModifier) {
-        selection(true);
-    } else if (!isSelected){
+        toggleSelect();
+    }
+    else if (!isSelected) {
         for (QGraphicsItem *item : scene()->items()) {
-            if (Icon* icon = dynamic_cast<Icon*>(item)) {
-                icon->selection(false);
+            if (Icon *icon = dynamic_cast<Icon *>(item)) {
+                icon->toggleSelect();
             }
         }
-        selection(true);
+        toggleSelect();
     }
 }
 
@@ -153,23 +177,23 @@ void Icon::mouseReleaseEvent(QGraphicsSceneMouseEvent *event)
     auto pos    = this->pos();
     auto height = this->scene()->sceneRect().height();
     auto width  = this->scene()->sceneRect().width();
-    
+
     if (pos.x() <= 0) {
         this->moveBy(-pos.x(), 0);
     }
-    
+
     if (pos.y() <= 0) {
         this->moveBy(0, -pos.y());
     }
-    
+
     if (pos.x() > width) {
         this->moveBy(-(pos.x() - width), 0);
     }
-    
+
     if (pos.y() > height) {
         this->moveBy(0, -(pos.y() - height));
     }
-    
+
     // Check if Shift key is pressed
     /* if (event->modifiers() & Qt::ShiftModifier) { */
     /* } else if (!isSelected){ */
@@ -187,30 +211,40 @@ std::string *Icon::getName()
     return this->name.get();
 }
 
-void Icon::selection(bool select) {
-    if(select && !isSelected) {
-        if (!isSelected) {
-            isSelected = true;
-            auto pixmap = QPixmap::fromImage(QImage(this->iconPathSelected.c_str()))
-                              .scaled(iconSelectSize);
-            this->setPixmap(pixmap);
-        }
-    } else if(!select && isSelected) {
-        if (isSelected) {
-            isSelected = false;
-            auto pixmap =
-                QPixmap::fromImage(QImage(this->iconPath.c_str())).scaled(iconSize);
-            this->setPixmap(pixmap);
-        }
+void Icon::toggleSelect()
+{
+    if (!isSelected) {
+        isSelected  = true;
+        auto pixmap = QPixmap::fromImage(QImage(this->iconPathSelected.c_str()))
+                          .scaled(iconSelectSize);
+    }
+    else if (isSelected) {
+        isSelected = false;
+        auto pixmap =
+            QPixmap::fromImage(QImage(this->iconPath.c_str())).scaled(iconSize);
     }
 }
 
-Connection *Icon::getOwner() {
+Connection *Icon::getOwner()
+{
     return owner;
 }
 
-Icon::Icon(Icon& icon) : QObject(&icon), QGraphicsPixmapItem{&icon} {
+Icon::Icon(Icon &icon) : QObject(&icon), QGraphicsItem{&icon}
+{
     this->owner = icon.owner;
     this->setPos(icon.pos());
 }
 
+Conf Icon::getConf()
+{
+    qDebug() << "POS " << this->scenePos();
+    return Conf{
+        this->scenePos(),
+    };
+}
+
+void Icon::configurate(Conf conf)
+{
+    this->setPos(conf.pos);
+}
