@@ -52,12 +52,7 @@ private:
     Connection        *lEnd;
     void               addLink(Link *link);
     Connection        *whichConnection(QPointF pos);
-    std::string        getNewMachineName();
-    std::string        getNewLinkName();
-    std::string        getNewClusterName();
-    void               removeMachine(Machine *machine);
     void               removeLink(Link *link);
-    void               removeItemIcon(Item *item);
     void               deleteItems();
     UserWindow        *userWindow;
     QPointF            startSelection;

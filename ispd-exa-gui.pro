@@ -2,6 +2,7 @@ SOURCES += \
   qcustomplot.cpp \
   src/components/*.cpp \
   src/components/conf/*.cpp \
+  src/components/cloner/*.cpp \
   src/window/*.cpp \
   src/window/drawingtable/*.cpp \
   src/icon/*.cpp \

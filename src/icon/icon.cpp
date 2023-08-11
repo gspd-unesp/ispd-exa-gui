@@ -91,7 +91,6 @@ void Icon::loadConfiguration()
         delete configDialog;
     } else {
     }
-    this->links      = nullptr;
 }
 
 /*
@@ -207,4 +206,8 @@ void Icon::selection(bool select) {
 
 Connection *Icon::getOwner() {
     return owner;
+}
+
+Icon::Icon(Icon& icon) {
+    this->owner = icon.owner;
 }

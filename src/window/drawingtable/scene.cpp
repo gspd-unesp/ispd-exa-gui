@@ -79,66 +79,79 @@ void Scene::keyPressEvent(QKeyEvent *event)
 void Scene::deleteItems()
 {
     qDebug() << "Test of deleteItems.";
-    for (auto &[machineId, machine] : this->schema->machines) {
+
+    auto machineIt = this->schema->machines.begin();
+    while (machineIt != this->schema->machines.end()) {
+        Machine     *machine     = machineIt->second.get();
+        unsigned     id          = machineIt->first;
         MachineIcon *machineIcon = machine->getIcon();
 
+        machineIt++;
         if (machineIcon->isSelected) {
+
             for (auto [linkId, link] : *machine->getConnectedLinks()) {
-                Connection *otherIcon =
-                    (link->connections.begin ==
-                     static_cast<Connection *>(machine.get()))
-                        ? link->connections.end
-                        : link->connections.begin;
+                Connection *otherIcon = (link->connections.begin ==
+                                         static_cast<Connection *>(machine))
+                                            ? link->connections.end
+                                            : link->connections.begin;
 
                 otherIcon->removeConnectedLink(link);
 
                 this->schema->deleteLink(linkId);
             }
-            machineIcon->links->clear();
+            machine->getConnectedLinks()->clear();
 
-            this->schema->deleteMachine(machine->id);
+            this->schema->deleteMachine(id);
         }
     }
 
-    for (auto &[switchId, nSwitch] : this->schema->switches) {
-        SwitchIcon *switchIcon = nSwitch->getIcon();
-
-        if (switchIcon->isSelected) {
-            for (auto [linkId, link] : *nSwitch->getConnectedLinks()) {
-                Connection *otherIcon =
-                    (link->connections.begin ==
-                     static_cast<Connection *>(nSwitch.get()))
-                        ? link->connections.end
-                        : link->connections.begin;
-
-                otherIcon->removeConnectedLink(link);
-
-                this->schema->deleteLink(linkId);
-            }
-            switchIcon->links->clear();
-
-            this->schema->deleteSchema(switchId);
-        }
-    }
-
-    for (auto &[schemaId, schema] : this->schema->schemas) {
+    auto schemaIt = this->schema->schemas.begin();
+    while (schemaIt != this->schema->schemas.end()) {
+        Schema     *schema     = schemaIt->second.get();
+        unsigned    id         = schemaIt->first;
         SchemaIcon *schemaIcon = schema->getIcon();
 
+        schemaIt++;
         if (schemaIcon->isSelected) {
+
             for (auto [linkId, link] : *schema->getConnectedLinks()) {
-                Connection *otherIcon =
-                    (link->connections.begin ==
-                     static_cast<Connection *>(schema.get()))
-                        ? link->connections.end
-                        : link->connections.begin;
+                Connection *otherIcon = (link->connections.begin ==
+                                         static_cast<Connection *>(schema))
+                                            ? link->connections.end
+                                            : link->connections.begin;
 
                 otherIcon->removeConnectedLink(link);
 
                 this->schema->deleteLink(linkId);
             }
-            schemaIcon->links->clear();
+            schema->getConnectedLinks()->clear();
 
-            this->schema->deleteSchema(schema->id);
+            this->schema->deleteSchema(id);
+        }
+    }
+
+    auto switchIt = this->schema->switches.begin();
+    while (switchIt != this->schema->switches.end()) {
+        Switch     *nSwitch    = switchIt->second.get();
+        unsigned    id         = switchIt->first;
+        SwitchIcon *switchIcon = nSwitch->getIcon();
+
+        switchIt++;
+        if (switchIcon->isSelected) {
+
+            for (auto [linkId, link] : *nSwitch->getConnectedLinks()) {
+                Connection *otherIcon = (link->connections.begin ==
+                                         static_cast<Connection *>(nSwitch))
+                                            ? link->connections.end
+                                            : link->connections.begin;
+
+                otherIcon->removeConnectedLink(link);
+
+                this->schema->deleteLink(linkId);
+            }
+            schema->getConnectedLinks()->clear();
+
+            this->schema->deleteSwitch(id);
         }
     }
 }
@@ -153,7 +166,7 @@ void Scene::mousePressEvent(QGraphicsSceneMouseEvent *event)
 {
     switch (this->pickOp) {
     case NONE: {
-        /* selectionArea(event); */
+        selectionArea(event);
         QGraphicsScene::mousePressEvent(event);
         return;
     }
@@ -229,7 +242,7 @@ void Scene::mouseReleaseEvent(QGraphicsSceneMouseEvent *event)
         // Calculate the selection area rectangle
         QRectF selectionAreaRect =
             QRectF(this->startSelection, event->scenePos()).normalized();
-    
+
         // Deselect all icons outside the selection area
         for (auto item : this->items()) {
             if (Icon *icon = dynamic_cast<Icon *>(item)) {
@@ -252,7 +265,7 @@ void Scene::mouseReleaseEvent(QGraphicsSceneMouseEvent *event)
         delete this->selectionRect;
         this->selectionRect = nullptr;
     }
-    
+
     QGraphicsScene::mouseReleaseEvent(event);
 }
 
@@ -330,27 +343,4 @@ Connection *Scene::whichConnection(QPointF pos)
         }
     }
     return nullptr;
-}
-
-void Scene::removeMachine(Machine *machine)
-{
-    unsigned id = machine->id;
-
-    this->schema->deleteMachine(id);
-
-    removeItemIcon(machine);
-}
-
-void Scene::removeItemIcon(Item *item)
-{
-    removeItem(item->getIcon());
-}
-
-void Scene::removeLink(Link *link)
-{
-    unsigned id = link->id;
-
-    this->schema->deleteLink(id);
-
-    removeItem(link->icon.get());
 }

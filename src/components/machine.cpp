@@ -60,3 +60,15 @@ void Machine::addConnectedLink(Link *link) {
         this->connected_links.insert(std::pair(link->id, link));
     }
 }
+
+Machine::Machine(Machine &machine) {
+    this->name = "";
+    this->schema = nullptr;
+    this->load = machine.load;
+    this->icon = std::make_unique<MachineIcon>(*machine.icon.get());
+    this->id = 0;
+}
+
+std::unique_ptr<Machine> Machine::clone() {
+    return std::make_unique<Machine>(*this);
+}

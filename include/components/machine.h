@@ -24,6 +24,7 @@ public:
     void setConnectedLinks(std::map<unsigned, Link *> *map) override;
     void removeConnectedLink(Link *link) override;
     void addConnectedLink(Link *link) override;
+    std::unique_ptr<Machine> clone();
 
     void  showConfiguration() override;
     MachineIcon *getIcon() override;

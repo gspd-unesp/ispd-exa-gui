@@ -27,6 +27,7 @@ class Schema : public Item, public Connection
 public:
     ids *schemaIds;
     Schema(const char *name, Schema *parent = nullptr);
+    Schema(Schema& schema);
 
     Schema(Schema &&)                                = default;
     Schema                     &operator=(Schema &&) = default;
@@ -49,6 +50,7 @@ public:
     void     deleteSchema(unsigned schemaId);
     void     deleteMachine(unsigned machineId);
     void     deleteLink(unsigned linkId);
+    void     deleteSwitch(unsigned switchId);
 
     void                        showConfiguration() override;
     std::map<unsigned, Link *> *getConnectedLinks() override;

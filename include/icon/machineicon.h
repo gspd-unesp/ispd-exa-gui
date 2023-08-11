@@ -15,6 +15,7 @@ public:
                 Machine       *owner,
                 QGraphicsItem *parent = nullptr);
 
+    MachineIcon(MachineIcon& icon);
 protected:
     void mouseDoubleClickEvent(QGraphicsSceneMouseEvent *event) override;
 

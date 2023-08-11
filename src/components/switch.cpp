@@ -8,7 +8,6 @@ Switch::Switch(Schema *schema, unsigned id, const char *name)
     this->id = id;
     this->name = name;
 
-    this->connectedLinks = std::map<unsigned, Link *>();
     this->icon = std::make_unique<SwitchIcon>(name, this);
 }
 
@@ -43,4 +42,8 @@ void Switch::addConnectedLink(Link *link)
     if (linkToAdd == connectedLinks.end()) {
         this->connectedLinks.insert(std::pair(link->id, link));
     }
+}
+
+std::string Switch::getName() {
+    return this->name;
 }

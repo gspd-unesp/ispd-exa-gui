@@ -28,3 +28,6 @@ void MachineIcon::mouseDoubleClickEvent(QGraphicsSceneMouseEvent *event)
     
     QGraphicsPixmapItem::mouseDoubleClickEvent(event);
 }
+
+MachineIcon::MachineIcon(MachineIcon& icon) : Icon{icon} {
+}

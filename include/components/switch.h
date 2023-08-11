@@ -10,9 +10,10 @@ public:
     Switch(Schema *schema, unsigned id, const char *name);
     std::map<unsigned, Link *> *getConnectedLinks() override;
     SwitchIcon                 *getIcon() override;
-    void setConnectedLinks(std::map<unsigned, Link *> *map) override;
-    void removeConnectedLink(Link *link) override;
-    void addConnectedLink(Link *link) override;
+    void        setConnectedLinks(std::map<unsigned, Link *> *map) override;
+    void        removeConnectedLink(Link *link) override;
+    void        addConnectedLink(Link *link) override;
+    std::string getName();
 
 private:
     Schema                     *schema;

@@ -21,7 +21,7 @@ Link::Link(Schema         *schema,
 
 Link::~Link()
 {
-    qDebug() << "Deleting " << *this->name;
+    qDebug() << "Deleting " << this->name->c_str();
 }
 
 void Link::addLine()
@@ -32,4 +32,8 @@ void Link::addLine()
         std::pair(this->id, this));
 
     this->icon->draw();
+}
+
+void Link::showConfiguration() {
+    // TODO IMPLEMENT
 }

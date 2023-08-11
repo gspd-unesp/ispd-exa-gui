@@ -45,7 +45,7 @@ LinkIcon::LinkIcon(Link *owner, char const *name) : QGraphicsPolygonItem()
 
 LinkIcon::~LinkIcon()
 {
-    qDebug() << "Deleting the link icon of" << *this->name;
+    qDebug() << "Deleting the link icon of" << this->name->c_str();
 }
 
 void LinkIcon::draw()

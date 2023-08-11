@@ -1,9 +1,10 @@
 #pragma once
 
+#include "components/item.h"
 #include <memory>
+
 class LinkIcon;
 class Icon;
-class Item;
 class Connection;
 class Schema;
 
@@ -13,17 +14,18 @@ struct LinkConnections
     Connection *end;
 };
 
-class Link
+class Link : public Item
 {
 public:
-    Link(Schema         *schema,
+    explicit Link(Schema         *schema,
          unsigned        id,
          const char     *name,
          LinkConnections connections);
-    ~Link();
+    virtual ~Link();
 
     void addLine();
     void draw();
+    void showConfiguration() override;
 
     Schema *schema;
 

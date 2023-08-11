@@ -104,6 +104,15 @@ void Schema::deleteSchema(unsigned schemaId)
     }
 }
 
+void Schema::deleteSwitch(unsigned switchId)
+{
+    auto switchToDelete = this->switches.find(switchId);
+
+    if (switchToDelete != this->switches.end()) {
+        this->switches.erase(switchToDelete);
+    }
+}
+
 void Schema::deleteLink(unsigned linkId)
 {
     auto linkToDelete = this->links.find(linkId);
@@ -148,4 +157,8 @@ void Schema::addConnectedLink(Link *link)
     if (linkToAdd == connected_links.end()) {
         this->connected_links.insert(std::pair(link->id, link));
     }
+}
+
+Schema::Schema(Schema& schema) {
+    this->schemaIds = schema.schemaIds;
 }

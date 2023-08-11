@@ -60,11 +60,11 @@ public:
     Icon(const char    *name,
          Connection    *owner  = nullptr,
          QGraphicsItem *parent = nullptr);
+    Icon(Icon& icon);
     virtual ~Icon(){};
 
     bool                        isSelected;
     unsigned                    id;
-    std::map<unsigned, Link *> *links;
     bool                        select;
 
     std::string iconPath;
