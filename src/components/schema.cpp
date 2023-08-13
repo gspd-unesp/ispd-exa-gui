@@ -3,9 +3,10 @@
 #include "components/link.h"
 #include "components/machine.h"
 #include "components/switch.h"
+#include "icon/pixmapiconbuilder.h"
 #include "icon/linkicon.h"
-#include "icon/machineicon.h"
-#include "icon/schemaicon.h"
+#include "utils/iconPath.h"
+#include "utils/iconSize.h"
 #include "window/drawingtable/drawingtable.h"
 #include "window/users.h"
 #include <algorithm>
@@ -31,7 +32,11 @@ Schema::Schema(const char *name, Schema *parent)
     this->id = schemaIds->schemaId;
     this->schemaIds->schemaId++;
 
-    icon = std::make_unique<SchemaIcon>(this);
+    PixmapIconBuilder iconBuilder;
+    this->icon = std::unique_ptr<PixmapIcon>(
+        iconBuilder.setOwner(this)
+            ->setPixmap(QPixmap(schemaPath).scaled(iconSize))
+            ->build());
 }
 
 Schema::~Schema()
@@ -149,7 +154,7 @@ std::map<unsigned, Link *> *Schema::getConnectedLinks()
     return &this->connectedLinks;
 }
 
-SchemaIcon *Schema::getIcon()
+PixmapIcon *Schema::getIcon()
 {
     return this->icon.get();
 }
@@ -176,52 +181,9 @@ void Schema::addConnectedLink(Link *link)
     }
 }
 
-Schema::Schema(Schema &schema)
-{
-    qDebug() << "Begin to copy a schema.";
-    this->schemaIds      = schema.schemaIds;
-    this->id             = schema.id;
-    this->connectedLinks = schema.connectedLinks;
-    qDebug() << "SCHEMA ICON POS " << schema.icon->pos();
-    this->icon = std::make_unique<SchemaIcon>(this);
-    this->icon->configurate(schema.icon->getConf());
-    this->window = std::make_unique<SchemaWindow>(this);
-
-    qDebug() << "Begin to copy a schema's machines.";
-    unsigned lI = 0;
-    for (auto &it : schema.links) {
-        this->links.insert(std::pair(lI, it.second.get()));
-
-        lI++;
-    }
-
-    unsigned mI = 0;
-    for (auto &it : schema.machines) {
-        this->machines.insert(std::pair(mI, it.second.get()));
-
-        mI++;
-    }
-
-    unsigned schI = 0;
-    for (auto &it : schema.schemas) {
-        this->schemas.insert(std::pair(schI, it.second.get()));
-
-        schI++;
-    }
-
-    unsigned swI = 0;
-    for (auto &it : schema.switches) {
-        this->switches.insert(std::pair(swI, it.second.get()));
-
-        swI++;
-    }
-
-    this->name = "";
-}
-
 void Schema::drawItems()
 {
-    std::vector<Item *> machineVector;
+    std::vector<Connection *> machineVector;
     for (auto &it : this->machines) {
         machineVector.push_back(it.second.get());
     }

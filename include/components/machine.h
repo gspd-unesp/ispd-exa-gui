@@ -5,8 +5,6 @@
 #include <vector>
 
 #include "components/connection.h"
-#include "components/item.h"
-#include "icon/machineicon.h"
 
 class MachineLoad;
 class Schema;
@@ -26,12 +24,12 @@ public:
     std::unique_ptr<Machine> clone();
 
     void  showConfiguration() override;
-    MachineIcon *getIcon() override;
+    PixmapIcon *getIcon() override;
 
     std::string                  name;
     std::map<unsigned, Link *>   connected_links;
     Schema                      *schema;
     MachineLoad                 *load;
-    std::unique_ptr<MachineIcon> icon;
+    std::unique_ptr<PixmapIcon> icon;
     unsigned                     id;
 };

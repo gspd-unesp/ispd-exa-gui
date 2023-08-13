@@ -2,8 +2,8 @@
 
 #include "components/connection.h"
 #include "components/link.h"
-#include "components/machine.h"
-#include "icon/schemaicon.h"
+#include "icon/pixmapicon.h"
+#include "qvariant.h"
 #include "window/schemawindow.h"
 #include <map>
 #include <memory>
@@ -33,7 +33,7 @@ public:
     Schema(Schema &&)                                = default;
     Schema                     &operator=(Schema &&) = default;
     unsigned                    id;
-    std::unique_ptr<SchemaIcon> icon;
+    std::unique_ptr<PixmapIcon> icon;
     std::string                 name;
 
     std::unique_ptr<SchemaWindow> window;
@@ -56,7 +56,7 @@ public:
 
     void                        showConfiguration() override;
     std::map<unsigned, Link *> *getConnectedLinks() override;
-    SchemaIcon                 *getIcon() override;
+    PixmapIcon                 *getIcon() override;
     void setConnectedLinks(std::map<unsigned, Link *> *map) override;
     void removeConnectedLink(Link *link) override;
     void addConnectedLink(Link *link) override;

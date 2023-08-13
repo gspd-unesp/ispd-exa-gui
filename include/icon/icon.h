@@ -1,28 +1,25 @@
 #ifndef ICON_H
 #define ICON_H
 
-#include "components/connection.h"
-#include "qgraphicsscene.h"
-#include "qgraphicssceneevent.h"
-#include "window/machineconfiguration.h"
-#include "window/users.h"
-#include <QDialog>
-#include <QGraphicsItem>
-#include <QGraphicsView>
-#include <QLabel>
-#include <QObject>
-#include <QVector>
-#include <map>
-#include <memory>
-#include <string>
+/* #include "qgraphicsscene.h" */
+/* #include "qgraphicssceneevent.h" */
+/* #include "window/machineconfiguration.h" */
+/* #include "window/users.h" */
+/* #include <QDialog> */
+/* #include <QGraphicsItem> */
+/* #include <QGraphicsView> */
+/* #include <QLabel> */
+/* #include <QObject> */
+/* #include <QVector> */
+/* #include <map> */
+/* #include <memory> */
+/* #include <string> */
 
 class Link;
-class Connection;
-class Item;
 
 struct Conf
 {
-    QPointF pos;
+    /* QPointF pos; */
 };
 
 // Define a estrutura para armazenar as configurações do ícone
@@ -58,44 +55,44 @@ struct Conf
 /*     } */
 /* }; */
 
-class Icon : public QObject, public QGraphicsPixmapItem
+template <class OwnerT>
+class Icon
 {
-    Q_OBJECT
 public:
-    explicit Icon(Connection *owner = nullptr, QGraphicsItem *parent = nullptr);
-    Icon(Icon &icon);
-    virtual ~Icon(){};
-
-    unsigned id;
-    bool     select;
-
-    std::string iconPath;
-    std::string iconPathSelected;
-
-    // Funções para salvar e carregar as configurações do ícone
-    /* void         saveConfiguration(); */
-    /* void         loadConfiguration(); */
-    Connection  *getOwner();
-    void         toggleSelect();
-    void         deselect();
-    void         setOutputLabel(QLabel *label);
-    void         configurate(Conf conf);
-    Conf         getConf();
-
-protected:
-    void mouseReleaseEvent(QGraphicsSceneMouseEvent *event) override;
-    void mousePressEvent(QGraphicsSceneMouseEvent *event) override;
-    void mouseMoveEvent(QGraphicsSceneMouseEvent *event) override;
-
-private:
-    void                         updatePosition();
-    QString                      positionString;
-    QLabel                      *outputLabel;
-    /* IconConfiguration configuration; // Adicione o membro de dados para */
-    // armazenar a configuração
-    Connection *owner;
-
-signals:
+    virtual OwnerT *getOwner() = 0;
+    virtual void  toggleSelect() = 0;
+    /*     Q_OBJECT */
+    /* public: */
+    /*     explicit Icon(Connection *owner = nullptr, QGraphicsItem *parent =
+     * nullptr); */
+    /*     Icon(Icon &icon); */
+    /*     virtual ~Icon(){}; */
+    /*  */
+    /*     unsigned id; */
+    /*     bool     select; */
+    /*  */
+    /*     std::string iconPath; */
+    /*     std::string iconPathSelected; */
+    /*  */
+    /*     // Funções para salvar e carregar as configurações do ícone */
+    /*     void         saveConfiguration(); */
+    /*     void         loadConfiguration(); */
+    /*  */
+    /* protected: */
+    /*     void mouseReleaseEvent(QGraphicsSceneMouseEvent *event) override; */
+    /*     void mousePressEvent(QGraphicsSceneMouseEvent *event) override; */
+    /*     void mouseMoveEvent(QGraphicsSceneMouseEvent *event) override; */
+    /*  */
+    /* private: */
+    /*     void                         updatePosition(); */
+    /*     QString                      positionString; */
+    /*     QLabel                      *outputLabel; */
+    /*     IconConfiguration configuration; // Adicione o membro de dados para
+     */
+    /*     // armazenar a configuração */
+    /*     Connection *owner; */
+    /*  */
+    /* signals: */
 };
 
 #endif

@@ -3,7 +3,10 @@
 #include "components/item.h"
 #include "components/link.h"
 #include "components/schema.h"
-#include "icon/machineicon.h"
+#include "icon/pixmapicon.h"
+#include "icon/pixmapiconbuilder.h"
+#include "utils/iconPath.h"
+#include "utils/iconSize.h"
 #include "window/machineconfiguration.h"
 #include <map>
 #include <memory>
@@ -16,7 +19,11 @@ Machine::Machine(Schema *schema, unsigned id, const char *name)
     this->id              = id;
     this->connected_links = std::map<unsigned, Link *>();
 
-    this->icon = std::make_unique<MachineIcon>(this);
+    PixmapIconBuilder iconBuilder;
+    this->icon = std::unique_ptr<PixmapIcon>(
+        iconBuilder.setPixmap(QPixmap(machinePath).scaled(iconSize))
+            ->setOwner(this)
+            ->build());
 }
 
 Machine::~Machine()
@@ -41,7 +48,7 @@ void Machine::showConfiguration()
     machineIconConfig->show();
 }
 
-MachineIcon *Machine::getIcon()
+PixmapIcon *Machine::getIcon()
 {
     return this->icon.get();
 }
@@ -79,8 +86,9 @@ Machine::Machine(Machine &machine)
     this->schema          = nullptr;
     this->load            = machine.load;
     this->connected_links = machine.connected_links;
-    this->icon            = std::make_unique<MachineIcon>(this);
-    this->icon->configurate(machine.getIcon()->getConf());
+    // TODO USE MACHINEBUILDER
+    /* this->icon            = std::make_unique<MachineIcon>(this); */
+    /* this->icon->configurate(machine.getIcon()->getConf()); */
     this->id = 0;
 }
 

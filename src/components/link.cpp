@@ -40,6 +40,6 @@ void Link::showConfiguration() {
     // TODO IMPLEMENT
 }
 
-Icon *Link::getIcon() {
+LinkIcon *Link::getIcon() {
     return nullptr;
 }

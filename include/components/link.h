@@ -1,11 +1,11 @@
 #pragma once
 
 #include "components/item.h"
+#include "icon/icon.h"
 #include <memory>
 #include <string>
 
 class LinkIcon;
-class Icon;
 class Connection;
 class Schema;
 
@@ -15,7 +15,7 @@ struct LinkConnections
     Connection *end;
 };
 
-class Link : public Item
+class Link : public Item<LinkIcon>
 {
 public:
     explicit Link(Schema         *schema,
@@ -27,7 +27,7 @@ public:
     void  addLine();
     void  draw();
     void  showConfiguration() override;
-    Icon *getIcon() override;
+    LinkIcon *getIcon() override;
 
     Schema *schema;
 

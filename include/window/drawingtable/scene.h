@@ -18,11 +18,9 @@ typedef enum PICK_OP
     SWITCH
 } PICK_OP;
 
-class MachineIcon;
 class LinkIcon;
 class DrawingTable;
 class Cloner;
-class SchemaCloner;
 
 class Scene : public QGraphicsScene
 {
@@ -37,10 +35,9 @@ protected:
 
 public:
     Scene(DrawingTable *parent);
-    QVector<Icon *>     *icons;
     QVector<LinkIcon *> *links;
 
-    void addIcon(Icon *icon, QPointF pos = QPointF(0, 0));
+    void addIcon(PixmapIcon *icon, QPointF pos = QPointF(0, 0));
     void drawBackgroundLines();
 
     PICK_OP pickOp;
@@ -60,7 +57,7 @@ private:
     UserWindow        *userWindow;
     QPointF            startSelection;
     QGraphicsRectItem *selectionRect;
-    Cloner            *sCloner;
+    /* Cloner            *sCloner; */
 
     void selectionArea(QGraphicsSceneMouseEvent *event);
 signals:

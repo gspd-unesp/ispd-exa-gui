@@ -20,7 +20,7 @@
 ///
 /// @returns the point at the middle of the Icon
 ///
-QPointF getMiddleOfIcon(Icon *a)
+QPointF getMiddleOfIcon(PixmapIcon *a)
 {
     qreal y = (a->pos().y() + ((qreal)a->pixmap().height() / 2));
     qreal x = (a->pos().x() + ((qreal)a->pixmap().width() / 2));
@@ -37,9 +37,8 @@ QPointF getMiddleOfIcon(Icon *a)
 LinkIcon::LinkIcon(Link *owner) : QGraphicsPolygonItem()
 {
     this->owner = owner;
-    qDebug() << "Is it here?";
-    this->begin = this->owner->connections.begin->getIcon();
-    this->end   = this->owner->connections.end->getIcon();
+    this->begin = static_cast<PixmapIcon *>(this->owner->connections.begin->getIcon());
+    this->end   = static_cast<PixmapIcon *>(this->owner->connections.end->getIcon());
 }
 
 LinkIcon::~LinkIcon()
@@ -125,4 +124,17 @@ void LinkIcon::select()
         linkPen.setColor(QColor(245, 69, 55));
         this->setPen(linkPen);
     }
+}
+
+Link *LinkIcon::getOwner()
+{
+    return this->owner;
+}
+void LinkIcon::toggleSelect()
+{
+    if (this->isSelected()) {
+        this->setSelected(false);
+        return;
+    }
+    this->setSelected(true);
 }

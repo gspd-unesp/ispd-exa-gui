@@ -1,5 +1,4 @@
 #pragma once
-#include "icon/machineicon.h"
 #include "window/drawingtable/view.h"
 #include "window/simulation.h"
 #include "window/users.h"
@@ -11,9 +10,6 @@
 
 struct LinkConnections;
 class Schema;
-class SchemaIcon;
-class SwitchIcon;
-class LinkIcon;
 
 class DrawingTable : public QWidget
 {
@@ -22,8 +18,8 @@ private:
     Scene *scene;
     View  *view;
 
-    QList<QString> list1Data;
-    QList<double>  list2Data;
+    /* QList<QString> list1Data; */
+    /* QList<double>  list2Data; */
 
     QWidget      *buttonsRow;
     QHBoxLayout  *buttonsLayout;
@@ -61,13 +57,13 @@ public:
     void noneButtonClicked();
     void openUserWindowClicked();
     void openSimulationWindowClicked();
-    void addIcons(std::vector<Item *> *items);
+    void addIcons(std::vector<Connection *> *items);
 
     void receiveUserWindowData(const QList<QString> &list1Data,
                                const QList<double>  &list2Data);
 
-    SwitchIcon  *addSwitch();
-    MachineIcon *addMachine();
-    SchemaIcon  *addSchema();
-    Link        *addLink(LinkConnections connections);
+    PixmapIcon *addSwitch();
+    PixmapIcon *addMachine();
+    PixmapIcon *addSchema();
+    Link       *addLink(LinkConnections connections);
 };

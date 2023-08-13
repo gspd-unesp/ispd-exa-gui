@@ -27,29 +27,6 @@ void View::setGScene(Scene *scene)
  */
 void View::mousePressEvent(QMouseEvent *event)
 {
-    qDebug() << event->pos().x();
-    qDebug() << event->pos().y();
-
-    if (event->button() == Qt::RightButton) {
-        qDebug() << "Custom view clicked with right.";
-    }
-
-    if (event->button() == Qt::LeftButton) {
-        qDebug() << "Custom view clicked with left.";
-    }
-
-    // Deselect all icons if the clicked area has no icons
-    if (event->modifiers() & Qt::ShiftModifier) {
-    } else {
-        QGraphicsItem* clickedItem = itemAt(event->pos().x(), event->pos().y());
-        if (!clickedItem) {
-            for (auto item : this->items()) {
-                if (Icon* icon = dynamic_cast<Icon*>(item)) {
-                    icon->toggleSelect();
-                }
-            }
-        }
-    }
     QGraphicsView::mousePressEvent(event);
 }
 

@@ -1,22 +1,65 @@
 SOURCES += \
   qcustomplot.cpp \
-  src/components/*.cpp \
-  src/components/conf/*.cpp \
-  src/components/cloner/*.cpp \
-  src/window/*.cpp \
-  src/window/drawingtable/*.cpp \
-  src/icon/*.cpp \
-  src/ispd-exa-gui.cpp \
+  src/window/settings.cpp \
+  src/window/adduser.cpp \
+  src/window/drawingtable/view.cpp \
+  src/window/drawingtable/scene.cpp \
+  src/window/drawingtable/drawingtable.cpp \
+  src/window/machineconfiguration.cpp \
+  src/window/main.cpp \
+  src/window/schemawindow.cpp \
+  src/window/simulation.cpp \
+  src/window/workloads.cpp \
+  src/window/users.cpp \
+  src/components/conf/linkconf.cpp \
+  src/components/conf/machineconf.cpp \
+  # src/components/cloner/switchcloner.cpp \
+  # src/components/cloner/linkcloner.cpp \
+  # src/components/cloner/machinecloner.cpp \
+  # src/components/cloner/schemacloner.cpp \
+  src/components/link.cpp \
+  src/components/switch.cpp \
+  src/components/machine.cpp \
+  src/components/schema.cpp \
+  src/icon/pixmapiconbuilder.cpp \
+  src/icon/pixmapicon.cpp \
+  src/icon/linkicon.cpp \
+  src/ispd-exa-gui.cpp
 
 INCLUDEPATH += include/
 HEADERS += \
   packCircles.h \
-  include/components/*.h \
-  include/components/conf/*.h \
-  include/window/*.h \
-  include/window/drawingtable/*.h \
-  include/icon/*.h \
-  include/utils/*.h \
+  include/window/settings.h \
+  include/window/workloads.h \
+  include/window/adduser.h \
+  include/window/drawingtable/view.h \
+  include/window/drawingtable/scene.h \
+  include/window/drawingtable/drawingtable.h \
+  include/window/machineconfiguration.h \
+  include/window/main.h \
+  include/window/simulation.h \
+  include/window/users.h \
+  include/window/schemawindow.h \
+  include/utils/iconSize.h \
+  include/utils/iconPath.h \
+  include/components/conf/linkconf.h \
+  include/components/conf/machineconf.h \
+  include/components/cloner/switchcloner.h \
+  include/components/cloner/linkcloner.h \
+  include/components/cloner/cloner.h \
+  include/components/cloner/machinecloner.h \
+  include/components/cloner/schemacloner.h \
+  include/components/link.h \
+  include/components/switch.h \
+  include/components/item.h \
+  include/components/connection.h \
+  include/components/machine.h \
+  include/components/schema.h \
+  include/icon/pixmapbuilder.h \
+  include/icon/pixmapicon.h \
+  include/icon/linkicon.h \
+  include/icon/icon.h \
+  include/icon/pixmapiconbuilder.h \
   qcustomplot.h
 
 QT += widgets svg printsupport

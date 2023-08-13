@@ -1,6 +1,9 @@
 #include "components/switch.h"
 #include "components/link.h"
 #include "components/schema.h"
+#include "icon/pixmapiconbuilder.h"
+#include "utils/iconPath.h"
+#include "utils/iconSize.h"
 #include <memory>
 
 Switch::Switch(Schema *schema, unsigned id, const char *name)
@@ -9,10 +12,15 @@ Switch::Switch(Schema *schema, unsigned id, const char *name)
     this->id     = id;
     this->name   = name;
 
-    this->icon = std::make_unique<SwitchIcon>(this);
+    PixmapIconBuilder iconBuilder;
+    this->icon = std::unique_ptr<PixmapIcon>(
+        iconBuilder.setOwner(this)
+            ->setPixmap(QPixmap(switchPath).scaled(iconSize))
+            ->build());
 }
 
-Switch::~Switch() {
+Switch::~Switch()
+{
     for (auto [linkId, link] : this->connectedLinks) {
         Connection *otherIcon = (link->connections.begin == this)
                                     ? link->connections.end
@@ -29,7 +37,7 @@ std::map<unsigned, Link *> *Switch::getConnectedLinks()
     return &this->connectedLinks;
 }
 
-SwitchIcon *Switch::getIcon()
+PixmapIcon *Switch::getIcon()
 {
     return this->icon.get();
 }

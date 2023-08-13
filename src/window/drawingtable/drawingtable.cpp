@@ -4,8 +4,6 @@
 #include "components/schema.h"
 #include "components/switch.h"
 #include "icon/linkicon.h"
-#include "icon/schemaicon.h"
-#include "icon/switchicon.h"
 #include "qdebug.h"
 #include "qpushbutton.h"
 #include "qradiobutton.h"
@@ -83,8 +81,8 @@ DrawingTable::DrawingTable(Schema *schema, QWidget *parent) : QWidget{parent}
 void DrawingTable::receiveUserWindowData(const QList<QString> &list1Data,
                                          const QList<double>  &list2Data)
 {
-    this->list1Data = list1Data;
-    this->list2Data = list2Data;
+    /* this->list1Data = list1Data; */
+    /* this->list2Data = list2Data; */
 }
 
 ///
@@ -169,7 +167,7 @@ void DrawingTable::setupLinkButton()
 ///
 /// @return the machine's icon
 ///
-MachineIcon *DrawingTable::addMachine()
+PixmapIcon *DrawingTable::addMachine()
 {
     const unsigned machineId = schema->allocateNewMachine();
 
@@ -181,7 +179,7 @@ MachineIcon *DrawingTable::addMachine()
 ///
 /// @return the switch's icon
 ///
-SwitchIcon *DrawingTable::addSwitch()
+PixmapIcon *DrawingTable::addSwitch()
 {
     const unsigned switchId = schema->allocateNewSwitch();
 
@@ -196,7 +194,7 @@ SwitchIcon *DrawingTable::addSwitch()
 ///
 /// @return the schema's icon
 ///
-SchemaIcon *DrawingTable::addSchema()
+PixmapIcon *DrawingTable::addSchema()
 {
     const unsigned schemaId = schema->allocateNewSchema();
 
@@ -276,8 +274,7 @@ void printSchema(Schema *schema)
 
     for (auto &[id, nswitch] : schema->switches) {
 
-        qDebug() << "Switch #" << id << ": "
-                 << nswitch->getName().c_str();
+        qDebug() << "Switch #" << id << ": " << nswitch->getName().c_str();
     }
 
     for (auto sch = schema->schemas.begin(); sch != schema->schemas.end();
@@ -296,11 +293,11 @@ void printSchema(Schema *schema)
 }
 void DrawingTable::openUserWindowClicked()
 {
-    this->userWindow =
-        new UserWindow(nullptr,
-                       this,
-                       list1Data,
-                       list2Data); // Pass the lists to UserWindow constructor
+    /* this->userWindow = */
+    /*     new UserWindow(nullptr, */
+    /*                    this, */
+    /*                    list1Data, */
+    /*                    list2Data); // Pass the lists to UserWindow constructor */
 
     userWindow->show();
 }
@@ -311,9 +308,10 @@ void DrawingTable::openSimulationWindowClicked()
     simulationWindow->show();
 }
 
-void DrawingTable::addIcons(std::vector<Item *> *items)
+void DrawingTable::addIcons(std::vector<Connection *> *items)
 {
     for (auto it : *items) {
-        this->scene->addIcon(it->getIcon(), it->getIcon()->pos());
+        this->scene->addIcon(static_cast<PixmapIcon *>(it->getIcon()),
+                             static_cast<PixmapIcon *>(it->getIcon())->pos());
     }
 }

@@ -1,13 +1,8 @@
 #include "window/drawingtable/scene.h"
-#include "components/cloner/cloner.h"
-#include "components/cloner/schemacloner.h"
 #include "components/link.h"
 #include "components/schema.h"
 #include "components/switch.h"
 #include "icon/linkicon.h"
-#include "icon/machineicon.h"
-#include "icon/schemaicon.h"
-#include "icon/switchicon.h"
 #include "qgraphicsitem.h"
 #include "qpoint.h"
 #include "window/drawingtable/drawingtable.h"
@@ -55,10 +50,9 @@ QPointF Scene::getScenePosition()
 /// @params icon an icon (Machine, Schema...)
 /// @params pos  the position to set the icon
 ///
-void Scene::addIcon(Icon *icon, QPointF pos)
+void Scene::addIcon(PixmapIcon *icon, QPointF pos)
 {
     icon->setPos(pos);
-    icon->setOutputLabel(machineDescriptionLabel);
     this->addItem(icon);
 }
 
@@ -98,10 +92,10 @@ void Scene::keyPressEvent(QKeyEvent *event)
     }
     else if (event->key() == Qt::Key_C) {
         qDebug() << "Aconteceu algo?";
-        this->sCloner = new SchemaCloner(findScheme(this->schema));
+        /* this->sCloner = new SchemaCloner(findScheme(this->schema)); */
     }
     else if (event->key() == Qt::Key_V) {
-        auto clone = this->sCloner->clone();
+        /* auto clone = this->sCloner->clone(); */
     }
 
     QGraphicsScene::keyPressEvent(event);
@@ -235,14 +229,22 @@ void Scene::mouseReleaseEvent(QGraphicsSceneMouseEvent *event)
 
         // Deselect all icons outside the selection area
         for (auto item : this->items()) {
-            if (Icon *icon = dynamic_cast<Icon *>(item)) {
+            if (PixmapIcon *icon = static_cast<PixmapIcon *>(item)) {
                 if (selectionAreaRect.contains(icon->sceneBoundingRect())) {
                     icon->toggleSelect();
                 }
                 else {
-                    if (event->modifiers() & Qt::ShiftModifier) {
+                    if (!(event->modifiers() & Qt::ShiftModifier)) {
+                        icon->toggleSelect();
                     }
-                    else {
+                }
+            }
+            if (LinkIcon *icon = static_cast<LinkIcon *>(item)) {
+                if (selectionAreaRect.contains(icon->sceneBoundingRect())) {
+                    icon->toggleSelect();
+                }
+                else {
+                    if (!(event->modifiers() & Qt::ShiftModifier)) {
                         icon->toggleSelect();
                     }
                 }
@@ -262,7 +264,7 @@ void Scene::mouseReleaseEvent(QGraphicsSceneMouseEvent *event)
 void Scene::selectionArea(QGraphicsSceneMouseEvent *event)
 {
     Connection *clickedIcon = whichConnection(event->scenePos());
-    if (!clickedIcon && !dynamic_cast<MachineIcon *>(clickedIcon)) {
+    if (!clickedIcon && !dynamic_cast<PixmapIcon *>(clickedIcon)) {
         if (event->button() == Qt::LeftButton) {
             this->startSelection = event->scenePos();
             this->selectionRect  = new QGraphicsRectItem();
