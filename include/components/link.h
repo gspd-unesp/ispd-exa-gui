@@ -1,5 +1,6 @@
 #pragma once
 
+#include "components/conf/linkconfiguration.h"
 #include "components/item.h"
 #include <memory>
 #include <string>
@@ -17,16 +18,14 @@ struct LinkConnections
 class Link : public Item<LinkIcon>
 {
 public:
-    explicit Link(Schema         *schema,
-                  unsigned        id,
-                  const char     *name,
-                  LinkConnections connections);
+    Link(Schema *schema, LinkConfiguration *conf, LinkConnections connections);
     ~Link() override;
 
-    void  addLine();
-    void  draw();
-    void  showConfiguration() override;
-    LinkIcon *getIcon() override;
+    void               addLine();
+    void               draw();
+    void               showConfiguration() override;
+    LinkIcon          *getIcon() override;
+    LinkConfiguration *getConf() override;
 
     Schema *schema;
 
@@ -34,6 +33,7 @@ public:
 
     std::string name;
 
-    unsigned                  id;
-    std::unique_ptr<LinkIcon> icon;
+    unsigned                           id;
+    std::unique_ptr<LinkIcon>          icon;
+    std::unique_ptr<LinkConfiguration> conf;
 };

@@ -1,7 +1,7 @@
 #pragma once
 
-#include "components/cloner/cloner.h"
 #include "components/schema.h"
+#include "components/cloner/cloner.h"
 #include <algorithm>
 #include <map>
 #include <memory>
@@ -14,11 +14,11 @@ class MachineCloner;
 class LinkCloner;
 class SwitchCloner;
 
-class SchemaCloner : public Cloner
+class SchemaCloner : public Cloner<Schema>
 {
 public:
     explicit SchemaCloner(Schema *base, SchemaCloner *parent = nullptr);
-    std::unique_ptr<Item> clone() override;
+    std::unique_ptr<Schema> clone(Schema *schema) override;
 
 private:
     void setSchemas();

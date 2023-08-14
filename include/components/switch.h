@@ -1,4 +1,5 @@
 #pragma once
+#include "components/conf/switchconfiguration.h"
 #include "components/connection.h"
 #include "icon/pixmapicon.h"
 
@@ -11,6 +12,7 @@ public:
     ~Switch() override;
     std::map<unsigned, Link *> *getConnectedLinks() override;
     PixmapIcon                 *getIcon() override;
+    SwitchConfiguration        *getConf() override;
     void        setConnectedLinks(std::map<unsigned, Link *> *map) override;
     void        removeConnectedLink(Link *link) override;
     void        addConnectedLink(Link *link) override;
@@ -18,9 +20,10 @@ public:
     std::string getName();
 
 private:
-    Schema                     *schema;
-    std::string                 name;
-    unsigned                    id;
-    std::map<unsigned, Link *>  connectedLinks;
-    std::unique_ptr<PixmapIcon> icon;
+    std::unique_ptr<SwitchConfiguration> conf;
+    Schema                              *schema;
+    std::string                          name;
+    unsigned                             id;
+    std::map<unsigned, Link *>           connectedLinks;
+    std::unique_ptr<PixmapIcon>          icon;
 };

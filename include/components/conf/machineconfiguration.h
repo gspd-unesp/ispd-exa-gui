@@ -1,14 +1,18 @@
 #pragma once
+#include "components/conf/itemconfiguration.h"
 #include <string>
 #include <vector>
 
-class MachineConfiguration
+class MachineConfiguration : public ItemConfiguration
 {
 public:
     MachineConfiguration(std::string name, unsigned id);
+    MachineConfiguration(MachineConfiguration &conf) = default;
 
     std::string getName();
+    void        setName(std::string name);
     unsigned    getId();
+    void        setId(unsigned id);
 
 private:
     std::string name;

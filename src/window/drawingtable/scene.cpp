@@ -1,8 +1,11 @@
 #include "window/drawingtable/scene.h"
+#include "components/cloner/machinecloner.h"
 #include "components/link.h"
 #include "components/schema.h"
 #include "components/switch.h"
 #include "icon/linkicon.h"
+#include "icon/pixmapicon.h"
+#include "qnamespace.h"
 #include "window/drawingtable/drawingtable.h"
 #include <QDebug>
 #include <QGraphicsItem>
@@ -16,6 +19,7 @@
 #include <iostream>
 #include <memory>
 #include <string>
+#include <tuple>
 
 ///
 /// Create the scene following the QGraphicsScene constructor
@@ -70,11 +74,30 @@ void Scene::addLink(Link *link)
 Schema *findScheme(Schema *schema)
 {
     for (auto &it : schema->schemas) {
-        if (it.second->getIcon()->isSelected()) {
+        if (it.second->getIcon()->isChosen()) {
             return it.second.release();
         }
     }
     return nullptr;
+}
+
+Machine *findMachine(Schema *schema)
+{
+    for (auto &it : schema->machines) {
+        if (it.second->getIcon()->isChosen()) {
+            return it.second.get();
+        }
+    }
+    return nullptr;
+}
+
+void printThisSchema(Schema *schema)
+{
+    qDebug() << "From Schema: " << schema->name;
+    for (auto &machine : schema->machines) {
+        qDebug() << "Machine[" << machine.second->conf->getId()
+                 << "] = " << machine.second->conf->getName();
+    }
 }
 
 ///
@@ -84,20 +107,24 @@ Schema *findScheme(Schema *schema)
 ///
 void Scene::keyPressEvent(QKeyEvent *event)
 {
-    if (event->key() == Qt::Key_Delete) {
+    switch (event->key()) {
+    case Qt::Key_Delete:
         this->deleteItems();
-    }
-    else if (event->key() == Qt::Key_C) {
+        break;
+    case Qt::Key_C:
         qDebug() << "Aconteceu algo?";
-        /* this->sCloner = new SchemaCloner(findScheme(this->schema)); */
-    }
-    else if (event->key() == Qt::Key_V) {
-        /* auto clone = this->sCloner->clone(); */
+        this->mCloner = new MachineCloner(findMachine(this->schema), nullptr);
+        break;
+    case Qt::Key_V:
+        auto clone = this->mCloner->clone(this->schema);
+        this->addIcon(clone->getIcon(), getScenePosition());
+        this->schema->machines[clone->conf->getId()] = std::move(clone);
+        printThisSchema(this->schema);
+        break;
     }
 
     QGraphicsScene::keyPressEvent(event);
 }
-
 
 void Scene::deleteItems()
 {
@@ -105,12 +132,28 @@ void Scene::deleteItems()
 
     erase_if(this->schema->machines,
              [](auto const &it) { return it.second->getIcon()->isChosen(); });
-    erase_if(this->schema->switches, 
+    erase_if(this->schema->switches,
              [](auto const &it) { return it.second->getIcon()->isChosen(); });
-    erase_if(this->schema->schemas, 
+    erase_if(this->schema->schemas,
              [](auto const &it) { return it.second->getIcon()->isChosen(); });
-    erase_if(this->schema->links, 
+    erase_if(this->schema->links,
              [](auto const &it) { return it.second->getIcon()->isChosen(); });
+}
+
+QRectF getOwnItemsSceneBoundingRect(Schema *schema)
+{
+    QRectF boundingRect;
+
+    for (auto &[id, machine] : schema->machines)
+        boundingRect |= machine->getIcon()->sceneBoundingRect();
+    for (auto &[id, schema] : schema->schemas)
+        boundingRect |= schema->getIcon()->sceneBoundingRect();
+    for (auto &[id, nSwitch] : schema->switches)
+        boundingRect |= nSwitch->getIcon()->sceneBoundingRect();
+    for (auto &[id, link] : schema->links)
+        boundingRect |= link->getIcon()->sceneBoundingRect();
+
+    return boundingRect;
 }
 
 ///
@@ -123,8 +166,13 @@ void Scene::mousePressEvent(QGraphicsSceneMouseEvent *event)
 {
     switch (this->pickOp) {
     case NONE: {
-        /* selectionArea(event); */
-        QGraphicsScene::mousePressEvent(event);
+        if (getOwnItemsSceneBoundingRect(this->schema)
+                .contains(event->scenePos())) {
+            QGraphicsScene::mousePressEvent(event);
+        }
+        else {
+            selectionArea(event);
+        }
         return;
     }
     case PC: {
@@ -192,6 +240,16 @@ void Scene::mouseMoveEvent(QGraphicsSceneMouseEvent *event)
     QGraphicsScene::mouseMoveEvent(event);
 }
 
+template <class T>
+void toggleSelectionIfInside(QRectF area, Item<T> *item)
+{
+    auto icon = item->getIcon();
+    if (area.contains(item->getIcon()->sceneBoundingRect()) &&
+        !icon->isChosen()) {
+        item->getIcon()->toggleChoosen();
+    }
+}
+
 void Scene::mouseReleaseEvent(QGraphicsSceneMouseEvent *event)
 {
     if (event->button() == Qt::LeftButton &&
@@ -201,32 +259,21 @@ void Scene::mouseReleaseEvent(QGraphicsSceneMouseEvent *event)
             QRectF(this->startSelection, event->scenePos()).normalized();
 
         // Deselect all icons outside the selection area
-        for (auto item : this->items()) {
-            if (PixmapIcon *icon = static_cast<PixmapIcon *>(item)) {
-                if (selectionAreaRect.contains(icon->sceneBoundingRect())) {
-                    icon->toggleChoosen();
-                }
-                else {
-                    if (!(event->modifiers() & Qt::ShiftModifier)) {
-                        icon->toggleChoosen();
-                    }
-                }
-            }
-            if (LinkIcon *icon = static_cast<LinkIcon *>(item)) {
-                if (selectionAreaRect.contains(icon->sceneBoundingRect())) {
-                    icon->toggleChoosen();
-                }
-                else {
-                    if (!(event->modifiers() & Qt::ShiftModifier)) {
-                        icon->toggleChoosen();
-                    }
-                }
-            }
+        for (auto &[id, machine] : this->schema->machines) {
+            toggleSelectionIfInside(selectionAreaRect, machine.get());
         }
+        for (auto &[id, schema] : this->schema->schemas) {
+            toggleSelectionIfInside(selectionAreaRect, schema.get());
+        }
+        for (auto &[id, nSwitch] : this->schema->switches) {
+            toggleSelectionIfInside(selectionAreaRect, nSwitch.get());
+        }
+        for (auto &[id, link] : this->schema->links) {
+            toggleSelectionIfInside(selectionAreaRect, link.get());
+        }
+
         // Reset the initial position for area selection
         this->startSelection = QPointF();
-        this->removeItem(this->selectionRect); // Remove the selection rectangle
-                                               // from the scene
         delete this->selectionRect;
         this->selectionRect = nullptr;
     }
@@ -236,20 +283,20 @@ void Scene::mouseReleaseEvent(QGraphicsSceneMouseEvent *event)
 
 void Scene::selectionArea(QGraphicsSceneMouseEvent *event)
 {
-    Connection *clickedIcon = whichConnection(event->scenePos());
-    if (!clickedIcon && !dynamic_cast<PixmapIcon *>(clickedIcon)) {
-        if (event->button() == Qt::LeftButton) {
-            this->startSelection = event->scenePos();
-            this->selectionRect  = new QGraphicsRectItem();
-            this->selectionRect->setPen(
-                QPen(Qt::blue, 1, Qt::SolidLine)); // Change color and pen style
-            this->selectionRect->setBrush(QBrush(QColor(100, 100, 255, 40)));
-            this->selectionRect->setRect(
-                QRectF(this->startSelection, event->scenePos()).normalized());
-            this->addItem(this->selectionRect); // Add the selection rectangle
-                                                // to the scene
-        }
+    /* Connection *clickedIcon = whichConnection(event->scenePos()); */
+    /* if (!clickedIcon && !static_cast<Icon *>(clickedIcon)) { */
+    if (event->button() == Qt::LeftButton) {
+        this->startSelection = event->scenePos();
+        this->selectionRect  = new QGraphicsRectItem();
+        this->selectionRect->setPen(
+            QPen(Qt::blue, 1, Qt::SolidLine)); // Change color and pen style
+        this->selectionRect->setBrush(QBrush(QColor(100, 100, 255, 40)));
+        this->selectionRect->setRect(
+            QRectF(this->startSelection, event->scenePos()).normalized());
+        this->addItem(this->selectionRect); // Add the selection rectangle
+                                            // to the scene
     }
+    /* } */
 }
 
 ///

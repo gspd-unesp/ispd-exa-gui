@@ -1,4 +1,5 @@
 #include "components/switch.h"
+#include "components/conf/switchconfiguration.h"
 #include "components/link.h"
 #include "components/schema.h"
 #include "icon/pixmapiconbuilder.h"
@@ -49,7 +50,7 @@ void Switch::setConnectedLinks(std::map<unsigned, Link *> *map)
 
 void Switch::removeConnectedLink(Link *link)
 {
-    auto linkToRemove = this->connectedLinks.find(link->id);
+    auto linkToRemove = this->connectedLinks.find(link->conf->getId());
 
     if (linkToRemove != connectedLinks.end()) {
         this->connectedLinks.erase(linkToRemove);
@@ -58,10 +59,10 @@ void Switch::removeConnectedLink(Link *link)
 
 void Switch::addConnectedLink(Link *link)
 {
-    auto linkToAdd = this->connectedLinks.find(link->id);
+    auto linkToAdd = this->connectedLinks.find(link->conf->getId());
 
     if (linkToAdd == connectedLinks.end()) {
-        this->connectedLinks.insert(std::pair(link->id, link));
+        this->connectedLinks.insert(std::pair(link->conf->getId(), link));
     }
 }
 
@@ -72,3 +73,8 @@ std::string Switch::getName()
 
 void Switch::showConfiguration()
 {}
+
+SwitchConfiguration *Switch::getConf()
+{
+    return this->conf.get();
+}

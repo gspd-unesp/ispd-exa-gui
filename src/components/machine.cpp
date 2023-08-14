@@ -1,5 +1,5 @@
 #include "components/machine.h"
-#include "components/conf/linkconf.h"
+#include "components/cloner/machinecloner.h"
 #include "components/conf/machineconfiguration.h"
 #include "components/link.h"
 #include "components/schema.h"
@@ -57,7 +57,7 @@ void Machine::setConnectedLinks(std::map<unsigned, Link *> *map)
 
 void Machine::removeConnectedLink(Link *link)
 {
-    auto linkToRemove = this->connected_links.find(link->id);
+    auto linkToRemove = this->connected_links.find(link->conf->getId());
 
     if (linkToRemove != connected_links.end()) {
         this->connected_links.erase(linkToRemove);
@@ -66,9 +66,18 @@ void Machine::removeConnectedLink(Link *link)
 
 void Machine::addConnectedLink(Link *link)
 {
-    auto linkToAdd = this->connected_links.find(link->id);
+    auto linkToAdd = this->connected_links.find(link->conf->getId());
 
     if (linkToAdd == connected_links.end()) {
-        this->connected_links.insert(std::pair(link->id, link));
+        this->connected_links.insert(std::pair(link->conf->getId(), link));
     }
+}
+
+MachineCloner *Machine::cloner() {
+    return new MachineCloner(this, nullptr);
+}
+
+MachineConfiguration *Machine::getConf()
+{
+    return this->conf.get();
 }

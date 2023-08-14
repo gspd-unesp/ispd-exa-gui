@@ -5,23 +5,19 @@
 #include <iterator>
 #include <memory>
 
-Link::Link(Schema         *schema,
-           unsigned        id,
-           const char     *name,
-           LinkConnections connections)
+Link::Link(Schema *schema, LinkConfiguration *conf, LinkConnections connections)
 {
-    this->id          = id;
+    this->conf        = std::unique_ptr<LinkConfiguration>(conf);
     this->connections = connections;
     this->schema      = schema;
-    this->name        = name;
 
-    this->icon        = std::make_unique<LinkIcon>(this);
+    this->icon = std::make_unique<LinkIcon>(this);
     this->addLine();
 }
 
 Link::~Link()
 {
-    qDebug() << "Deleting " << this->name.c_str();
+    qDebug() << "Deleting " << this->conf->getName();
 }
 
 void Link::addLine()
@@ -32,10 +28,17 @@ void Link::addLine()
     this->icon->draw();
 }
 
-void Link::showConfiguration() {
+void Link::showConfiguration()
+{
     // TODO IMPLEMENT
 }
 
-LinkIcon *Link::getIcon() {
+LinkIcon *Link::getIcon()
+{
     return this->icon.get();
+}
+
+LinkConfiguration *Link::getConf()
+{
+    return this->conf.get();
 }

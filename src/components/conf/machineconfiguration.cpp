@@ -13,3 +13,10 @@ unsigned    MachineConfiguration::getId() {
     return this->id;
 }
 
+void MachineConfiguration::setName(std::string name) {
+    this->name = name;
+}
+
+void MachineConfiguration::setId(unsigned id) {
+    this->id = id;
+}

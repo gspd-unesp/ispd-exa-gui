@@ -1,5 +1,6 @@
 #include "components/schema.h"
 #include "components/conf/machineconfiguration.h"
+#include "components/conf/schemaconfiguration.h"
 #include "components/link.h"
 #include "components/machine.h"
 #include "components/switch.h"
@@ -71,8 +72,11 @@ unsigned Schema::allocateNewLink(LinkConnections connections)
     const unsigned newLinkId = schemaIds->linkId;
     std::string    newLinkName("Link" + std::to_string(newLinkId));
 
+    auto newMachineConf =
+        new LinkConfiguration(newLinkName, newLinkId);
+
     auto newLink = std::make_unique<Link>(
-        this, newLinkId, newLinkName.c_str(), connections);
+        this, newMachineConf, connections);
 
     links.insert(std::pair(newLinkId, std::move(newLink)));
 
@@ -164,7 +168,7 @@ void Schema::setConnectedLinks(std::map<unsigned, Link *> *map)
 
 void Schema::removeConnectedLink(Link *link)
 {
-    auto linkToRemove = this->connectedLinks.find(link->id);
+    auto linkToRemove = this->connectedLinks.find(link->conf->getId());
 
     if (linkToRemove != connectedLinks.end()) {
         this->connectedLinks.erase(linkToRemove);
@@ -172,10 +176,10 @@ void Schema::removeConnectedLink(Link *link)
 }
 void Schema::addConnectedLink(Link *link)
 {
-    auto linkToAdd = this->connectedLinks.find(link->id);
+    auto linkToAdd = this->connectedLinks.find(link->conf->getId());
 
     if (linkToAdd == connectedLinks.end()) {
-        this->connectedLinks.insert(std::pair(link->id, link));
+        this->connectedLinks.insert(std::pair(link->conf->getId(), link));
     }
 }
 
@@ -186,4 +190,8 @@ void Schema::drawItems()
         machineVector.push_back(it.second.get());
     }
     this->window->drawingTable->addIcons(&machineVector);
+}
+
+SchemaConfiguration *Schema::getConf() {
+    return this->conf.get();
 }

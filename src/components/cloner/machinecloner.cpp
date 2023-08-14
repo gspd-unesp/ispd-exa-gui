@@ -1,21 +1,33 @@
-
 #include "components/cloner/machinecloner.h"
-#include "components/cloner/schemacloner.h"
-#include "components/machine.h"
+#include "components/conf/machineconfiguration.h"
+#include "components/machinebuilder.h"
+#include "components/schema.h"
+#include "icon/pixmapicon.h"
 #include <memory>
+#include <string>
 
 MachineCloner::MachineCloner(Machine *base, SchemaCloner *parent)
 {
-    this->base = base;
-    this->parent = parent;
+    qDebug() << "Before copying machine conf.";
+    this->clonedConf = new MachineConfiguration(*base->conf);
+    this->parent     = parent;
+    qDebug() << "Before getting machineIcon scenePos.";
+    this->pos = base->getIcon()->scenePos();
 }
 
-std::unique_ptr<Item> MachineCloner::clone()
+std::unique_ptr<Machine> MachineCloner::clone(Schema *schema)
 {
-    std::unique_ptr<Machine> clonedMachine = std::make_unique<Machine>(nullptr, 0, "");
+    MachineConfiguration *newMachineConfiguration =
+        new MachineConfiguration(*this->clonedConf);
+    Machine *newMachine = MachineBuilder()
+                              .setSchema(schema)
+                              ->setConf(newMachineConfiguration)
+                              ->build();
 
-    clonedMachine->connected_links = this->base->connected_links;
-    clonedMachine->load = this->base->load;
+    newMachine->getIcon()->setPos(this->pos);
+    newMachine->conf->setId(schema->schemaIds->machineId++);
+    newMachine->conf->setName("Machine" +
+                              std::to_string(newMachine->conf->getId()));
 
-    return clonedMachine;
+    return std::unique_ptr<Machine>(newMachine);
 }

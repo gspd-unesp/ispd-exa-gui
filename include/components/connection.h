@@ -1,6 +1,5 @@
 #pragma once
 #include "components/item.h"
-/* #include "icon/pixmapicon.h" */
 
 #include <map>
 #include <memory>

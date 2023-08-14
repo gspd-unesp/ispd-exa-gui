@@ -11,15 +11,15 @@ SOURCES += \
   src/window/simulation.cpp \
   src/window/workloads.cpp \
   src/window/users.cpp \
-  src/components/conf/linkconf.cpp \
   src/components/conf/machineconfiguration.cpp \
-  # src/components/cloner/switchcloner.cpp \
-  # src/components/cloner/linkcloner.cpp \
-  # src/components/cloner/machinecloner.cpp \
-  # src/components/cloner/schemacloner.cpp \
+  src/components/conf/linkconfiguration.cpp \
+  src/components/conf/schemaconfiguration.cpp \
+  src/components/conf/switchconfiguration.cpp \
+  src/components/cloner/machinecloner.cpp \
   src/components/link.cpp \
   src/components/switch.cpp \
   src/components/machine.cpp \
+  src/components/machinebuilder.cpp \
   src/components/schema.cpp \
   src/icon/machineiconfactory.cpp \
   src/icon/pixmapiconbuilder.cpp \
@@ -43,8 +43,11 @@ HEADERS += \
   include/window/schemawindow.h \
   include/utils/iconSize.h \
   include/utils/iconPath.h \
-  include/components/conf/linkconf.h \
+  include/components/conf/itemconfiguration.h \
   include/components/conf/machineconfiguration.h \
+  include/components/conf/linkconfiguration.h \
+  include/components/conf/schemaconfiguration.h \
+  include/components/conf/switchconfiguration.h \
   include/components/cloner/switchcloner.h \
   include/components/cloner/linkcloner.h \
   include/components/cloner/cloner.h \

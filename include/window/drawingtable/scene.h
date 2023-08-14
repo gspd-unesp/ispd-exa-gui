@@ -1,10 +1,9 @@
 #ifndef SCENE_H
 #define SCENE_H
 
+#include "components/cloner/machinecloner.h"
 #include "components/machine.h"
-#include "icon/icon.h"
 #include "qglobal.h"
-#include "qvector.h"
 #include "window/users.h"
 #include <QGraphicsScene>
 #include <QWidget>
@@ -20,7 +19,6 @@ typedef enum PICK_OP
 
 class LinkIcon;
 class DrawingTable;
-class Cloner;
 
 class Scene : public QGraphicsScene
 {
@@ -57,6 +55,8 @@ private:
     UserWindow        *userWindow;
     QPointF            startSelection;
     QGraphicsRectItem *selectionRect;
+    MachineCloner     *mCloner;
+    /* Cloner            *sCloner; */
     /* Cloner            *sCloner; */
 
     void selectionArea(QGraphicsSceneMouseEvent *event);

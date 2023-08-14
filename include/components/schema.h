@@ -1,5 +1,6 @@
 #pragma once
 
+#include "components/conf/schemaconfiguration.h"
 #include "components/connection.h"
 #include "components/link.h"
 #include "icon/pixmapicon.h"
@@ -56,7 +57,11 @@ public:
     void                        showConfiguration() override;
     std::map<unsigned, Link *> *getConnectedLinks() override;
     PixmapIcon                 *getIcon() override;
+    SchemaConfiguration        *getConf() override;
     void setConnectedLinks(std::map<unsigned, Link *> *map) override;
     void removeConnectedLink(Link *link) override;
     void addConnectedLink(Link *link) override;
+
+private:
+    std::unique_ptr<SchemaConfiguration> conf;
 };

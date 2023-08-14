@@ -287,8 +287,8 @@ void printSchema(Schema *schema)
     for (auto link = schema->links.begin(); link != schema->links.end();
          link++) {
 
-        qDebug() << "Link #" << link->second->id << ": "
-                 << link->second->name.c_str();
+        qDebug() << "Link #" << link->second->conf->getId() << ": "
+                 << link->second->conf->getName().c_str();
     }
 }
 void DrawingTable::openUserWindowClicked()
