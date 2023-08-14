@@ -2,8 +2,8 @@
 #include "components/link.h"
 #include "components/schema.h"
 #include "icon/pixmapiconbuilder.h"
+#include "icon/pixmappair.h"
 #include "utils/iconPath.h"
-#include "utils/iconSize.h"
 #include <memory>
 
 Switch::Switch(Schema *schema, unsigned id, const char *name)
@@ -15,7 +15,7 @@ Switch::Switch(Schema *schema, unsigned id, const char *name)
     PixmapIconBuilder iconBuilder;
     this->icon = std::unique_ptr<PixmapIcon>(
         iconBuilder.setOwner(this)
-            ->setPixmap(QPixmap(switchPath).scaled(iconSize))
+            ->setPixmapPair(PixmapPair(switchPath, switchPathSelected))
             ->build());
 }
 

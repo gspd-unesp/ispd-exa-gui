@@ -1,7 +1,6 @@
 #ifndef USERWINDOW_H
 #define USERWINDOW_H
 #include "icon/pixmapicon.h"
-#include "ui_userwindow.h"
 #include "window/adduser.h"
 #include <QComboBox>
 #include <QDebug>
@@ -16,6 +15,7 @@
 #include <QVBoxLayout>
 #include <QWidget>
 #include <string>
+#include <ui_userwindow.h>
 // #include "item/icon.h"
 
 // #include "drawingtable/drawingtable.h"

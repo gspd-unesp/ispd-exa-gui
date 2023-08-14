@@ -3,11 +3,7 @@
 #include "components/schema.h"
 #include "components/switch.h"
 #include "icon/linkicon.h"
-#include "qgraphicsitem.h"
-#include "qpoint.h"
 #include "window/drawingtable/drawingtable.h"
-#include "window/machineconfiguration.h"
-#include "window/users.h"
 #include <QDebug>
 #include <QGraphicsItem>
 #include <QGraphicsScene>
@@ -15,6 +11,7 @@
 #include <QGraphicsView>
 #include <QKeyEvent>
 #include <QMouseEvent>
+#include <QPoint>
 #include <algorithm>
 #include <iostream>
 #include <memory>
@@ -101,43 +98,19 @@ void Scene::keyPressEvent(QKeyEvent *event)
     QGraphicsScene::keyPressEvent(event);
 }
 
-bool checkSelectionMachine(
-    std::pair<unsigned, std::unique_ptr<Machine>> const *it)
-{
-    if (it->second->getIcon()->isSelected()) {
-        return true;
-    }
-    return false;
-}
-
-bool checkSelectionSchema(
-    std::pair<unsigned, std::unique_ptr<Schema>> const *it)
-{
-    if (it->second->getIcon()->isSelected()) {
-        return true;
-    }
-    return false;
-}
-
-bool checkSelectionSwitch(
-    std::pair<unsigned, std::unique_ptr<Switch>> const *it)
-{
-    if (it->second->getIcon()->isSelected()) {
-        return true;
-    }
-    return false;
-}
 
 void Scene::deleteItems()
 {
     qDebug() << "Test of deleteItems.";
 
-    /* (void)std::remove_if(this->schema->machines.begin(),
-     * this->schema->machines.end(), checkSelectionMachine); */
-    /* (void)std::remove_if(this->schema->switches.begin(),
-     * this->schema->switches.end(), checkSelectionSwitch); */
-    /* (void)std::remove_if(this->schema->schemas.begin(),
-     * this->schema->schemas.end(), checkSelectionSchema); */
+    erase_if(this->schema->machines,
+             [](auto const &it) { return it.second->getIcon()->isChosen(); });
+    erase_if(this->schema->switches, 
+             [](auto const &it) { return it.second->getIcon()->isChosen(); });
+    erase_if(this->schema->schemas, 
+             [](auto const &it) { return it.second->getIcon()->isChosen(); });
+    erase_if(this->schema->links, 
+             [](auto const &it) { return it.second->getIcon()->isChosen(); });
 }
 
 ///
@@ -231,21 +204,21 @@ void Scene::mouseReleaseEvent(QGraphicsSceneMouseEvent *event)
         for (auto item : this->items()) {
             if (PixmapIcon *icon = static_cast<PixmapIcon *>(item)) {
                 if (selectionAreaRect.contains(icon->sceneBoundingRect())) {
-                    icon->toggleSelect();
+                    icon->toggleChoosen();
                 }
                 else {
                     if (!(event->modifiers() & Qt::ShiftModifier)) {
-                        icon->toggleSelect();
+                        icon->toggleChoosen();
                     }
                 }
             }
             if (LinkIcon *icon = static_cast<LinkIcon *>(item)) {
                 if (selectionAreaRect.contains(icon->sceneBoundingRect())) {
-                    icon->toggleSelect();
+                    icon->toggleChoosen();
                 }
                 else {
                     if (!(event->modifiers() & Qt::ShiftModifier)) {
-                        icon->toggleSelect();
+                        icon->toggleChoosen();
                     }
                 }
             }

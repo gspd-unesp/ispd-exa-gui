@@ -1,7 +1,5 @@
 #include "components/link.h"
 #include "components/connection.h"
-#include "components/item.h"
-#include "icon/icon.h"
 #include "icon/linkicon.h"
 #include "qdebug.h"
 #include <iterator>
@@ -16,9 +14,9 @@ Link::Link(Schema         *schema,
     this->connections = connections;
     this->schema      = schema;
     this->name        = name;
-    qDebug() << "BEFORE MAKING UNIQUE ICON OF LINK";
+
     this->icon        = std::make_unique<LinkIcon>(this);
-    qDebug() << "AFTER MAKING UNIQUE ICON OF LINK";
+    this->addLine();
 }
 
 Link::~Link()
@@ -28,10 +26,8 @@ Link::~Link()
 
 void Link::addLine()
 {
-    this->connections.begin->getConnectedLinks()->insert(
-        std::pair(this->id, this));
-    this->connections.end->getConnectedLinks()->insert(
-        std::pair(this->id, this));
+    this->connections.begin->addConnectedLink(this);
+    this->connections.end->addConnectedLink(this);
 
     this->icon->draw();
 }
@@ -41,5 +37,5 @@ void Link::showConfiguration() {
 }
 
 LinkIcon *Link::getIcon() {
-    return nullptr;
+    return this->icon.get();
 }

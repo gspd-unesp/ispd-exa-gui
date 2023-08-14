@@ -1,17 +1,17 @@
 #include "window/drawingtable/drawingtable.h"
+#include "components/conf/machineconfiguration.h"
 #include "components/link.h"
 #include "components/machine.h"
 #include "components/schema.h"
 #include "components/switch.h"
-#include "icon/linkicon.h"
-#include "qdebug.h"
-#include "qpushbutton.h"
-#include "qradiobutton.h"
 #include "utils/iconSize.h"
 #include "window/drawingtable/scene.h"
 #include "window/users.h"
+#include <QDebug>
 #include <QImage>
 #include <QPixmap>
+#include <QPushButton>
+#include <QRadioButton>
 #include <QVBoxLayout>
 
 void printSchema(Schema *schema);
@@ -268,8 +268,8 @@ void printSchema(Schema *schema)
          machine != schema->machines.end();
          machine++) {
 
-        qDebug() << "Machine #" << machine->second->id << ": "
-                 << machine->second->name.c_str();
+        qDebug() << "Machine #" << machine->second->conf->getId() << ": "
+                 << machine->second->conf->getName().c_str();
     }
 
     for (auto &[id, nswitch] : schema->switches) {
@@ -297,7 +297,8 @@ void DrawingTable::openUserWindowClicked()
     /*     new UserWindow(nullptr, */
     /*                    this, */
     /*                    list1Data, */
-    /*                    list2Data); // Pass the lists to UserWindow constructor */
+    /*                    list2Data); // Pass the lists to UserWindow
+     * constructor */
 
     userWindow->show();
 }

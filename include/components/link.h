@@ -1,7 +1,6 @@
 #pragma once
 
 #include "components/item.h"
-#include "icon/icon.h"
 #include <memory>
 #include <string>
 
@@ -22,7 +21,7 @@ public:
                   unsigned        id,
                   const char     *name,
                   LinkConnections connections);
-    virtual ~Link();
+    ~Link() override;
 
     void  addLine();
     void  draw();

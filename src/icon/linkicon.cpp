@@ -1,9 +1,7 @@
 #include "icon/linkicon.h"
 #include "components/connection.h"
 #include "components/link.h"
-#include "icon/icon.h"
-#include "qdebug.h"
-#include "qgraphicsitem.h"
+#include <QDebug>
 #include <QGraphicsDropShadowEffect>
 #include <QGraphicsEffect>
 #include <QGraphicsItem>
@@ -22,8 +20,8 @@
 ///
 QPointF getMiddleOfIcon(PixmapIcon *a)
 {
-    qreal y = (a->pos().y() + ((qreal)a->pixmap().height() / 2));
-    qreal x = (a->pos().x() + ((qreal)a->pixmap().width() / 2));
+    qreal y = (a->pos().y() + (static_cast<qreal>(a->pixmap().height()) / 2));
+    qreal x = (a->pos().x() + (static_cast<qreal>(a->pixmap().width()) / 2));
 
     return QPointF(x, y);
 }
@@ -37,8 +35,10 @@ QPointF getMiddleOfIcon(PixmapIcon *a)
 LinkIcon::LinkIcon(Link *owner) : QGraphicsPolygonItem()
 {
     this->owner = owner;
-    this->begin = static_cast<PixmapIcon *>(this->owner->connections.begin->getIcon());
-    this->end   = static_cast<PixmapIcon *>(this->owner->connections.end->getIcon());
+    this->begin =
+        static_cast<PixmapIcon *>(this->owner->connections.begin->getIcon());
+    this->end =
+        static_cast<PixmapIcon *>(this->owner->connections.end->getIcon());
 }
 
 LinkIcon::~LinkIcon()
@@ -106,35 +106,30 @@ void LinkIcon::paint(QPainter                       *painter,
 
 void LinkIcon::mousePressEvent(QGraphicsSceneMouseEvent *event)
 {
-    select(); // Call the select function to toggle the color
+    toggleChoosen(); // Call the select function to toggle the color
     QGraphicsPolygonItem::mousePressEvent(event);
-}
-
-void LinkIcon::select()
-{
-    if (begin->isSelected()) {
-        begin->setSelected(true);
-        end->setSelected(true);
-        linkPen.setColor(QColor(9, 132, 227));
-        this->setPen(linkPen);
-    }
-    else {
-        begin->setSelected(false);
-        end->setSelected(false);
-        linkPen.setColor(QColor(245, 69, 55));
-        this->setPen(linkPen);
-    }
 }
 
 Link *LinkIcon::getOwner()
 {
     return this->owner;
 }
-void LinkIcon::toggleSelect()
+void LinkIcon::toggleChoosen()
 {
-    if (this->isSelected()) {
-        this->setSelected(false);
-        return;
+    if (this->chose) {
+        QPen pen;
+        pen.setColor(QColor(9, 132, 227));
+        this->setPen(pen);
+
+    } else {
+        QPen pen;
+        pen.setColor(QColor(245, 69, 55));
+        this->setPen(pen);
     }
-    this->setSelected(true);
+
+    this->chose = !this->chose;
+}
+
+bool LinkIcon::isChosen() {
+    return this->chose;
 }

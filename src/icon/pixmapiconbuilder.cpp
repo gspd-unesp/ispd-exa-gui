@@ -1,6 +1,7 @@
 #include "icon/pixmapiconbuilder.h"
 #include "icon/pixmapicon.h"
 #include "components/connection.h"
+#include "icon/pixmappair.h"
 
 PixmapIconBuilder::PixmapIconBuilder()
 {}
@@ -11,13 +12,13 @@ PixmapIconBuilder *PixmapIconBuilder::setOwner(Connection *owner)
     return this;
 }
 
-PixmapIconBuilder *PixmapIconBuilder::setPixmap(QPixmap pixmap)
+PixmapIconBuilder *PixmapIconBuilder::setPixmapPair(PixmapPair pixmapPair)
 {
-    this->pixmap = pixmap;
+    this->pixmapPair = &pixmapPair;
     return this;
 }
 
 PixmapIcon *PixmapIconBuilder::build()
 {
-    return new PixmapIcon(owner, pixmap);
+    return new PixmapIcon(this->owner, PixmapPair(*this->pixmapPair));
 }

@@ -1,14 +1,12 @@
 #include "components/schema.h"
-#include "components/conf/machineconf.h"
+#include "components/conf/machineconfiguration.h"
 #include "components/link.h"
 #include "components/machine.h"
 #include "components/switch.h"
 #include "icon/pixmapiconbuilder.h"
-#include "icon/linkicon.h"
+#include "icon/pixmappair.h"
 #include "utils/iconPath.h"
-#include "utils/iconSize.h"
 #include "window/drawingtable/drawingtable.h"
-#include "window/users.h"
 #include <algorithm>
 #include <memory>
 
@@ -35,7 +33,7 @@ Schema::Schema(const char *name, Schema *parent)
     PixmapIconBuilder iconBuilder;
     this->icon = std::unique_ptr<PixmapIcon>(
         iconBuilder.setOwner(this)
-            ->setPixmap(QPixmap(schemaPath).scaled(iconSize))
+            ->setPixmapPair(PixmapPair(schemaPath, schemaPathSelected))
             ->build());
 }
 
@@ -56,10 +54,12 @@ unsigned Schema::allocateNewMachine()
 {
     const unsigned newMachineId = schemaIds->machineId;
     std::string    newMachineName("Machine" + std::to_string(newMachineId));
-    auto           newMachine =
-        std::make_unique<Machine>(this, newMachineId, newMachineName.c_str());
 
-    machines.insert(std::pair(newMachineId, std::move(newMachine)));
+    auto newMachineConf =
+        new MachineConfiguration(newMachineName, newMachineId);
+
+    machines[newMachineId] =
+        std::make_unique<Machine>(this, newMachineConf);
 
     schemaIds->machineId++;
 
@@ -71,10 +71,8 @@ unsigned Schema::allocateNewLink(LinkConnections connections)
     const unsigned newLinkId = schemaIds->linkId;
     std::string    newLinkName("Link" + std::to_string(newLinkId));
 
-    qDebug() << "BEFORE MAKING UNIQUE OF LINK";
     auto newLink = std::make_unique<Link>(
         this, newLinkId, newLinkName.c_str(), connections);
-    qDebug() << "AFTER MAKING UNIQUE OF LINK";
 
     links.insert(std::pair(newLinkId, std::move(newLink)));
 

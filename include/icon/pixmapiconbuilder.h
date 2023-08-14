@@ -1,5 +1,5 @@
-#include "components/item.h"
-#include "qpixmap.h"
+#pragma once
+#include "icon/pixmappair.h"
 
 class PixmapIcon;
 class Connection;
@@ -10,11 +10,11 @@ public:
     PixmapIconBuilder();
 
     PixmapIconBuilder *setOwner(Connection *item);
-    PixmapIconBuilder *setPixmap(QPixmap pixmap);
+    PixmapIconBuilder *setPixmapPair(PixmapPair pixmapPair);
 
     PixmapIcon *build();
 
 private:
     Connection *owner;
-    QPixmap pixmap;
+    PixmapPair *pixmapPair;
 };

@@ -1,29 +1,21 @@
 #include "components/machine.h"
 #include "components/conf/linkconf.h"
-#include "components/item.h"
+#include "components/conf/machineconfiguration.h"
 #include "components/link.h"
 #include "components/schema.h"
+#include "icon/machineiconfactory.h"
 #include "icon/pixmapicon.h"
-#include "icon/pixmapiconbuilder.h"
-#include "utils/iconPath.h"
-#include "utils/iconSize.h"
-#include "window/machineconfiguration.h"
+#include "window/machineconfigurationwindow.h"
 #include <map>
 #include <memory>
 #include <vector>
 
-Machine::Machine(Schema *schema, unsigned id, const char *name)
+Machine::Machine(Schema *schema, MachineConfiguration *conf) : connected_links()
 {
-    this->name            = std::string(name);
-    this->schema          = schema;
-    this->id              = id;
-    this->connected_links = std::map<unsigned, Link *>();
-
-    PixmapIconBuilder iconBuilder;
-    this->icon = std::unique_ptr<PixmapIcon>(
-        iconBuilder.setPixmap(QPixmap(machinePath).scaled(iconSize))
-            ->setOwner(this)
-            ->build());
+    this->conf = std::unique_ptr<MachineConfiguration>(conf);
+    this->icon =
+        std::unique_ptr<PixmapIcon>(MachineIconFactory().iconBuilder(this));
+    this->schema = schema;
 }
 
 Machine::~Machine()
@@ -38,13 +30,13 @@ Machine::~Machine()
         this->schema->deleteLink(linkId);
     }
 
-    qDebug() << "Deleting " << this->name.c_str();
+    qDebug() << "Deleting " << this->conf->getName().c_str();
 }
 
 void Machine::showConfiguration()
 {
-    machineIconConfiguration *machineIconConfig =
-        new machineIconConfiguration(this->name.c_str());
+    MachineConfigurationWindow *machineIconConfig =
+        new MachineConfigurationWindow(this->conf->getName().c_str());
     machineIconConfig->show();
 }
 
@@ -71,6 +63,7 @@ void Machine::removeConnectedLink(Link *link)
         this->connected_links.erase(linkToRemove);
     }
 }
+
 void Machine::addConnectedLink(Link *link)
 {
     auto linkToAdd = this->connected_links.find(link->id);
@@ -78,21 +71,4 @@ void Machine::addConnectedLink(Link *link)
     if (linkToAdd == connected_links.end()) {
         this->connected_links.insert(std::pair(link->id, link));
     }
-}
-
-Machine::Machine(Machine &machine)
-{
-    this->name            = "";
-    this->schema          = nullptr;
-    this->load            = machine.load;
-    this->connected_links = machine.connected_links;
-    // TODO USE MACHINEBUILDER
-    /* this->icon            = std::make_unique<MachineIcon>(this); */
-    /* this->icon->configurate(machine.getIcon()->getConf()); */
-    this->id = 0;
-}
-
-std::unique_ptr<Machine> Machine::clone()
-{
-    return std::make_unique<Machine>(*this);
 }

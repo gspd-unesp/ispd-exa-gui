@@ -3,7 +3,6 @@
 #include "components/connection.h"
 #include "components/link.h"
 #include "icon/pixmapicon.h"
-#include "qvariant.h"
 #include "window/schemawindow.h"
 #include <map>
 #include <memory>

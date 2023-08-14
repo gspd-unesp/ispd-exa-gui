@@ -10,6 +10,7 @@
 
 struct LinkConnections;
 class Schema;
+class Link;
 
 class DrawingTable : public QWidget
 {
