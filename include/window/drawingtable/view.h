@@ -1,7 +1,6 @@
 #ifndef VIEW_H
 #define VIEW_H
 
-#include "window/drawingtable/scene.h"
 #include <QGraphicsView>
 #include <QWidget>
 

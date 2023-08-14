@@ -1,23 +1,25 @@
 #include "components/schema.h"
-#include "components/conf/machineconf.h"
+#include "components/conf/machineconfiguration.h"
+#include "components/conf/schemaconfiguration.h"
 #include "components/link.h"
 #include "components/machine.h"
 #include "components/switch.h"
-#include "icon/linkicon.h"
-#include "icon/machineicon.h"
-#include "icon/schemaicon.h"
+#include "icon/pixmapiconbuilder.h"
+#include "icon/pixmappair.h"
+#include "utils/iconPath.h"
+#include "window/drawingtable/drawingtable.h"
 #include <algorithm>
 #include <memory>
 
 Schema::Schema(const char *name, Schema *parent)
 {
-    this->name            = new std::string(name);
-    this->machines        = std::map<unsigned, std::unique_ptr<Machine>>();
-    this->links           = std::map<unsigned, std::unique_ptr<Link>>();
-    this->schemas         = std::map<unsigned, std::unique_ptr<Schema>>();
-    this->switches        = std::map<unsigned, std::unique_ptr<Switch>>();
-    this->connected_links = std::map<unsigned, Link *>();
-    this->window          = new SchemaWindow(this);
+    this->name           = name;
+    this->machines       = std::map<unsigned, std::unique_ptr<Machine>>();
+    this->links          = std::map<unsigned, std::unique_ptr<Link>>();
+    this->schemas        = std::map<unsigned, std::unique_ptr<Schema>>();
+    this->switches       = std::map<unsigned, std::unique_ptr<Switch>>();
+    this->connectedLinks = std::map<unsigned, Link *>();
+    this->window         = std::make_unique<SchemaWindow>(this);
 
     if (parent) {
         schemaIds = parent->schemaIds;
@@ -29,17 +31,36 @@ Schema::Schema(const char *name, Schema *parent)
     this->id = schemaIds->schemaId;
     this->schemaIds->schemaId++;
 
-    icon = std::make_unique<SchemaIcon>(this->name->c_str(), this);
+    PixmapIconBuilder iconBuilder;
+    this->icon = std::unique_ptr<PixmapIcon>(
+        iconBuilder.setOwner(this)
+            ->setPixmapPair(PixmapPair(schemaPath, schemaPathSelected))
+            ->build());
+}
+
+Schema::~Schema()
+{
+    for (auto [linkId, link] : this->connectedLinks) {
+        Connection *otherIcon = (link->connections.begin == this)
+                                    ? link->connections.end
+                                    : link->connections.begin;
+
+        otherIcon->removeConnectedLink(link);
+
+        this->deleteLink(linkId);
+    }
 }
 
 unsigned Schema::allocateNewMachine()
 {
     const unsigned newMachineId = schemaIds->machineId;
     std::string    newMachineName("Machine" + std::to_string(newMachineId));
-    auto           newMachine =
-        std::make_unique<Machine>(this, newMachineId, newMachineName.c_str());
 
-    machines.insert(std::pair(newMachineId, std::move(newMachine)));
+    auto newMachineConf =
+        new MachineConfiguration(newMachineName, newMachineId);
+
+    machines[newMachineId] =
+        std::make_unique<Machine>(this, newMachineConf);
 
     schemaIds->machineId++;
 
@@ -51,8 +72,11 @@ unsigned Schema::allocateNewLink(LinkConnections connections)
     const unsigned newLinkId = schemaIds->linkId;
     std::string    newLinkName("Link" + std::to_string(newLinkId));
 
+    auto newMachineConf =
+        new LinkConfiguration(newLinkName, newLinkId);
+
     auto newLink = std::make_unique<Link>(
-        this, newLinkId, newLinkName.c_str(), connections);
+        this, newMachineConf, connections);
 
     links.insert(std::pair(newLinkId, std::move(newLink)));
 
@@ -104,6 +128,15 @@ void Schema::deleteSchema(unsigned schemaId)
     }
 }
 
+void Schema::deleteSwitch(unsigned switchId)
+{
+    auto switchToDelete = this->switches.find(switchId);
+
+    if (switchToDelete != this->switches.end()) {
+        this->switches.erase(switchToDelete);
+    }
+}
+
 void Schema::deleteLink(unsigned linkId)
 {
     auto linkToDelete = this->links.find(linkId);
@@ -120,32 +153,45 @@ void Schema::showConfiguration()
 
 std::map<unsigned, Link *> *Schema::getConnectedLinks()
 {
-    return &this->connected_links;
+    return &this->connectedLinks;
 }
 
-SchemaIcon *Schema::getIcon()
+PixmapIcon *Schema::getIcon()
 {
     return this->icon.get();
 }
 
 void Schema::setConnectedLinks(std::map<unsigned, Link *> *map)
 {
-    this->connected_links = *map;
+    this->connectedLinks = *map;
 }
 
 void Schema::removeConnectedLink(Link *link)
 {
-    auto linkToRemove = this->connected_links.find(link->id);
+    auto linkToRemove = this->connectedLinks.find(link->conf->getId());
 
-    if (linkToRemove != connected_links.end()) {
-        this->connected_links.erase(linkToRemove);
+    if (linkToRemove != connectedLinks.end()) {
+        this->connectedLinks.erase(linkToRemove);
     }
 }
 void Schema::addConnectedLink(Link *link)
 {
-    auto linkToAdd = this->connected_links.find(link->id);
+    auto linkToAdd = this->connectedLinks.find(link->conf->getId());
 
-    if (linkToAdd == connected_links.end()) {
-        this->connected_links.insert(std::pair(link->id, link));
+    if (linkToAdd == connectedLinks.end()) {
+        this->connectedLinks.insert(std::pair(link->conf->getId(), link));
     }
+}
+
+void Schema::drawItems()
+{
+    std::vector<Connection *> machineVector;
+    for (auto &it : this->machines) {
+        machineVector.push_back(it.second.get());
+    }
+    this->window->drawingTable->addIcons(&machineVector);
+}
+
+SchemaConfiguration *Schema::getConf() {
+    return this->conf.get();
 }

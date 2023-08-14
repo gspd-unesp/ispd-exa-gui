@@ -4,20 +4,19 @@
 #include <QPlainTextEdit>
 #include <QSettings>
 #include <QDialog>
-#include "window/users.h"
 
 
 namespace Ui {
-class machineIconConfiguration;
+class MachineConfigurationWindow;
 }
 
-class machineIconConfiguration : public QDialog
+class MachineConfigurationWindow : public QDialog
 {
     Q_OBJECT
 
 public:
-    explicit machineIconConfiguration(const QString &iconName, QWidget *parent = nullptr);
-    ~machineIconConfiguration();
+    explicit MachineConfigurationWindow(const QString &iconName, QWidget *parent = nullptr);
+    ~MachineConfigurationWindow();
 
     // Adicione funções para obter e configurar os valores dos widgets da janela
     QString getLineEdit01Value();
@@ -49,7 +48,7 @@ public:
 
     void addUsersToOwnerComboBox(const QList<QString> &list1Data);
 private:
-    Ui::machineIconConfiguration *ui;
+    Ui::MachineConfigurationWindow *ui;
 signals:
     void configurationClicked();
 

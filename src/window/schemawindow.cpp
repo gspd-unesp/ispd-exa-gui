@@ -1,10 +1,10 @@
-#include <QDebug>
-#include "qdebug.h"
 #include "window/schemawindow.h"
-#include "qwidget.h"
 #include "window/drawingtable/drawingtable.h"
+#include <QDebug>
+#include <QWidget>
 
-SchemaWindow::SchemaWindow(Schema *schema, QWidget *parent) : QMainWindow{parent}
+SchemaWindow::SchemaWindow(Schema *schema, QWidget *parent)
+    : QMainWindow{parent}
 {
     this->schema = schema;
     drawingTable = new DrawingTable(schema, this);

@@ -1,7 +1,8 @@
 #ifndef LINK_H
 #define LINK_H
 
-#include "icon/icon.h"
+#include "components/link.h"
+#include "icon/pixmapicon.h"
 #include <QGraphicsPolygonItem>
 #include <QPen>
 #include <memory>
@@ -14,20 +15,22 @@
 /// their behavior; it moves when they move, for example.
 ///
 /// @see Icon
-class LinkIcon : public QGraphicsPolygonItem
+class LinkIcon : public QGraphicsPolygonItem, public Icon<Link>
 {
 public:
-    LinkIcon(Link *owner, const char *name);
-    ~LinkIcon();
+    explicit LinkIcon(Link *owner);
+    ~LinkIcon() override;
 
     Link        *owner;
-    unsigned     id;
-    Icon        *begin; ///< the \link Icon \endlink that the link comes from
-    Icon        *end;   ///< the \link Icon \endlink that the link goes to
+    PixmapIcon  *begin; ///< the \link Icon \endlink that the link comes from
+    PixmapIcon  *end;   ///< the \link Icon \endlink that the link goes to
     void         mousePressEvent(QGraphicsSceneMouseEvent *event) override;
     void         updatePositions();
     std::string *getName();
     void         draw();
+    Link        *getOwner() override;
+    void         toggleChoosen() override;
+    bool         isChosen() override;
 
 protected:
     void updateArrow();
@@ -38,9 +41,9 @@ protected:
     void select();
 
 private:
-    std::unique_ptr<std::string> name; ///< the name of the \link Link \endlink
-    QGraphicsPolygonItem        *arrow;
-    QPen                         linkPen;
+    QGraphicsPolygonItem *arrow;
+    QPen                  linkPen;
+    bool                  chose = false;
 };
 
 #endif

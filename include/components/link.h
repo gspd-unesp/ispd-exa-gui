@@ -1,9 +1,11 @@
 #pragma once
 
+#include "components/conf/linkconfiguration.h"
+#include "components/item.h"
 #include <memory>
+#include <string>
+
 class LinkIcon;
-class Icon;
-class Item;
 class Connection;
 class Schema;
 
@@ -13,24 +15,25 @@ struct LinkConnections
     Connection *end;
 };
 
-class Link
+class Link : public Item<LinkIcon>
 {
 public:
-    Link(Schema         *schema,
-         unsigned        id,
-         const char     *name,
-         LinkConnections connections);
-    ~Link();
+    Link(Schema *schema, LinkConfiguration *conf, LinkConnections connections);
+    ~Link() override;
 
-    void addLine();
-    void draw();
+    void               addLine();
+    void               draw();
+    void               showConfiguration() override;
+    LinkIcon          *getIcon() override;
+    LinkConfiguration *getConf() override;
 
     Schema *schema;
 
     LinkConnections connections;
 
-    std::unique_ptr<std::string> name;
+    std::string name;
 
-    unsigned                  id;
-    std::unique_ptr<LinkIcon> icon;
+    unsigned                           id;
+    std::unique_ptr<LinkIcon>          icon;
+    std::unique_ptr<LinkConfiguration> conf;
 };
