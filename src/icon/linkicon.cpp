@@ -35,15 +35,13 @@ QPointF getMiddleOfIcon(PixmapIcon *a)
 LinkIcon::LinkIcon(Link *owner) : QGraphicsPolygonItem()
 {
     this->owner = owner;
-    this->begin =
-        static_cast<PixmapIcon *>(this->owner->connections.begin->getIcon());
-    this->end =
-        static_cast<PixmapIcon *>(this->owner->connections.end->getIcon());
+    this->begin = this->owner->connections.begin->getIcon();
+    this->end   = this->owner->connections.end->getIcon();
 }
 
 LinkIcon::~LinkIcon()
 {
-    qDebug() << "Deleting the link icon of" << this->owner->conf->getName();
+    qDebug() << "Deleting the linkicon";
 }
 
 void LinkIcon::draw()
@@ -120,8 +118,8 @@ void LinkIcon::toggleChoosen()
         QPen pen;
         pen.setColor(QColor(9, 132, 227));
         this->setPen(pen);
-
-    } else {
+    }
+    else {
         QPen pen;
         pen.setColor(QColor(245, 69, 55));
         this->setPen(pen);
@@ -130,6 +128,7 @@ void LinkIcon::toggleChoosen()
     this->chose = !this->chose;
 }
 
-bool LinkIcon::isChosen() {
+bool LinkIcon::isChosen()
+{
     return this->chose;
 }
