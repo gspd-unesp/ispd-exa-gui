@@ -7,12 +7,9 @@
 #include "utils/iconPath.h"
 #include <memory>
 
-Switch::Switch(Schema *schema, unsigned id, const char *name)
+Switch::Switch(Schema *schema, SwitchConfiguration *conf)
+    : conf(conf), schema(schema), connectedLinks()
 {
-    this->schema = schema;
-    this->id     = id;
-    this->name   = name;
-
     PixmapIconBuilder iconBuilder;
     this->icon = std::unique_ptr<PixmapIcon>(
         iconBuilder.setOwner(this)
@@ -68,7 +65,7 @@ void Switch::addConnectedLink(Link *link)
 
 std::string Switch::getName()
 {
-    return this->name;
+    return this->conf->getName();
 }
 
 void Switch::showConfiguration()

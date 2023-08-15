@@ -93,7 +93,7 @@ Machine *findMachine(Schema *schema)
 
 void printThisSchema(Schema *schema)
 {
-    qDebug() << "From Schema: " << schema->name;
+    qDebug() << "From Schema: " << schema->getConf()->getName();
     for (auto &machine : schema->machines) {
         qDebug() << "Machine[" << machine.second->conf->getId()
                  << "] = " << machine.second->conf->getName();
@@ -130,14 +130,15 @@ void Scene::deleteItems()
 {
     qDebug() << "Test of deleteItems.";
 
-    erase_if(this->schema->machines,
-             [](auto const &it) { return it.second->getIcon()->isChosen(); });
-    erase_if(this->schema->switches,
-             [](auto const &it) { return it.second->getIcon()->isChosen(); });
-    erase_if(this->schema->schemas,
-             [](auto const &it) { return it.second->getIcon()->isChosen(); });
-    erase_if(this->schema->links,
-             [](auto const &it) { return it.second->getIcon()->isChosen(); });
+    auto eraseCondition = [](auto const &it) {
+        qDebug() << "BEGIN TO DELETE " << it.second->getConf()->getName();
+        return it.second->getIcon()->isChosen();
+    };
+
+    erase_if(this->schema->machines, eraseCondition);
+    erase_if(this->schema->switches, eraseCondition);
+    erase_if(this->schema->schemas, eraseCondition);
+    erase_if(this->schema->links, eraseCondition);
 }
 
 QRectF getOwnItemsSceneBoundingRect(Schema *schema)

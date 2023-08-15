@@ -5,6 +5,7 @@ class LinkConfiguration : public ItemConfiguration
 {
 public:
     LinkConfiguration(std::string name, unsigned id);
+    ~LinkConfiguration() override;
 
     unsigned    getId() override;
     std::string getName() override;

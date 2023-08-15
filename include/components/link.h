@@ -31,9 +31,6 @@ public:
 
     LinkConnections connections;
 
-    std::string name;
-
-    unsigned                           id;
     std::unique_ptr<LinkIcon>          icon;
     std::unique_ptr<LinkConfiguration> conf;
 };
