@@ -1,5 +1,6 @@
 #include "window/drawingtable/drawingtable.h"
 #include "components/conf/machineconfiguration.h"
+#include "components/conf/schemaconfiguration.h"
 #include "components/link.h"
 #include "components/machine.h"
 #include "components/schema.h"
@@ -17,7 +18,7 @@
 void printSchema(Schema *schema);
 
 DrawingTable::DrawingTable(QFrame *parent)
-    : DrawingTable(new Schema(""), parent)
+    : DrawingTable(new Schema(), parent)
 {
     QPixmap image(":/icons/perfil.png");
     QSize   imageSize(30, 30);
@@ -280,8 +281,8 @@ void printSchema(Schema *schema)
     for (auto sch = schema->schemas.begin(); sch != schema->schemas.end();
          sch++) {
 
-        qDebug() << "Schema #" << sch->second->id << ": "
-                 << sch->second->name.c_str();
+        qDebug() << "Schema #" << sch->second->getConf()->getId() << ": "
+                 << sch->second->getConf()->getName();
     }
 
     for (auto link = schema->links.begin(); link != schema->links.end();

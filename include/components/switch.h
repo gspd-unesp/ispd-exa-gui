@@ -8,7 +8,7 @@ class Schema;
 class Switch : public Connection
 {
 public:
-    Switch(Schema *schema, unsigned id, const char *name);
+    Switch(Schema *schema, SwitchConfiguration *conf);
     ~Switch() override;
     std::map<unsigned, Link *> *getConnectedLinks() override;
     PixmapIcon                 *getIcon() override;
@@ -22,8 +22,6 @@ public:
 private:
     std::unique_ptr<SwitchConfiguration> conf;
     Schema                              *schema;
-    std::string                          name;
-    unsigned                             id;
     std::map<unsigned, Link *>           connectedLinks;
     std::unique_ptr<PixmapIcon>          icon;
 };

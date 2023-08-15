@@ -27,6 +27,8 @@ Machine::~Machine()
 
         otherIcon->removeConnectedLink(link);
 
+        qDebug() << "BEGIN TO DELETE "
+                 << this->schema->links[linkId]->getConf()->getName();
         this->schema->deleteLink(linkId);
     }
 
@@ -73,7 +75,8 @@ void Machine::addConnectedLink(Link *link)
     }
 }
 
-MachineCloner *Machine::cloner() {
+MachineCloner *Machine::cloner()
+{
     return new MachineCloner(this, nullptr);
 }
 

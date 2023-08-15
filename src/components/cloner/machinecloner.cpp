@@ -25,9 +25,10 @@ std::unique_ptr<Machine> MachineCloner::clone(Schema *schema)
                               ->build();
 
     newMachine->getIcon()->setPos(this->pos);
-    newMachine->conf->setId(schema->schemaIds->machineId++);
-    newMachine->conf->setName("Machine" +
-                              std::to_string(newMachine->conf->getId()));
+
+    auto [newId, newName] = schema->ids->getNewMachineBase();
+    newMachine->conf->setId(newId);
+    newMachine->conf->setName(newName);
 
     return std::unique_ptr<Machine>(newMachine);
 }
