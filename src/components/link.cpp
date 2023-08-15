@@ -18,6 +18,9 @@ Link::Link(Schema *schema, LinkConfiguration *conf, LinkConnections connections)
 Link::~Link()
 {
     qDebug() << "Deleting Link";
+
+    this->connections.begin->removeConnectedLink(this);
+    this->connections.end->removeConnectedLink(this);
 }
 
 void Link::addLine()
