@@ -1,7 +1,7 @@
 #pragma once
 
 #include "components/conf/schemaconfiguration.h"
-#include "components/connection.h"
+#include "components/connectable.h"
 #include "components/link.h"
 #include "icon/pixmapicon.h"
 #include "window/schemawindow.h"

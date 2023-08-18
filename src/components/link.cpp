@@ -1,6 +1,7 @@
 #include "components/link.h"
 #include "components/cloner/linkcloner.h"
-#include "components/connection.h"
+#include "components/connectable.h"
+#include "components/connectable.h"
 #include "icon/linkicon.h"
 #include "qdebug.h"
 #include <iterator>

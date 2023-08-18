@@ -1,6 +1,7 @@
 #include "icon/pixmapiconbuilder.h"
 #include "icon/pixmapicon.h"
-#include "components/connection.h"
+#include "components/connectable.h"
+#include "components/connectable.h"
 #include "icon/pixmappair.h"
 
 PixmapIconBuilder::PixmapIconBuilder()

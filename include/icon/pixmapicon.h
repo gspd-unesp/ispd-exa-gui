@@ -14,7 +14,7 @@ class PixmapIcon : public QGraphicsPixmapItem, public Icon
 public:
     PixmapIcon(Connectable *owner, PixmapPair pixmapPair);
 
-    Item *getOwner() override;
+    Component *getOwner() override;
     void  toggleChoosen() override;
     void  updatePosition() override;
     bool  isChosen() override;

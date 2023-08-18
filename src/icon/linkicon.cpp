@@ -1,5 +1,6 @@
 #include "icon/linkicon.h"
-#include "components/connection.h"
+#include "components/connectable.h"
+#include "components/connectable.h"
 #include "components/link.h"
 #include <QDebug>
 #include <QGraphicsDropShadowEffect>

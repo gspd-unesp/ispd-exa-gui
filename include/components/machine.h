@@ -4,7 +4,8 @@
 #include <string>
 #include <vector>
 
-#include "components/connection.h"
+#include "components/connectable.h"
+#include "components/connectable.h"
 
 class Schema;
 class Link;

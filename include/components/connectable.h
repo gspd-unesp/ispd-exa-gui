@@ -1,5 +1,5 @@
 #pragma once
-#include "components/item.h"
+#include "components/component.h"
 #include "icon/pixmapicon.h"
 
 #include <map>
@@ -7,7 +7,7 @@
 
 class Link;
 
-class Connectable : public Item
+class Connectable : public Component
 {
 public:
     virtual ~Connectable() = default;

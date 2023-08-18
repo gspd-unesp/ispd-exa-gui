@@ -5,9 +5,9 @@ class ItemConfiguration;
 class Icon;
 class Cloner;
 
-class Item {
+class Component {
     public: 
-        virtual ~Item() = default;
+        virtual ~Component() = default;
         virtual void showConfiguration() = 0;
         virtual Icon *getIcon() = 0;
         virtual ItemConfiguration *getConf() = 0;

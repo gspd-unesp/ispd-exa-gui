@@ -1,7 +1,7 @@
 #include "icon/pixmapicon.h"
-#include "components/connection.h"
+#include "components/connectable.h"
+#include "components/connectable.h"
 #include "components/link.h"
-#include "icon/linkicon.h"
 #include <QGraphicsItem>
 #include <chrono>
 
@@ -13,7 +13,7 @@ PixmapIcon::PixmapIcon(Connectable *owner, PixmapPair pixmapPair)
     this->owner = owner;
 }
 
-Item *PixmapIcon::getOwner()
+Component *PixmapIcon::getOwner()
 {
     return owner;
 }
@@ -32,6 +32,7 @@ void PixmapIcon::toggleChoosen()
 
 void PixmapIcon::mousePressEvent(QGraphicsSceneMouseEvent *event)
 {
+    qDebug() << this->owner->getConf()->getName() << this->owner->getConf()->getId();
     QGraphicsPixmapItem::mousePressEvent(event);
 }
 

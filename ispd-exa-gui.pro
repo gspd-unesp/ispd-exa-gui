@@ -58,8 +58,8 @@ HEADERS += \
   include/components/cloner/schemacloner.h \
   include/components/link.h \
   include/components/switch.h \
-  include/components/item.h \
-  include/components/connection.h \
+  include/components/component.h \
+  include/components/connectable.h \
   include/components/machine.h \
   include/components/machinebuilder.h \
   include/components/schema.h \

@@ -1,7 +1,7 @@
 #pragma once
 
 #include "components/conf/linkconfiguration.h"
-#include "components/item.h"
+#include "components/component.h"
 #include <memory>
 #include <string>
 
@@ -15,7 +15,7 @@ struct LinkConnections
     Connectable *end;
 };
 
-class Link : public Item
+class Link : public Component
 {
 public:
     Link(Schema *schema, LinkConfiguration *conf, LinkConnections connections);

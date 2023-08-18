@@ -23,17 +23,12 @@ Machine::~Machine()
 {
     for (auto [linkId, link] : this->connected_links) {
         Connectable *otherIcon = (link->connections.begin == this)
-                                    ? link->connections.end
-                                    : link->connections.begin;
+                                     ? link->connections.end
+                                     : link->connections.begin;
 
         otherIcon->removeConnectedLink(link);
-
-        qDebug() << "BEGIN TO DELETE "
-                 << this->schema->links[linkId]->getConf()->getName();
         this->schema->deleteLink(linkId);
     }
-
-    qDebug() << "Deleting " << this->conf->getName().c_str();
 }
 
 void Machine::showConfiguration()

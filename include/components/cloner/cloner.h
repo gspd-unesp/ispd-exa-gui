@@ -1,11 +1,11 @@
 #pragma once
 
 #include <memory>
-#include "components/item.h"
+#include "components/component.h"
 
 class Schema;
 
 class Cloner {
     public:
-    virtual Item *clone(Schema *schema) = 0;
+    virtual Component *clone(Schema *schema) = 0;
 };

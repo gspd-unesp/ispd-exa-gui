@@ -1,6 +1,6 @@
 #pragma once
 #include "components/conf/switchconfiguration.h"
-#include "components/connection.h"
+#include "components/connectable.h"
 #include "icon/pixmapicon.h"
 
 class Schema;
