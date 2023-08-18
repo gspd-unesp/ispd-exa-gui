@@ -1,5 +1,6 @@
 #include "components/cloner/machinecloner.h"
 #include "components/conf/machineconfiguration.h"
+#include "components/machine.h"
 #include "components/machinebuilder.h"
 #include "components/schema.h"
 #include "icon/pixmapicon.h"
@@ -12,10 +13,10 @@ MachineCloner::MachineCloner(Machine *base, SchemaCloner *parent)
     this->clonedConf = new MachineConfiguration(*base->conf);
     this->parent     = parent;
     qDebug() << "Before getting machineIcon scenePos.";
-    this->pos = base->getIcon()->scenePos();
+    this->pos = static_cast<QGraphicsPixmapItem *>(base->getIcon())->scenePos();
 }
 
-std::unique_ptr<Machine> MachineCloner::clone(Schema *schema)
+Connectable *MachineCloner::clone(Schema *schema)
 {
     MachineConfiguration *newMachineConfiguration =
         new MachineConfiguration(*this->clonedConf);
@@ -30,5 +31,5 @@ std::unique_ptr<Machine> MachineCloner::clone(Schema *schema)
     newMachine->conf->setId(newId);
     newMachine->conf->setName(newName);
 
-    return std::unique_ptr<Machine>(newMachine);
+    return newMachine;
 }

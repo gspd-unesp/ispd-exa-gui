@@ -73,7 +73,7 @@ void LinkIcon::draw()
 /// @brief Update the position of the Link, suppose to be used when moving
 ///        an Icon that the Link is connected.
 ///
-void LinkIcon::updatePositions()
+void LinkIcon::updatePosition()
 {
     QPolygonF newLine;
 
@@ -131,4 +131,11 @@ void LinkIcon::toggleChoosen()
 bool LinkIcon::isChosen()
 {
     return this->chose;
+}
+
+void LinkIcon::toggleChosenIfInside(QRectF area)
+{
+    if (area.contains(this->sceneBoundingRect()) && !this->isChosen()) {
+        this->toggleChoosen();
+    }
 }

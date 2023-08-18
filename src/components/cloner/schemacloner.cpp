@@ -1,7 +1,8 @@
 #include "components/cloner/schemacloner.h"
+#include "components/cloner/connectablecloner.h"
 #include "components/cloner/linkcloner.h"
-#include "components/cloner/machinecloner.h"
 #include "components/cloner/switchcloner.h"
+#include "components/conf/schemaconfiguration.h"
 #include "components/link.h"
 #include "components/machine.h"
 #include "components/schema.h"
@@ -11,88 +12,75 @@
 
 SchemaCloner::SchemaCloner(Schema *base, SchemaCloner *parent)
 {
-    this->base   = base;
     this->parent = parent;
-    this->setMachines();
+    this->setConnectables(base);
+    this->setLinks(base);
+    this->clonedConf = std::unique_ptr<SchemaConfiguration>(
+        new SchemaConfiguration(*base->getConf()));
 }
 
-std::unique_ptr<Item> SchemaCloner::clone()
+Connectable *SchemaCloner::clone(Schema *schema)
 {
     qDebug() << "Begin to clone a schema.";
-    auto clonedSchema = std::make_unique<Schema>(*this->base);
-    clonedSchema->id  = this->base->schemaIds->schemaId++;
+    auto [schemaId, schemaName] = schema->ids->getNewSchemaBase();
 
-    qDebug() << "Generating new schema machines.";
-    this->generateMachines(clonedSchema->machines);
-    for (auto const &it : clonedSchema->machines) {
-        qDebug() << "MACHINE FROM CLONED SCHEMA " << it.second->id;
-    }
+    qDebug()
+        << "Begin to getting the schemaconfiguration of the cloned schema.";
+    auto newClonedConf = new SchemaConfiguration(*this->clonedConf.get());
+    newClonedConf->setId(schemaId);
+    newClonedConf->setName(schemaName);
+
+    qDebug() << "Creating the cloned Schema";
+    auto clonedSchema = new Schema(schema, newClonedConf);
+
+    qDebug() << "Generating new connectables";
+    this->generateConnectables(clonedSchema->connectables);
+    qDebug() << "Generating new links";
+    this->generateLinks(clonedSchema->links);
+
     clonedSchema->drawItems();
-
-    qDebug() << "Generating new schema schemas.";
-    /* this->generateSchemas(clonedSchema->schemas); */
-    qDebug() << "Generating new schema switches.";
-    /* this->generateSwitches(clonedSchema->switches); */
-    qDebug() << "Generating new schema links.";
-    /* this->generateLinks(clonedSchema->links); */
 
     qDebug() << "Returning the cloned schema.";
 
     return clonedSchema;
 }
 
-void SchemaCloner::generateMachines(
-    std::map<unsigned, std::unique_ptr<Machine>> &machines)
-{
-    for (auto &it : this->machines) {
-        std::unique_ptr<Item> newMachine = it->clone();
-        unsigned              id = static_cast<Machine *>(newMachine.get())->id;
-        /* machines.insert(id, newMachine); */
-    }
-    qDebug() << "Ended generating new schema machines.";
-}
-
-void SchemaCloner::generateSchemas(
-    std::map<unsigned, std::unique_ptr<Schema>> &schemas)
+void SchemaCloner::generateConnectables(
+    std::map<unsigned, std::unique_ptr<Connectable>> &connectables)
 {}
 
 void SchemaCloner::generateLinks(
     std::map<unsigned, std::unique_ptr<Link>> &links)
 {}
 
-void SchemaCloner::generateSwitches(
-    std::map<unsigned, std::unique_ptr<Switch>> &switches)
+void SchemaCloner::setLinks(Schema *base)
 {}
 
-void SchemaCloner::setMachines()
+void SchemaCloner::setConnectables(Schema *base)
 {
-    for (auto &it : this->base->machines) {
-        this->machines.push_back(
-            std::make_unique<MachineCloner>(it.second.get(), this));
-    }
-}
+    for (auto &[connectableId, connectable] : base->connectables) {
+        auto newConnectableCloner = std::unique_ptr<ConnectableCloner>(
+            static_cast<ConnectableCloner *>(connectable->cloner()));
+        this->connectableCloners.push_back(std::move(newConnectableCloner));
 
-void SchemaCloner::setSchemas()
-{
-    for (auto &it : this->base->schemas) {
+        for (auto &[linkId, link] : *connectable->getConnectedLinks()) {
+            auto newLinkCloner = std::unique_ptr<LinkCloner>(
+                static_cast<LinkCloner *>(connectable->cloner()));
 
-        this->schemas.push_back(
-            std::make_unique<SchemaCloner>(it.second.get(), this));
-    }
-}
+            auto otherConnectable = link->connections.begin == connectable.get()
+                                        ? link->connections.end
+                                        : link->connections.begin;
+            auto otherConnectableId = otherConnectable->getConf()->getId();
+            auto otherConnectableCloner =
+                static_cast<ConnectableCloner *>(otherConnectable->cloner());
 
-void SchemaCloner::setLinks()
-{
-    for (auto &it : this->base->links) {
-        this->links.push_back(
-            std::make_unique<LinkCloner>(it.second.get(), this));
-    }
-}
+            this->connections.push_back(
+                std::tuple<unsigned, LinkCloner *, unsigned>(
+                    connectableId, newLinkCloner.get(), otherConnectableId));
 
-void SchemaCloner::setSwitches()
-{
-    for (auto &it : this->base->switches) {
-        this->switches.push_back(
-            std::make_unique<SwitchCloner>(it.second.get(), this));
+            this->linkCloners.push_back(std::move(newLinkCloner));
+            this->connectableCloners.push_back(
+                std::unique_ptr<ConnectableCloner>(otherConnectableCloner));
+        }
     }
 }

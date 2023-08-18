@@ -1,5 +1,6 @@
 #include "components/machine.h"
 #include "components/cloner/machinecloner.h"
+#include "components/conf/itemconfiguration.h"
 #include "components/conf/machineconfiguration.h"
 #include "components/link.h"
 #include "components/schema.h"
@@ -21,7 +22,7 @@ Machine::Machine(Schema *schema, MachineConfiguration *conf) : connected_links()
 Machine::~Machine()
 {
     for (auto [linkId, link] : this->connected_links) {
-        Connection *otherIcon = (link->connections.begin == this)
+        Connectable *otherIcon = (link->connections.begin == this)
                                     ? link->connections.end
                                     : link->connections.begin;
 
@@ -75,12 +76,12 @@ void Machine::addConnectedLink(Link *link)
     }
 }
 
-MachineCloner *Machine::cloner()
+Cloner *Machine::cloner()
 {
     return new MachineCloner(this, nullptr);
 }
 
-MachineConfiguration *Machine::getConf()
+ItemConfiguration *Machine::getConf()
 {
     return this->conf.get();
 }

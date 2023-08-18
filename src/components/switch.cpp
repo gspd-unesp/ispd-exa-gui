@@ -1,4 +1,5 @@
 #include "components/switch.h"
+#include "components/cloner/switchcloner.h"
 #include "components/conf/switchconfiguration.h"
 #include "components/link.h"
 #include "components/schema.h"
@@ -20,9 +21,9 @@ Switch::Switch(Schema *schema, SwitchConfiguration *conf)
 Switch::~Switch()
 {
     for (auto [linkId, link] : this->connectedLinks) {
-        Connection *otherIcon = (link->connections.begin == this)
-                                    ? link->connections.end
-                                    : link->connections.begin;
+        Connectable *otherIcon = (link->connections.begin == this)
+                                     ? link->connections.end
+                                     : link->connections.begin;
 
         otherIcon->removeConnectedLink(link);
 
@@ -74,4 +75,9 @@ void Switch::showConfiguration()
 SwitchConfiguration *Switch::getConf()
 {
     return this->conf.get();
+}
+
+Cloner *Switch::cloner()
+{
+    return new SwitchCloner(this, nullptr);
 }

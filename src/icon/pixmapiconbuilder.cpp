@@ -6,7 +6,7 @@
 PixmapIconBuilder::PixmapIconBuilder()
 {}
 
-PixmapIconBuilder *PixmapIconBuilder::setOwner(Connection *owner)
+PixmapIconBuilder *PixmapIconBuilder::setOwner(Connectable *owner)
 {
     this->owner = owner;
     return this;

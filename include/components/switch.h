@@ -5,7 +5,7 @@
 
 class Schema;
 
-class Switch : public Connection
+class Switch : public Connectable
 {
 public:
     Switch(Schema *schema, SwitchConfiguration *conf);
@@ -17,6 +17,7 @@ public:
     void        removeConnectedLink(Link *link) override;
     void        addConnectedLink(Link *link) override;
     void        showConfiguration() override;
+    Cloner     *cloner() override;
     std::string getName();
 
 private:

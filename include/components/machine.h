@@ -5,14 +5,15 @@
 #include <vector>
 
 #include "components/connection.h"
-#include "components/conf/machineconfiguration.h"
 
-class MachineIcon;
-class MachineCloner;
 class Schema;
 class Link;
+class Icon;
+class Cloner;
+class ItemConfiguration;
+class MachineConfiguration;
 
-class Machine : public Connection
+class Machine : public Connectable
 {
 public:
     Machine(Schema *schema, MachineConfiguration *conf);
@@ -24,10 +25,10 @@ public:
     void removeConnectedLink(Link *link) override;
     void addConnectedLink(Link *link) override;
 
-    void                  showConfiguration() override;
-    PixmapIcon           *getIcon() override;
-    MachineConfiguration *getConf() override;
-    MachineCloner        *cloner();
+    void               showConfiguration() override;
+    PixmapIcon        *getIcon() override;
+    ItemConfiguration *getConf() override;
+    Cloner            *cloner();
 
     std::map<unsigned, Link *> connected_links;
 

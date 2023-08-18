@@ -1,19 +1,20 @@
 #pragma once
 
-#include "components/cloner/cloner.h"
-#include "components/machine.h"
+#include "components/cloner/connectablecloner.h"
+#include "icon/pixmapicon.h"
 #include "qpoint.h"
 #include <memory>
 
 class MachineConfiguration;
 class SchemaCloner;
 class Schema;
+class Machine;
 
-class MachineCloner : public Cloner<Machine>
+class MachineCloner : public ConnectableCloner
 {
 public:
     MachineCloner(Machine *base, SchemaCloner *parent);
-    std::unique_ptr<Machine> clone(Schema *schema) override;
+    Connectable *clone(Schema *schema) override;
 
 private:
     MachineConfiguration *clonedConf;

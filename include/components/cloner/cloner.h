@@ -1,11 +1,11 @@
 #pragma once
 
 #include <memory>
+#include "components/item.h"
 
 class Schema;
 
-template <class T>
 class Cloner {
     public:
-    virtual std::unique_ptr<T> clone(Schema *schema) = 0;
+    virtual Item *clone(Schema *schema) = 0;
 };

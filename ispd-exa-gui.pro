@@ -16,6 +16,9 @@ SOURCES += \
   src/components/conf/schemaconfiguration.cpp \
   src/components/conf/switchconfiguration.cpp \
   src/components/cloner/machinecloner.cpp \
+  src/components/cloner/switchcloner.cpp \
+  src/components/cloner/schemacloner.cpp \
+  src/components/cloner/linkcloner.cpp \
   src/components/link.cpp \
   src/components/switch.cpp \
   src/components/machine.cpp \

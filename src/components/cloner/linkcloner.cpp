@@ -6,3 +6,6 @@ LinkCloner::LinkCloner(Link *base, SchemaCloner *parent) {
     this->base = base;
     this->parent = parent;
 }
+
+Link *LinkCloner::clone(Schema *schema) {
+}

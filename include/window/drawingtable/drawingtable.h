@@ -58,7 +58,7 @@ public:
     void noneButtonClicked();
     void openUserWindowClicked();
     void openSimulationWindowClicked();
-    void addIcons(std::vector<Connection *> *items);
+    void addIcons(std::vector<Connectable *> *items);
 
     void receiveUserWindowData(const QList<QString> &list1Data,
                                const QList<double>  &list2Data);

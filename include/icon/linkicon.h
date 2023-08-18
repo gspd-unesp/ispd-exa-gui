@@ -15,7 +15,7 @@
 /// their behavior; it moves when they move, for example.
 ///
 /// @see Icon
-class LinkIcon : public QGraphicsPolygonItem, public Icon<Link>
+class LinkIcon : public QGraphicsPolygonItem, public Icon
 {
 public:
     explicit LinkIcon(Link *owner);
@@ -25,8 +25,8 @@ public:
     PixmapIcon  *begin; ///< the \link Icon \endlink that the link comes from
     PixmapIcon  *end;   ///< the \link Icon \endlink that the link goes to
     void         mousePressEvent(QGraphicsSceneMouseEvent *event) override;
-    void         updatePositions();
-    std::string *getName();
+    void         toggleChosenIfInside(QRectF area) override;
+    void         updatePosition() override;
     void         draw();
     Link        *getOwner() override;
     void         toggleChoosen() override;

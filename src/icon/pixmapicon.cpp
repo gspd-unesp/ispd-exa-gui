@@ -5,7 +5,7 @@
 #include <QGraphicsItem>
 #include <chrono>
 
-PixmapIcon::PixmapIcon(Connection *owner, PixmapPair pixmapPair)
+PixmapIcon::PixmapIcon(Connectable *owner, PixmapPair pixmapPair)
     : owner(owner), pixmapPair(pixmapPair)
 {
     this->setFlags(QGraphicsItem::ItemIsMovable);
@@ -13,7 +13,7 @@ PixmapIcon::PixmapIcon(Connection *owner, PixmapPair pixmapPair)
     this->owner = owner;
 }
 
-Connection *PixmapIcon::getOwner()
+Item *PixmapIcon::getOwner()
 {
     return owner;
 }
@@ -50,7 +50,8 @@ void PixmapIcon::mouseMoveEvent(QGraphicsSceneMouseEvent *event)
     this->updatePosition();
 }
 
-void PixmapIcon::mouseReleaseEvent(QGraphicsSceneMouseEvent *event) {
+void PixmapIcon::mouseReleaseEvent(QGraphicsSceneMouseEvent *event)
+{
     this->clickTimer.stop();
     if (this->clickTimer.interval() < CLICK_DURATION) {
         this->toggleChoosen();
@@ -63,11 +64,18 @@ void PixmapIcon::mouseReleaseEvent(QGraphicsSceneMouseEvent *event) {
 void PixmapIcon::updatePosition()
 {
     for (auto &[id, link] : *this->owner->getConnectedLinks()) {
-        link->getIcon()->updatePositions();
+        link->getIcon()->updatePosition();
     }
 }
 
 bool PixmapIcon::isChosen()
 {
     return this->chose;
+}
+
+void PixmapIcon::toggleChosenIfInside(QRectF area)
+{
+    if (area.contains(this->sceneBoundingRect()) && !this->isChosen()) {
+        this->toggleChoosen();
+    }
 }

@@ -1,7 +1,9 @@
 #pragma once
 
+#include "components/cloner/connectablecloner.h"
+#include "components/conf/schemaconfiguration.h"
 #include "components/schema.h"
-#include "components/cloner/cloner.h"
+#include "icon/pixmapicon.h"
 #include <algorithm>
 #include <map>
 #include <memory>
@@ -13,33 +15,28 @@ class Switch;
 class MachineCloner;
 class LinkCloner;
 class SwitchCloner;
+class Connectable;
 
-class SchemaCloner : public Cloner<Schema>
+class SchemaCloner : public ConnectableCloner
 {
 public:
     explicit SchemaCloner(Schema *base, SchemaCloner *parent = nullptr);
-    std::unique_ptr<Schema> clone(Schema *schema) override;
+    Connectable *clone(Schema *schema) override;
 
 private:
-    void setSchemas();
-    void setMachines();
-    void setLinks();
-    void setSwitches();
+    void setConnectables(Schema *base);
+    void setLinks(Schema *base);
 
-    void generateMachines(
-        std::map<unsigned, std::unique_ptr<Machine>> &machines);
-    void generateSchemas(std::map<unsigned, std::unique_ptr<Schema>> &schemas);
+    void generateConnectables(
+        std::map<unsigned, std::unique_ptr<Connectable>> &Connectables);
     void generateLinks(std::map<unsigned, std::unique_ptr<Link>> &links);
-    void generateSwitches(
-        std::map<unsigned, std::unique_ptr<Switch>> &switches);
 
-    std::vector<std::unique_ptr<MachineCloner>> machines;
-    std::vector<std::unique_ptr<SchemaCloner>>  schemas;
-    std::vector<std::unique_ptr<LinkCloner>>    links;
-    std::vector<std::unique_ptr<SwitchCloner>>  switches;
-
-    Schema                    *base;
-    SchemaCloner              *parent;
-    std::unique_ptr<Schema>    schemeClone;
-    std::map<unsigned, Link *> connectedLinks;
+    Schema                              *base;
+    SchemaCloner                        *parent;
+    std::unique_ptr<Schema>              schemeClone;
+    std::map<unsigned, Link *>           connectedLinks;
+    std::unique_ptr<SchemaConfiguration> clonedConf;
+    std::vector<std::tuple<unsigned, LinkCloner *, unsigned>> connections;
+    std::vector<std::unique_ptr<ConnectableCloner>> connectableCloners;
+    std::vector<std::unique_ptr<LinkCloner>>        linkCloners;
 };

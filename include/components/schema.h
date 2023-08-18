@@ -18,52 +18,46 @@ class Switch;
 class ComponentsIds
 {
 public:
-    unsigned getNewSchemaId()
+    unsigned getNewConnectableId()
     {
-        return this->schemaId++;
-    }
-    unsigned getNewMachineId()
-    {
-        return this->machineId++;
+        return this->connectableId++;
     }
     unsigned getNewLinkId()
     {
         return this->linkId++;
     }
-    unsigned getNewSwitchId()
-    {
-        return this->switchId++;
-    }
-    std::pair<unsigned, std::string> getNewSchemaBase()
-    {
-        unsigned newSchemaId = this->getNewSchemaId();
-        return std::pair(newSchemaId, "Schema" + std::to_string(newSchemaId));
-    }
-    std::pair<unsigned, std::string> getNewMachineBase()
-    {
-        unsigned newMachineId = this->getNewMachineId();
-        return std::pair(newMachineId,
-                         "Machine" + std::to_string(newMachineId));
-    }
+
     std::pair<unsigned, std::string> getNewLinkBase()
     {
         unsigned newLinkId = this->getNewLinkId();
         return std::pair(newLinkId, "Link" + std::to_string(newLinkId));
     }
+
+    std::pair<unsigned, std::string> getNewSchemaBase()
+    {
+        unsigned newSchemaId = this->getNewConnectableId();
+        return std::pair(newSchemaId, "Schema" + std::to_string(newSchemaId));
+    }
+
+    std::pair<unsigned, std::string> getNewMachineBase()
+    {
+        unsigned newMachineId = this->getNewConnectableId();
+        return std::pair(newMachineId,
+                         "Machine" + std::to_string(newMachineId));
+    }
+
     std::pair<unsigned, std::string> getNewSwitchBase()
     {
-        unsigned newSwitchId = this->getNewSwitchId();
+        unsigned newSwitchId = this->getNewConnectableId();
         return std::pair(newSwitchId, "Switch" + std::to_string(newSwitchId));
     }
 
 private:
-    unsigned schemaId  = 0;
-    unsigned machineId = 0;
-    unsigned linkId    = 0;
-    unsigned switchId  = 0;
+    unsigned connectableId = 0;
+    unsigned linkId        = 0;
 };
 
-class Schema : public Connection
+class Schema : public Connectable
 {
 public:
     Schema();
@@ -77,11 +71,10 @@ public:
 
     std::unique_ptr<SchemaWindow> window;
 
-    std::map<unsigned, Link *>                   connectedLinks;
-    std::map<unsigned, std::unique_ptr<Machine>> machines;
-    std::map<unsigned, std::unique_ptr<Link>>    links;
-    std::map<unsigned, std::unique_ptr<Schema>>  schemas;
-    std::map<unsigned, std::unique_ptr<Switch>>  switches;
+    std::map<unsigned, Link *> connectedLinks;
+
+    std::map<unsigned, std::unique_ptr<Link>>        links;
+    std::map<unsigned, std::unique_ptr<Connectable>> connectables;
 
     void     drawItems();
     unsigned allocateNewMachine();
@@ -93,6 +86,7 @@ public:
     void     deleteLink(unsigned linkId);
     void     deleteSwitch(unsigned switchId);
 
+    Cloner                     *cloner() override;
     void                        showConfiguration() override;
     std::map<unsigned, Link *> *getConnectedLinks() override;
     PixmapIcon                 *getIcon() override;

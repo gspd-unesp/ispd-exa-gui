@@ -1,10 +1,13 @@
 #include "window/drawingtable/scene.h"
+#include "components/cloner/connectablecloner.h"
 #include "components/cloner/machinecloner.h"
+#include "components/conf/machineconfiguration.h"
 #include "components/link.h"
 #include "components/schema.h"
 #include "components/switch.h"
 #include "icon/linkicon.h"
 #include "icon/pixmapicon.h"
+#include "qgraphicsitem.h"
 #include "qnamespace.h"
 #include "window/drawingtable/drawingtable.h"
 #include <QDebug>
@@ -71,32 +74,12 @@ void Scene::addLink(Link *link)
     this->addItem(link->icon.get());
 }
 
-Schema *findScheme(Schema *schema)
-{
-    for (auto &it : schema->schemas) {
-        if (it.second->getIcon()->isChosen()) {
-            return it.second.release();
-        }
-    }
-    return nullptr;
-}
-
-Machine *findMachine(Schema *schema)
-{
-    for (auto &it : schema->machines) {
-        if (it.second->getIcon()->isChosen()) {
-            return it.second.get();
-        }
-    }
-    return nullptr;
-}
-
 void printThisSchema(Schema *schema)
 {
     qDebug() << "From Schema: " << schema->getConf()->getName();
-    for (auto &machine : schema->machines) {
-        qDebug() << "Machine[" << machine.second->conf->getId()
-                 << "] = " << machine.second->conf->getName();
+    for (auto &connectable : schema->connectables) {
+        qDebug() << "Machine[" << connectable.second->getConf()->getId()
+                 << "] = " << connectable.second->getConf()->getName();
     }
 }
 
@@ -112,14 +95,18 @@ void Scene::keyPressEvent(QKeyEvent *event)
         this->deleteItems();
         break;
     case Qt::Key_C:
-        qDebug() << "Aconteceu algo?";
-        this->mCloner = new MachineCloner(findMachine(this->schema), nullptr);
+        this->sceneCloner =
+            std::unique_ptr<ConnectableCloner>(static_cast<ConnectableCloner *>(
+                whichConnectable(getScenePosition())->cloner()));
         break;
     case Qt::Key_V:
-        auto clone = this->mCloner->clone(this->schema);
-        this->addIcon(clone->getIcon(), getScenePosition());
-        this->schema->machines[clone->conf->getId()] = std::move(clone);
-        printThisSchema(this->schema);
+        qDebug() << "Vamos ver se está clonando.";
+        auto newConnectable = this->sceneCloner->clone(this->schema);
+        this->addIcon(newConnectable->getIcon(), this->getScenePosition());
+        this->schema->connectables
+            [static_cast<Connectable *>(newConnectable)->getConf()->getId()] =
+            std::unique_ptr<Connectable>(newConnectable);
+
         break;
     }
 
@@ -128,16 +115,11 @@ void Scene::keyPressEvent(QKeyEvent *event)
 
 void Scene::deleteItems()
 {
-    qDebug() << "Test of deleteItems.";
-
     auto eraseCondition = [](auto const &it) {
-        qDebug() << "BEGIN TO DELETE " << it.second->getConf()->getName();
         return it.second->getIcon()->isChosen();
     };
 
-    erase_if(this->schema->machines, eraseCondition);
-    erase_if(this->schema->switches, eraseCondition);
-    erase_if(this->schema->schemas, eraseCondition);
+    erase_if(this->schema->connectables, eraseCondition);
     erase_if(this->schema->links, eraseCondition);
 }
 
@@ -145,14 +127,11 @@ QRectF getOwnItemsSceneBoundingRect(Schema *schema)
 {
     QRectF boundingRect;
 
-    for (auto &[id, machine] : schema->machines)
+    for (auto &[id, machine] : schema->connectables)
         boundingRect |= machine->getIcon()->sceneBoundingRect();
-    for (auto &[id, schema] : schema->schemas)
-        boundingRect |= schema->getIcon()->sceneBoundingRect();
-    for (auto &[id, nSwitch] : schema->switches)
-        boundingRect |= nSwitch->getIcon()->sceneBoundingRect();
     for (auto &[id, link] : schema->links)
-        boundingRect |= link->getIcon()->sceneBoundingRect();
+        boundingRect |=
+            static_cast<LinkIcon *>(link->getIcon())->sceneBoundingRect();
 
     return boundingRect;
 }
@@ -187,33 +166,29 @@ void Scene::mousePressEvent(QGraphicsSceneMouseEvent *event)
         auto newSchema = this->table->addSchema();
         this->addIcon(newSchema, event->scenePos());
         if (newSchema->getOwner()) {
-            qDebug() << "Owner of schema exists";
             break;
         }
-        qDebug() << "Owner of schema exists";
         break;
     }
     case LINK: {
-        auto *connection = whichConnection(event->scenePos());
+        auto *connection = whichConnectable(event->scenePos());
 
         if (!connection) {
             return;
         }
 
         if (this->lBegin == nullptr) {
-            qDebug() << "Primeira máquina\n";
             this->lBegin = connection;
         }
         else if (this->lEnd == nullptr) {
 
-            if (whichConnection(event->scenePos()) == this->lBegin) {
+            if (whichConnectable(event->scenePos()) == this->lBegin) {
                 break;
             }
             this->lEnd = connection;
 
             Link *newLink =
                 this->table->addLink(LinkConnections{this->lBegin, this->lEnd});
-            qDebug() << "Antes de enfia link na scene.";
             this->addLink(newLink);
 
             this->lBegin = nullptr;
@@ -241,16 +216,6 @@ void Scene::mouseMoveEvent(QGraphicsSceneMouseEvent *event)
     QGraphicsScene::mouseMoveEvent(event);
 }
 
-template <class T>
-void toggleSelectionIfInside(QRectF area, Item<T> *item)
-{
-    auto icon = item->getIcon();
-    if (area.contains(item->getIcon()->sceneBoundingRect()) &&
-        !icon->isChosen()) {
-        item->getIcon()->toggleChoosen();
-    }
-}
-
 void Scene::mouseReleaseEvent(QGraphicsSceneMouseEvent *event)
 {
     if (event->button() == Qt::LeftButton &&
@@ -260,17 +225,11 @@ void Scene::mouseReleaseEvent(QGraphicsSceneMouseEvent *event)
             QRectF(this->startSelection, event->scenePos()).normalized();
 
         // Deselect all icons outside the selection area
-        for (auto &[id, machine] : this->schema->machines) {
-            toggleSelectionIfInside(selectionAreaRect, machine.get());
-        }
-        for (auto &[id, schema] : this->schema->schemas) {
-            toggleSelectionIfInside(selectionAreaRect, schema.get());
-        }
-        for (auto &[id, nSwitch] : this->schema->switches) {
-            toggleSelectionIfInside(selectionAreaRect, nSwitch.get());
+        for (auto &[id, machine] : this->schema->connectables) {
+            machine->getIcon()->toggleChosenIfInside(selectionAreaRect);
         }
         for (auto &[id, link] : this->schema->links) {
-            toggleSelectionIfInside(selectionAreaRect, link.get());
+            link->getIcon()->toggleChosenIfInside(selectionAreaRect);
         }
 
         // Reset the initial position for area selection
@@ -336,24 +295,13 @@ void Scene::drawBackgroundLines()
 /// @param  pos The position in the scene to check for a machine icon.
 /// @return a pointer to the machine icon if found, or nullptr if not found.
 ///
-Connection *Scene::whichConnection(QPointF pos)
+Connectable *Scene::whichConnectable(QPointF pos)
 {
-    for (auto &[machineid, machine] : this->schema->machines) {
-        if (machine->icon->sceneBoundingRect().contains(pos)) {
-            return machine.get();
+    for (auto &[connectableId, connectable] : this->schema->connectables) {
+        if (connectable->getIcon()->sceneBoundingRect().contains(pos)) {
+            return connectable.get();
         }
     }
 
-    for (auto &[schemaid, schema] : this->schema->schemas) {
-        if (schema->icon->sceneBoundingRect().contains(pos)) {
-            return schema.get();
-        }
-    }
-
-    for (auto &[switchid, nSwitch] : this->schema->switches) {
-        if (nSwitch->getIcon()->sceneBoundingRect().contains(pos)) {
-            return nSwitch.get();
-        }
-    }
     return nullptr;
 }

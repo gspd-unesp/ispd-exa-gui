@@ -6,16 +6,16 @@
 #include <string>
 
 class LinkIcon;
-class Connection;
+class Connectable;
 class Schema;
 
 struct LinkConnections
 {
-    Connection *begin;
-    Connection *end;
+    Connectable *begin;
+    Connectable *end;
 };
 
-class Link : public Item<LinkIcon>
+class Link : public Item
 {
 public:
     Link(Schema *schema, LinkConfiguration *conf, LinkConnections connections);
@@ -24,8 +24,9 @@ public:
     void               addLine();
     void               draw();
     void               showConfiguration() override;
-    LinkIcon          *getIcon() override;
+    Icon              *getIcon() override;
     LinkConfiguration *getConf() override;
+    Cloner            *cloner() override;
 
     Schema *schema;
 

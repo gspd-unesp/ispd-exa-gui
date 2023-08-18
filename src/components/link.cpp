@@ -1,4 +1,5 @@
 #include "components/link.h"
+#include "components/cloner/linkcloner.h"
 #include "components/connection.h"
 #include "icon/linkicon.h"
 #include "qdebug.h"
@@ -36,7 +37,7 @@ void Link::showConfiguration()
     // TODO IMPLEMENT
 }
 
-LinkIcon *Link::getIcon()
+Icon *Link::getIcon()
 {
     return this->icon.get();
 }
@@ -44,4 +45,9 @@ LinkIcon *Link::getIcon()
 LinkConfiguration *Link::getConf()
 {
     return this->conf.get();
+}
+
+Cloner *Link::cloner()
+{
+    return new LinkCloner(this, nullptr);
 }

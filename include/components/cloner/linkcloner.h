@@ -1,12 +1,17 @@
 #pragma once
 
-class Link;
+#include "components/cloner/cloner.h"
+#include "components/link.h"
+
 class SchemaCloner;
 
-class LinkCloner {
+class LinkCloner : public Cloner
+{
 public:
     LinkCloner(Link *base, SchemaCloner *parent);
+    Link *clone(Schema *schema) override;
+
 private:
-    Link *base;
+    Link         *base;
     SchemaCloner *parent;
 };
