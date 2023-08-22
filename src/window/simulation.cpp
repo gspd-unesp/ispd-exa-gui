@@ -21,6 +21,7 @@
 #include <QVBoxLayout>
 
 #include "qcustomplot.h"
+#include "forms/scatterplot.h"
 
 //CIRCLE PACKING
 #include "packCircles.h"
@@ -33,6 +34,14 @@
 #include <math.h>
 #include <time.h>
 #include <getopt.h>
+
+/*
+-Tirar as bibliotecas nao utilizadas
+-Usar o diretorio corretamente
+-Fazer o grafico scatter plot
+-Aumentar o grafico quando entrar em tela cheia
+-Ter mais cores
+*/
 
 
 void usage(char *progname)
@@ -389,13 +398,19 @@ Simulation::Simulation(QWidget *parent) :
 
     QDir directory(QCoreApplication::applicationDirPath());
     directory.cdUp();
-    directory.cdUp();
-    directory.cdUp();
-    directory.cdUp();
-    directory.cdUp();
-    directory.cdUp();
-    directory.cd("ispd-exa-gui");
 
+
+    while (!directory.isRoot())
+    {
+        if (directory.exists("ispd-exa-gui"))
+        {
+            qDebug() << "File" << "ispd-exa-gui" << "found in directory:" << directory.absolutePath();
+            break;
+        }
+
+        directory.cdUp();
+    }
+    directory.cd("ispd-exa-gui");
     originalTextEditPos = ui->textEdit->pos();
     originalTextEditSize = ui->textEdit->size();
     originalLabelPos = ui->label->pos();
@@ -412,6 +427,7 @@ Simulation::Simulation(QWidget *parent) :
     resultsCommunication(directory);
     resultsProcessing(directory);
     createStackedLineGraph(directory);
+    //createScatterPlot(directory);
 
 }
 
@@ -528,7 +544,7 @@ void Simulation::createUser(QDir directory)
 {
 
     QString fileName = "results.json";
-   QString filePath = directory.filePath(fileName);
+    QString filePath = directory.filePath(fileName);
 
     qDebug() << "File path: " << filePath;
 
@@ -608,13 +624,13 @@ void Simulation::createResources(QDir directory)
 
     connect(ui->pushButton, &QPushButton::clicked, this, &Simulation::on_pushButton_clicked);
 
-    //----------------------------------------------------------------------------------------
+           //----------------------------------------------------------------------------------------
 
 
-   QString fileName = "results.json";
+    QString fileName = "results.json";
 
 
-   QString filePath = directory.filePath(fileName);
+    QString filePath = directory.filePath(fileName);
     //QFile file(filePath);
 
            //QString filePath = QCoreApplication::applicationDirPath() + "/results.json";
@@ -686,7 +702,7 @@ void Simulation::createResultsFile(QDir directory)
 {
 
 
-   QString fileName = "results.json";
+    QString fileName = "results.json";
 
 
     QString filePath = directory.filePath(fileName);
@@ -713,10 +729,10 @@ void Simulation::createResultsFile(QDir directory)
             QString machines = "machine_values.txt";
             QString links = "link_values.txt";
 
-            //QString machineFilePath = QCoreApplication::applicationDirPath() + "/machine_values.txt";
-            //QString linkFilePath = QCoreApplication::applicationDirPath() + "/link_values.txt";
-             QString machineFilePath = directory.filePath(machines);
-             QString linkFilePath = directory.filePath(links);
+                   //QString machineFilePath = QCoreApplication::applicationDirPath() + "/machine_values.txt";
+                   //QString linkFilePath = QCoreApplication::applicationDirPath() + "/link_values.txt";
+            QString machineFilePath = directory.filePath(machines);
+            QString linkFilePath = directory.filePath(links);
 
 
             QString machineValues;
@@ -944,18 +960,18 @@ bool Simulation::eventFilter(QObject *obj, QEvent *event)
             ui->label_2->adjustSize();
             /*
 
-            QPixmap originalPixmap_2("output_2.svg");
+             QPixmap originalPixmap_2("output_2.svg");
 
-            int newWidth = 800;
+              int newWidth = 800;
 
-            int newHeight = originalPixmap_2.scaledToWidth(newWidth).height();
+               int newHeight = originalPixmap_2.scaledToWidth(newWidth).height();
 
-            QPixmap resizedPixmap_2 = originalPixmap_2.scaled(newWidth, newHeight, Qt::KeepAspectRatio, Qt::SmoothTransformation);
+                QPixmap resizedPixmap_2 = originalPixmap_2.scaled(newWidth, newHeight, Qt::KeepAspectRatio, Qt::SmoothTransformation);
 
-            ui->label_2->setPixmap(resizedPixmap_2);
-            ui->label_2->move(newX, newY);
-*/
-//------------------------------------------------------------------------------------------------------------------------
+                 ui->label_2->setPixmap(resizedPixmap_2);
+                 ui->label_2->move(newX, newY);
+     */
+            //------------------------------------------------------------------------------------------------------------------------
 
 
             ui->label->move(newX, newY);
@@ -963,15 +979,15 @@ bool Simulation::eventFilter(QObject *obj, QEvent *event)
             QPixmap pixmap("output.svg");
             ui->label->setPixmap(pixmap);
             ui->label->adjustSize();
-/*
-            QPixmap originalPixmap("output.svg");
+            /*
+                        QPixmap originalPixmap("output.svg");
 
 
-            QPixmap resizedPixmap = originalPixmap.scaled(newWidth, newHeight, Qt::KeepAspectRatio, Qt::SmoothTransformation);
+                     QPixmap resizedPixmap = originalPixmap.scaled(newWidth, newHeight, Qt::KeepAspectRatio, Qt::SmoothTransformation);
 
-            ui->label->setPixmap(resizedPixmap);
-            ui->label->move(newX, newY);
-            */
+                      ui->label->setPixmap(resizedPixmap);
+                      ui->label->move(newX, newY);
+                      */
         }
         else
         {
@@ -1019,7 +1035,7 @@ void Simulation::createStackedLineGraph(QDir directory)
     QString fileName = "results.json";
     QString filePath = directory.filePath(fileName);
 
-    qDebug() << "File path of results.json: " << filePath;
+    qDebug() << "File path to results.json: " << filePath;
 
     if (!file.open(QIODevice::ReadOnly | QIODevice::Text))
         return;
@@ -1041,19 +1057,31 @@ void Simulation::createStackedLineGraph(QDir directory)
     ui->verticalLayout_3->addWidget(customPlotMachines);
     ui->verticalLayout->addWidget(customPlotTasks);
 
-    QVector<QColor> lineColors = {
-        Qt::red,
-        Qt::blue,
-        Qt::green,
-        Qt::cyan,
-        Qt::magenta,
-        Qt::yellow
-    };
+    //QVector<QColor> lineColors = {
+        //Qt::red,
+        //Qt::blue,
+        //Qt::green,
+        //Qt::cyan,
+        //Qt::magenta,
+      //  Qt::yellow
+    //};
 
-        auto createGraphs = [lineColors](QCustomPlot* customPlot, const QJsonArray& dataArray, const QString& yAxisLabel) {
+    QVector<QColor> lineColors;
+
+    //auto createGraphs = [lineColors](QCustomPlot* customPlot, const QJsonArray& dataArray, const QString& yAxisLabel) {
+    auto createGraphs = [&lineColors](QCustomPlot* customPlot, const QJsonArray& dataArray, const QString& yAxisLabel) {
 
         QVector<QCPGraph*> graphs;
         QVector<double> cumulativeYData(dataArray.size(), 0.0);
+
+        for (int i = 0; i < dataArray.size(); ++i) {
+            int hue = QRandomGenerator::global()->bounded(0, 360);
+            int saturation = QRandomGenerator::global()->bounded(150, 256); // Ensure decent saturation
+            int lightness = QRandomGenerator::global()->bounded(100, 201); // Ensure decent lightness
+            QColor color;
+            color.setHsl(hue, saturation, lightness);
+            lineColors.append(color);
+        }
 
         for (int i = 0; i < dataArray.size(); ++i)
         {
@@ -1114,4 +1142,10 @@ void Simulation::createStackedLineGraph(QDir directory)
 
 
 
+
+void Simulation::on_pushButton_2_clicked()
+{
+    this->scatter_plot = new scatterPlot();
+    this->scatter_plot->show();
+}
 

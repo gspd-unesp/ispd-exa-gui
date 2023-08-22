@@ -21,7 +21,7 @@
       "computing_power": [
         { "time": "10", "rate": 110 },
         { "time": "32.5", "rate": 110 },
-	{ "time": "42.5", "rate": 50 }
+  { "time": "42.5", "rate": 50 }
       ],
       "communication": {
         "queue_average_time": "12.1",
@@ -33,12 +33,33 @@
         "processing_average_time": "14.2",
         "system_average_time": "22.8"
       }
+    },
+    {
+      "label": "user2",
+      "number_of_tasks": "3",
+      "computing_power": [
+        { "time": "5", "rate": 150 },
+        { "time": "12.5", "rate": 150 },
+  { "time": "45.5", "rate": 55 }
+      ],
+      "communication": {
+        "queue_average_time": "15.1",
+        "communication_average_time": "58.6",
+        "system_average_time": "57.9"
+      },
+      "processing": {
+        "queue_average_time": "5.7",
+        "processing_average_time": "15.2",
+        "system_average_time": "22.5"
+      }
     }
   ],
   "machines": [
     {
       "label": "mac0",
       "owner": "user1",
+      "id": 1,
+      "scheme": 1,
       "computing_power": [
         { "time": "10", "rate": 90 },
         { "time": "42.5", "rate": 90 }
@@ -50,6 +71,8 @@
     {
       "label": "mac1",
       "owner": "user1",
+      "id": 2,
+      "scheme": 2,
       "computing_power": [
         { "time": "10", "rate": 90 },
         { "time": "32.5", "rate": 90 }
@@ -57,16 +80,59 @@
       "processing_performed": "22.222222",
       "communication_performed": "0.0",
       "Mflops": "500"
+    },
+    {
+      "label": "mac2",
+      "owner": "user2",
+      "id": 3,
+      "scheme": 1,
+      "computing_power": [
+        { "time": "13", "rate": 30 },
+        { "time": "42.3", "rate": 30 }
+      ],
+      "processing_performed": "0.0",
+      "communication_performed": "0.0",
+      "Mflops": "1000"
+    },
+    {
+    "label": "mac3",
+      "owner": "user2",
+      "id": 4,
+      "scheme": 2,
+      "computing_power": [
+        { "time": "13", "rate": 93 },
+        { "time": "32.5", "rate": 30 }
+      ],
+      "processing_performed": "0.0",
+      "communication_performed": "0.0",
+      "Mflops": "10330"
+    },
+    {
+    "label": "mac4",
+      "owner": "user2",
+      "id": 5,
+      "scheme": 2,
+      "computing_power": [
+        { "time": "7", "rate": 97 },
+        { "time": "47.5", "rate": 70 }
+      ],
+      "processing_performed": "0.0",
+      "communication_performed": "0.0",
+      "Mflops": "1007"
     }
   ],
   "links": [
     {
+      "source": "mac0",
+      "dest": "mac1",
       "label": "link1",
       "processing_performed": "0.0",
       "communication_performed": "20.0",
       "Mbits": "100"
     },
     {
+      "source": "mac1",
+      "dest": "mac2",
       "label": "link2",
       "processing_performed": "0.0",
       "communication_performed": "13.3333",

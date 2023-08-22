@@ -3,6 +3,8 @@
 
 #include <QWidget>
 #include <QDir>
+#include <QColor>
+#include "forms/scatterplot.h"
 
 
 namespace Ui {
@@ -20,8 +22,10 @@ public:
 
 private slots:
     void on_pushButton_clicked();
+    void on_pushButton_2_clicked();
 
 private:
+    scatterPlot *scatter_plot;
     void createGlobal(QDir directory);
     void createTasks(QDir directory);
     void createUser(QDir directory);
@@ -30,8 +34,10 @@ private:
     void resultsCommunication(QDir directory);
     void resultsProcessing(QDir directory);
     void circlePacking(int flag,QDir directory);
+    QColor generateColor(int index);
 
     void createStackedLineGraph(QDir directory);
+    //void createScatterPlot(QDir directory);
 
 
     QPoint originalTextEditPos;
