@@ -77,7 +77,7 @@ message($$[QT_INSTALL_HEADERS])
 
 
 RESOURCES += \
-  ispd-exa-gui.qrc
+    ispd-exa-gui.qrc
 
 FORMS += \
   forms/adduser.ui \
@@ -95,23 +95,15 @@ CONFIG(release, debug|release) {
     DESTDIR = build/release
 }
 
+# Define os diretórios para arquivos intermediários
 OBJECTS_DIR = $$DESTDIR/.obj
 MOC_DIR = $$DESTDIR/.moc
 RCC_DIR = $$DESTDIR/.qrc
 UI_DIR = $$DESTDIR/.u
 
+# Adicione outros arquivos gerados automaticamente (caso necessário) à lista de DISTFILES
 DISTFILES += \
     packCircles \
+
     results.json
 
-WARNINGS += -Wextra
-WARNINGS += -Wunknown-pragmas -Wundef
-WARNINGS += -Wold-style-cast
-WARNINGS += -Wdisabled-optimization -Wstrict-overflow=4
-WARNINGS += -Wuseless-cast
-WARNINGS += -Winit-self -Wpointer-arith
-WARNINGS += -Wlogical-op
-WARNINGS += -Wunsafe-loop-optimizations -Wno-error=unsafe-loop-optimizations
-# QMAKE_CXXFLAGS_WARN_ON += $(and $(filter-out moc_% qrc_%, $@),$${WARNINGS})
-
-message($$QMAKE_DEFAULT_INCDIRS)
