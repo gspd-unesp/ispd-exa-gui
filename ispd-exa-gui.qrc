@@ -17,5 +17,6 @@
         <file>icons/save.png</file>
         <file>icons/ethernet.png</file>
         <file>icons/switch.svg</file>
+        <file>icons/switchSelected.png</file>
     </qresource>
 </RCC>

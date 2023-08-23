@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
- <class>machineIconConfiguration</class>
- <widget class="QWidget" name="machineIconConfiguration">
+ <class>MachineConfigurationWindow</class>
+ <widget class="QWidget" name="MachineConfigurationWindow">
   <property name="geometry">
    <rect>
     <x>0</x>
@@ -732,7 +732,7 @@ background-color: rgba(0, 0, 0, 0);</string>
   <connection>
    <sender>okButton</sender>
    <signal>clicked()</signal>
-   <receiver>machineIconConfiguration</receiver>
+   <receiver>MachineConfigurationWindow</receiver>
    <slot>close()</slot>
    <hints>
     <hint type="sourcelabel">
@@ -748,7 +748,7 @@ background-color: rgba(0, 0, 0, 0);</string>
   <connection>
    <sender>pushButton_2</sender>
    <signal>clicked()</signal>
-   <receiver>machineIconConfiguration</receiver>
+   <receiver>MachineConfigurationWindow</receiver>
    <slot>close()</slot>
    <hints>
     <hint type="sourcelabel">

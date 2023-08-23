@@ -1,13 +1,13 @@
 #include "icon/linkicon.h"
 #include "components/connection.h"
 #include "components/link.h"
-#include "icon/icon.h"
-#include "qdebug.h"
+#include <QDebug>
 #include <QGraphicsDropShadowEffect>
 #include <QGraphicsEffect>
 #include <QGraphicsItem>
 #include <QPainter>
 #include <QPen>
+#include <algorithm>
 #include <cmath>
 #include <memory>
 
@@ -18,10 +18,10 @@
 ///
 /// @returns the point at the middle of the Icon
 ///
-QPointF getMiddleOfIcon(Icon *a)
+QPointF getMiddleOfIcon(PixmapIcon *a)
 {
-    qreal y = (a->pos().y() + ((qreal)a->pixmap().height() / 2));
-    qreal x = (a->pos().x() + ((qreal)a->pixmap().width() / 2));
+    qreal y = (a->pos().y() + (static_cast<qreal>(a->pixmap().height()) / 2));
+    qreal x = (a->pos().x() + (static_cast<qreal>(a->pixmap().width()) / 2));
 
     return QPointF(x, y);
 }
@@ -29,23 +29,19 @@ QPointF getMiddleOfIcon(Icon *a)
 ///
 ///  @brief Default constructor for Link
 ///
-///  @see Icon
-///  @param name  the name of the Link
-///  @param b     the Icon that the Link comes from
-///  @param e     the Icon that the Link goes to
+///  @see Link
+///  @param owner  the Link that owns this icon.
 ///
-LinkIcon::LinkIcon(Link *owner, char const *name) : QGraphicsPolygonItem()
+LinkIcon::LinkIcon(Link *owner) : QGraphicsPolygonItem()
 {
     this->owner = owner;
-    qDebug() << "Is it here?";
     this->begin = this->owner->connections.begin->getIcon();
     this->end   = this->owner->connections.end->getIcon();
-    this->name  = std::make_unique<std::string>(name);
 }
 
 LinkIcon::~LinkIcon()
 {
-    qDebug() << "Deleting the link icon of" << *this->name;
+    qDebug() << "Deleting the linkicon";
 }
 
 void LinkIcon::draw()
@@ -79,12 +75,10 @@ void LinkIcon::draw()
 ///
 void LinkIcon::updatePositions()
 {
-    const char* cBegin = this->begin ? this->begin->getName()->c_str() : "NOT FOUND";
-    const char* cEnd = this->end ? this->end->getName()->c_str() : "NOT FOUND";
-    qDebug() << "LINK #" << this->id << ": begin=" << cBegin
-             << " end=" << cEnd;
     QPolygonF newLine;
+
     newLine << getMiddleOfIcon(this->begin) << getMiddleOfIcon(this->end);
+
     this->setPolygon(newLine);
 }
 
@@ -110,42 +104,31 @@ void LinkIcon::paint(QPainter                       *painter,
 
 void LinkIcon::mousePressEvent(QGraphicsSceneMouseEvent *event)
 {
-    select(); // Call the select function to toggle the color
+    toggleChoosen(); // Call the select function to toggle the color
     QGraphicsPolygonItem::mousePressEvent(event);
 }
 
-void LinkIcon::select()
+Link *LinkIcon::getOwner()
 {
-    if (begin->isSelected == false) {
-        begin->isSelected = true;
-        end->isSelected   = true;
-        linkPen.setColor(QColor(9, 132, 227));
-        this->setPen(linkPen);
+    return this->owner;
+}
+void LinkIcon::toggleChoosen()
+{
+    if (this->chose) {
+        QPen pen;
+        pen.setColor(QColor(9, 132, 227));
+        this->setPen(pen);
     }
     else {
-        begin->isSelected = false;
-        end->isSelected   = false;
-        linkPen.setColor(QColor(245, 69, 55));
-        this->setPen(linkPen);
+        QPen pen;
+        pen.setColor(QColor(245, 69, 55));
+        this->setPen(pen);
     }
+
+    this->chose = !this->chose;
 }
 
-std::string *LinkIcon::getName()
+bool LinkIcon::isChosen()
 {
-    return name.get();
+    return this->chose;
 }
-
-/* LinkIcon::~LinkIcon() */
-/* { */
-/*     delete this->name; */
-/*  */
-/*     Icon *icons[] = {this->begin, this->end}; */
-/*  */
-/*     for (size_t i = 0; i < std::size(icons); i++) { */
-/*         if (icons[i]) { */
-/*             if (icons[i]->links) { */
-/*                 icons[i]->links->erase(this->id); */
-/*             } */
-/*         } */
-/*     } */
-/* } */

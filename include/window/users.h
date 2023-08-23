@@ -1,24 +1,24 @@
 #ifndef USERWINDOW_H
 #define USERWINDOW_H
-#include <QMainWindow>
-#include <QHBoxLayout>
-#include <QVBoxLayout>
-#include <QListWidget>
+#include "icon/pixmapicon.h"
 #include "window/adduser.h"
-#include "ui_userwindow.h"
-#include <QList>
-#include <QGraphicsItem>
-#include <QWidget>
 #include <QComboBox>
 #include <QDebug>
-#include <string>
-#include <QGraphicsView>
+#include <QGraphicsItem>
 #include <QGraphicsScene>
+#include <QGraphicsView>
+#include <QHBoxLayout>
 #include <QKeyEvent>
+#include <QList>
+#include <QListWidget>
+#include <QMainWindow>
+#include <QVBoxLayout>
+#include <QWidget>
+#include <string>
+#include <ui_userwindow.h>
 // #include "item/icon.h"
 
 // #include "drawingtable/drawingtable.h"
-class Icon;
 class DrawingTable;
 
 namespace Ui
@@ -31,27 +31,31 @@ class UserWindow : public QMainWindow
     Q_OBJECT
 
 public:
-    explicit UserWindow(QWidget *parent = nullptr, DrawingTable* drawingTable = nullptr, const QList<QString> &list1Data = QList<QString>(), const QList<double> &list2Data = QList<double>(), const QList<Icon*> &icons = QList<Icon*>());
+    UserWindow(QWidget                   *parent       = nullptr,
+               DrawingTable              *drawingTable = nullptr,
+               const QList<QString>      &list1Data    = QList<QString>(),
+               const QList<double>       &list2Data    = QList<double>(),
+               const QList<PixmapIcon *> &icons        = QList<PixmapIcon *>());
     void addOnList1(const QString &valor);
     void addOnList2(double valor);
-    void setDrawingTable(DrawingTable* drawingTable);
-    void receiveUserWindowData(const QList<QString> &list1Data, const QList<double> &list2Data);
+    void setDrawingTable(DrawingTable *drawingTable);
+    void receiveUserWindowData(const QList<QString> &list1Data,
+                               const QList<double>  &list2Data);
     ~UserWindow();
 
 protected:
-
 private:
-    Ui::UserWindow *ui;
-    QListWidget *listWidget;
-    QListWidget *listWidget_2;
-    addUser *adduser;
-    QImage *fecharImg;
-    QImage *addIcon;
-    QStringList list1Values;
-    QStringList list2Values;
-    int mnSelected = -1;
-    DrawingTable* drawingTable;
-    QList<Icon*> icons;
+    Ui::UserWindow     *ui;
+    QListWidget        *listWidget;
+    QListWidget        *listWidget_2;
+    addUser            *adduser;
+    QImage             *fecharImg;
+    QImage             *addIcon;
+    QStringList         list1Values;
+    QStringList         list2Values;
+    int                 mnSelected = -1;
+    DrawingTable       *drawingTable;
+    QList<PixmapIcon *> icons;
 
 private slots:
     void on_addButton_clicked();
@@ -61,11 +65,7 @@ private slots:
     void on_okButton_clicked();
     void clearListWidgets();
 
-
 signals:
     void itemMoved(const QPointF &pos);
 };
 #endif // USERWINDOW_H
-
-
-

@@ -11,8 +11,6 @@ class SchemaWindow : public QMainWindow
 
 public:
     Schema *schema;
-    SchemaWindow(Schema *schema, QWidget *parent = nullptr);
-
-private:
+    explicit SchemaWindow(Schema *schema, QWidget *parent = nullptr);
     DrawingTable *drawingTable;
 };

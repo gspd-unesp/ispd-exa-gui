@@ -1,25 +1,24 @@
 #include "window/drawingtable/drawingtable.h"
+#include "components/conf/machineconfiguration.h"
+#include "components/conf/schemaconfiguration.h"
 #include "components/link.h"
 #include "components/machine.h"
 #include "components/schema.h"
 #include "components/switch.h"
-#include "icon/linkicon.h"
-#include "icon/schemaicon.h"
-#include "icon/switchicon.h"
-#include "qdebug.h"
-#include "qpushbutton.h"
-#include "qradiobutton.h"
 #include "utils/iconSize.h"
 #include "window/drawingtable/scene.h"
 #include "window/users.h"
+#include <QDebug>
 #include <QImage>
 #include <QPixmap>
+#include <QPushButton>
+#include <QRadioButton>
 #include <QVBoxLayout>
 
 void printSchema(Schema *schema);
 
 DrawingTable::DrawingTable(QFrame *parent)
-    : DrawingTable(new Schema(""), parent)
+    : DrawingTable(new Schema(), parent)
 {
     QPixmap image(":/icons/perfil.png");
     QSize   imageSize(30, 30);
@@ -83,8 +82,8 @@ DrawingTable::DrawingTable(Schema *schema, QWidget *parent) : QWidget{parent}
 void DrawingTable::receiveUserWindowData(const QList<QString> &list1Data,
                                          const QList<double>  &list2Data)
 {
-    this->list1Data = list1Data;
-    this->list2Data = list2Data;
+    /* this->list1Data = list1Data; */
+    /* this->list2Data = list2Data; */
 }
 
 ///
@@ -169,7 +168,7 @@ void DrawingTable::setupLinkButton()
 ///
 /// @return the machine's icon
 ///
-MachineIcon *DrawingTable::addMachine()
+PixmapIcon *DrawingTable::addMachine()
 {
     const unsigned machineId = schema->allocateNewMachine();
 
@@ -181,7 +180,7 @@ MachineIcon *DrawingTable::addMachine()
 ///
 /// @return the switch's icon
 ///
-SwitchIcon *DrawingTable::addSwitch()
+PixmapIcon *DrawingTable::addSwitch()
 {
     const unsigned switchId = schema->allocateNewSwitch();
 
@@ -196,7 +195,7 @@ SwitchIcon *DrawingTable::addSwitch()
 ///
 /// @return the schema's icon
 ///
-SchemaIcon *DrawingTable::addSchema()
+PixmapIcon *DrawingTable::addSchema()
 {
     const unsigned schemaId = schema->allocateNewSchema();
 
@@ -237,7 +236,6 @@ void DrawingTable::switchButtonClicked()
     this->scene->pickOp = SWITCH;
 }
 
-
 ///
 /// @brief  set the scene operator to the click mode
 ///
@@ -271,37 +269,37 @@ void printSchema(Schema *schema)
          machine != schema->machines.end();
          machine++) {
 
-        qDebug() << "Machine #" << machine->second->id << ": "
-                 << machine->second->icon->getName()->c_str();
+        qDebug() << "Machine #" << machine->second->conf->getId() << ": "
+                 << machine->second->conf->getName().c_str();
     }
 
     for (auto &[id, nswitch] : schema->switches) {
 
-        qDebug() << "Switch #" << id << ": "
-                 << nswitch->getIcon()->getName()->c_str();
+        qDebug() << "Switch #" << id << ": " << nswitch->getName().c_str();
     }
 
     for (auto sch = schema->schemas.begin(); sch != schema->schemas.end();
          sch++) {
 
-        qDebug() << "Schema #" << sch->second->id << ": "
-                 << sch->second->icon->getName()->c_str();
+        qDebug() << "Schema #" << sch->second->getConf()->getId() << ": "
+                 << sch->second->getConf()->getName();
     }
 
     for (auto link = schema->links.begin(); link != schema->links.end();
          link++) {
 
-        qDebug() << "Link #" << link->second->id << ": "
-                 << link->second->icon->getName()->c_str();
+        qDebug() << "Link #" << link->second->conf->getId() << ": "
+                 << link->second->conf->getName().c_str();
     }
 }
 void DrawingTable::openUserWindowClicked()
 {
-    this->userWindow =
-        new UserWindow(nullptr,
-                       this,
-                       list1Data,
-                       list2Data); // Pass the lists to UserWindow constructor
+    /* this->userWindow = */
+    /*     new UserWindow(nullptr, */
+    /*                    this, */
+    /*                    list1Data, */
+    /*                    list2Data); // Pass the lists to UserWindow
+     * constructor */
 
     userWindow->show();
 }
@@ -310,4 +308,12 @@ void DrawingTable::openSimulationWindowClicked()
 {
     this->simulationWindow = new Simulation();
     simulationWindow->show();
+}
+
+void DrawingTable::addIcons(std::vector<Connection *> *items)
+{
+    for (auto it : *items) {
+        this->scene->addIcon(static_cast<PixmapIcon *>(it->getIcon()),
+                             static_cast<PixmapIcon *>(it->getIcon())->pos());
+    }
 }
