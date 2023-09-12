@@ -13,6 +13,7 @@ View::View(QWidget *parent) : QGraphicsView{parent}
     setAlignment(Qt::AlignTop | Qt::AlignLeft);
     this->setRenderHints(QPainter::Antialiasing |
                          QPainter::SmoothPixmapTransform);
+    this->setBackgroundBrush(Qt::white);
 }
 
 void View::setGScene(Scene *scene)

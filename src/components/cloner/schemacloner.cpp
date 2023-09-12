@@ -9,17 +9,17 @@
 #include "components/switch.h"
 #include <algorithm>
 #include <memory>
+#include <optional>
 
-SchemaCloner::SchemaCloner(Schema *base, SchemaCloner *parent)
+SchemaCloner::SchemaCloner(Schema *base, SchemaCloner *parent) : parent(parent)
 {
-    this->parent = parent;
     this->setConnectables(base);
-    this->setLinks(base);
-    this->clonedConf = std::unique_ptr<SchemaConfiguration>(
-        new SchemaConfiguration(*base->getConf()));
+    qDebug() << "|- Created all cloners of schema.";
+    this->clonedConf = std::make_unique<SchemaConfiguration>(*base->getConf());
+    qDebug() << "|- Created all cloners of schema.";
 }
 
-Connectable *SchemaCloner::clone(Schema *schema)
+std::unique_ptr<Connectable> SchemaCloner::clone(Schema *schema)
 {
     qDebug() << "Begin to clone a schema.";
     auto [schemaId, schemaName] = schema->ids->getNewSchemaBase();
@@ -31,12 +31,12 @@ Connectable *SchemaCloner::clone(Schema *schema)
     newClonedConf->setName(schemaName);
 
     qDebug() << "Creating the cloned Schema";
-    auto clonedSchema = new Schema(schema, newClonedConf);
+    auto clonedSchema = std::make_unique<Schema>(schema, newClonedConf);
 
     qDebug() << "Generating new connectables";
-    this->generateConnectables(clonedSchema->connectables);
+    this->generateConnectables(schema, clonedSchema.get());
+
     qDebug() << "Generating new links";
-    this->generateLinks(clonedSchema->links);
 
     clonedSchema->drawItems();
 
@@ -45,42 +45,117 @@ Connectable *SchemaCloner::clone(Schema *schema)
     return clonedSchema;
 }
 
-void SchemaCloner::generateConnectables(
-    std::map<unsigned, std::unique_ptr<Connectable>> &connectables)
-{}
-
-void SchemaCloner::generateLinks(
-    std::map<unsigned, std::unique_ptr<Link>> &links)
-{}
-
-void SchemaCloner::setLinks(Schema *base)
-{}
-
-void SchemaCloner::setConnectables(Schema *base)
+void SchemaCloner::generateConnectables(Schema *parent, Schema *cloned)
 {
-    for (auto &[connectableId, connectable] : base->connectables) {
-        auto newConnectableCloner = std::unique_ptr<ConnectableCloner>(
-            static_cast<ConnectableCloner *>(connectable->cloner()));
-        this->connectableCloners.push_back(std::move(newConnectableCloner));
+    ClonerAndConnectableVector vector;
 
-        for (auto &[linkId, link] : *connectable->getConnectedLinks()) {
-            auto newLinkCloner = std::unique_ptr<LinkCloner>(
-                static_cast<LinkCloner *>(connectable->cloner()));
+    for (const auto &connectableCloner : this->connectableCloners) {
 
-            auto otherConnectable = link->connections.begin == connectable.get()
-                                        ? link->connections.end
-                                        : link->connections.begin;
-            auto otherConnectableId = otherConnectable->getConf()->getId();
-            auto otherConnectableCloner =
-                static_cast<ConnectableCloner *>(otherConnectable->cloner());
+        auto newConnectable =
+            std::unique_ptr<Connectable>(connectableCloner->clone(parent));
 
-            this->connections.push_back(
-                std::tuple<unsigned, LinkCloner *, unsigned>(
-                    connectableId, newLinkCloner.get(), otherConnectableId));
+        vector.push_back(std::make_unique<ClonerAndConnectable>(
+            newConnectable.get(), connectableCloner.get()));
 
-            this->linkCloners.push_back(std::move(newLinkCloner));
-            this->connectableCloners.push_back(
-                std::unique_ptr<ConnectableCloner>(otherConnectableCloner));
-        }
+        cloned->connectables[newConnectable->getConf()->getId()] =
+            std::move(newConnectable);
+    }
+
+    this->generateLinks(parent, cloned, &vector);
+}
+
+void SchemaCloner::generateLinks(Schema                     *parent,
+                                 Schema                     *cloned,
+                                 ClonerAndConnectableVector *vector)
+{
+    for (const auto &linkCloner : this->linkCloners) {
+        qDebug() << "Cloning a link";
+        LinkConnections linkConnections{.begin = vector->getComponentFromCloner(
+                                            linkCloner->connectionPair.begin),
+                                        .end = vector->getComponentFromCloner(
+                                            linkCloner->connectionPair.end)};
+        qDebug() << "|- Created the link's linkConnections.";
+
+        auto newLink = linkCloner->clone(parent, linkConnections);
+
+        cloned->links[newLink->getConf()->getId()] = std::move(newLink);
+        qDebug() << "|- Finished cloning a link";
     }
 }
+
+void SchemaCloner::setConnectables(const Schema *base)
+{
+    qDebug() << "Begin to create cloners Connectables of Schema.";
+
+    std::vector<ClonerAndConnectable> linkConnectables;
+
+    for (const auto &[id, connectable] : base->connectables) {
+        auto newConnectableCloner = connectable->cloner(this);
+        /*  */
+        linkConnectables.push_back(ClonerAndConnectable(
+            connectable.get(), newConnectableCloner.get()));
+        /*  */
+        this->connectableCloners.push_back(std::move(newConnectableCloner));
+    }
+
+    qDebug() << "|- Created Cloners of all Connetables of Schema.";
+    this->setLinks(base, &linkConnectables);
+    qDebug() << "|- End of creating Cloners of all Links of Schema.";
+}
+
+ConnectableCloner *getClonerFromComponent(
+    std::vector<ClonerAndConnectable> *vector, const Connectable *component)
+{
+
+    if (auto rightIter = std::ranges::find_if(
+            vector->begin(),
+            vector->end(),
+            [component](auto it) { return component == it.component; });
+        rightIter != vector->end()) {
+        return rightIter->cloner;
+    }
+
+    qDebug() << "Couldn't find the right cloner.";
+
+    return nullptr;
+}
+Connectable *getComponentFromCloner(std::vector<ClonerAndConnectable> *vector,
+                                    const ConnectableCloner           *cloner)
+{
+    if (auto rightIter = std::ranges::find_if(
+            vector->begin(),
+            vector->end(),
+            [cloner](auto it) { return cloner == it.cloner; });
+        rightIter != vector->end()) {
+        return rightIter->component;
+    }
+
+    qDebug() << "Couldn't find the right component.";
+    return nullptr;
+}
+void SchemaCloner::setLinks(const Schema                      *base,
+                            std::vector<ClonerAndConnectable> *vector)
+{
+    qDebug() << "Begin to create Cloners of links of Schema.";
+
+    qDebug() << "|- After getting names of connectables.";
+    for (const auto &[id, link] : base->links) {
+        std::unique_ptr<LinkCloner> newLinkCloner = link->cloner(this);
+
+        newLinkCloner->connectionPair.begin =
+            getClonerFromComponent(vector, link->connections.begin);
+        newLinkCloner->connectionPair.end =
+            getClonerFromComponent(vector, link->connections.end);
+
+        this->linkCloners.push_back(std::move(newLinkCloner));
+    }
+    qDebug() << "|- After creating cloners of connectables.";
+
+    qDebug() << "|- End of setLinks.";
+}
+
+std::vector<LinkCloner *> SchemaCloner::getConnectedLinkCloners()
+{}
+
+void SchemaCloner::addConnectedLink(LinkCloner *linkCloners)
+{}

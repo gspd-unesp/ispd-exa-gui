@@ -65,20 +65,17 @@ public:
     Schema(Schema &schema);
     ~Schema();
 
-    Schema(Schema &&)                                = default;
-    Schema                     &operator=(Schema &&) = default;
-    std::unique_ptr<PixmapIcon> icon;
-
-    std::unique_ptr<SchemaWindow> window;
-
-    std::map<unsigned, Link *> connectedLinks;
-
-    std::map<unsigned, std::unique_ptr<Link>>        links;
+    Schema(Schema &&)                                              = default;
+    Schema                                   &operator=(Schema &&) = default;
+    std::unique_ptr<PixmapIcon>               icon;
+    std::unique_ptr<SchemaWindow>             window;
+    std::map<unsigned, Link *>                connectedLinks;
+    std::map<unsigned, std::unique_ptr<Link>> links;
     std::map<unsigned, std::unique_ptr<Connectable>> connectables;
-
-    void     drawItems();
-    unsigned allocateNewMachine();
-    unsigned allocateNewSwitch();
+    std::unique_ptr<Switch>                          outputSwitch;
+    void                                             drawItems();
+    unsigned                                         allocateNewMachine();
+    unsigned                                         allocateNewSwitch();
     unsigned allocateNewLink(LinkConnections connections);
     unsigned allocateNewSchema();
     void     deleteSchema(unsigned schemaId);
@@ -86,15 +83,17 @@ public:
     void     deleteLink(unsigned linkId);
     void     deleteSwitch(unsigned switchId);
 
-    Cloner                     *cloner() override;
-    void                        showConfiguration() override;
-    std::map<unsigned, Link *> *getConnectedLinks() override;
-    PixmapIcon                 *getIcon() override;
-    SchemaConfiguration        *getConf() override;
+    std::unique_ptr<ConnectableCloner> cloner(SchemaCloner *parent) override;
+    void                               showConfiguration() override;
+    std::map<unsigned, Link *>        *getConnectedLinks() override;
+    PixmapIcon                        *getIcon() override;
+    SchemaConfiguration               *getConf() override;
     void           setConnectedLinks(std::map<unsigned, Link *> *map) override;
     void           removeConnectedLink(Link *link) override;
     void           addConnectedLink(Link *link) override;
     ComponentsIds *ids;
+    void           print_as_root();
+    std::unique_ptr<std::vector<std::string>> print() override;
 
 private:
     std::unique_ptr<SchemaConfiguration> conf;

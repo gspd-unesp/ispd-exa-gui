@@ -18,7 +18,7 @@ MachineBuilder *MachineBuilder::setConf(MachineConfiguration *conf)
     return this;
 }
 
-Machine *MachineBuilder::build()
+std::unique_ptr<Machine> MachineBuilder::build()
 {
-    return new Machine(this->schema, this->conf);
+    return std::make_unique<Machine>(this->schema, this->conf);
 }

@@ -2,6 +2,7 @@
 #include "components/connectable.h"
 #include "components/connectable.h"
 #include "components/link.h"
+#include "icon/linkicon.h"
 #include <QGraphicsItem>
 #include <chrono>
 
@@ -32,7 +33,7 @@ void PixmapIcon::toggleChoosen()
 
 void PixmapIcon::mousePressEvent(QGraphicsSceneMouseEvent *event)
 {
-    qDebug() << this->owner->getConf()->getName() << this->owner->getConf()->getId();
+    qDebug() << this->owner->getConf()->getName().c_str() << this->owner->getConf()->getId();
     QGraphicsPixmapItem::mousePressEvent(event);
 }
 

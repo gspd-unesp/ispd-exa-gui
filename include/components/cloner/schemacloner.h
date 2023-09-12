@@ -1,6 +1,7 @@
 #pragma once
 
 #include "components/cloner/connectablecloner.h"
+#include "components/cloner/linkcloner.h"
 #include "components/conf/schemaconfiguration.h"
 #include "components/schema.h"
 #include <algorithm>
@@ -12,31 +13,81 @@ class Machine;
 class Link;
 class Switch;
 class MachineCloner;
-class LinkCloner;
 class SwitchCloner;
 class Connectable;
 
-struct ClonerComponentPair
+class ClonerAndConnectable
 {
-    Cloner    *cloner;
-    Component *component;
+public:
+    ClonerAndConnectable(Connectable *component, ConnectableCloner *cloner)
+        : cloner(cloner), component(component)
+    {}
+    explicit ClonerAndConnectable(Connectable *component) : component(component)
+    {}
+    explicit ClonerAndConnectable(ConnectableCloner *cloner) : cloner(cloner)
+    {}
+
+    ConnectableCloner *cloner;
+    Connectable       *component;
+};
+
+class ClonerAndConnectableVector
+    : public std::vector<std::unique_ptr<ClonerAndConnectable>>
+{
+public:
+    ConnectableCloner *getClonerFromComponent(const Connectable *component)
+    {
+
+        if (auto rightIter = std::ranges::find_if(
+                this->begin(),
+                this->end(),
+                [component](auto &it) { return component == it->component; });
+            rightIter != this->end()) {
+            return rightIter->get()->cloner;
+        }
+
+        qDebug() << "Couldn't find the right cloner.";
+
+        return nullptr;
+    }
+    Connectable *getComponentFromCloner(const ConnectableCloner *cloner)
+    {
+        if (auto rightIter = std::ranges::find_if(
+                this->begin(),
+                this->end(),
+                [cloner](auto &it) { return cloner == it->cloner; });
+            rightIter != this->end()) {
+            return rightIter->get()->component;
+        }
+
+        qDebug() << "Couldn't find the right component.";
+        return nullptr;
+    }
 };
 
 class SchemaCloner : public ConnectableCloner
 {
 public:
     explicit SchemaCloner(Schema *base, SchemaCloner *parent = nullptr);
-    Connectable *clone(Schema *schema) override;
+    std::unique_ptr<Connectable> clone(Schema *schema = nullptr) override;
 
 private:
-    void setConnectables(Schema *base);
-    void setLinks(Schema *base);
+    void setConnectables(const Schema *base);
+    void setLinks(const Schema                      *base,
+                  std::vector<ClonerAndConnectable> *vector);
 
-    void generateConnectables(
-        std::map<unsigned, std::unique_ptr<Connectable>> &Connectables);
-    void generateLinks(std::map<unsigned, std::unique_ptr<Link>> &links);
+    std::vector<LinkCloner *> getConnectedLinkCloners() override;
+    void addConnectedLink(LinkCloner *linkCloners) override;
 
-    Schema                                                   *base;
+    void generateConnectables(Schema *parent, Schema *cloned);
+    void generateLinks(Schema                     *parent,
+                       Schema                     *cloned,
+                       ClonerAndConnectableVector *vector);
+    void workPath(
+        Connectable *connectable,
+        std::vector<std::tuple<Connectable *, ConnectableCloner *, bool>>
+            alreadyClonedConnectables);
+
     SchemaCloner                                             *parent;
     std::unique_ptr<Schema>                                   schemeClone;
     std::map<unsigned, Link *>                                connectedLinks;

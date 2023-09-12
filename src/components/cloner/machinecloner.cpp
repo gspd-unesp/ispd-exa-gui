@@ -8,22 +8,22 @@
 #include <string>
 
 MachineCloner::MachineCloner(Machine *base, SchemaCloner *parent)
+    : pos(base->getIcon()->scenePos()), parent(parent)
 {
     qDebug() << "Before copying machine conf.";
-    this->clonedConf = new MachineConfiguration(*base->conf);
-    this->parent     = parent;
+    this->clonedConf = std::make_unique<MachineConfiguration>(*base->conf);
     qDebug() << "Before getting machineIcon scenePos.";
-    this->pos = static_cast<QGraphicsPixmapItem *>(base->getIcon())->scenePos();
+    qDebug() << "After constructor of machineCloner;";
 }
 
-Connectable *MachineCloner::clone(Schema *schema)
+std::unique_ptr<Connectable> MachineCloner::clone(Schema *schema)
 {
-    MachineConfiguration *newMachineConfiguration =
-        new MachineConfiguration(*this->clonedConf);
-    Machine *newMachine = MachineBuilder()
-                              .setSchema(schema)
-                              ->setConf(newMachineConfiguration)
-                              ->build();
+    qDebug() << "Before Cloning a machine";
+    auto *newMachineConfiguration = new MachineConfiguration(*this->clonedConf);
+    auto  newMachine              = MachineBuilder()
+                          .setSchema(schema)
+                          ->setConf(newMachineConfiguration)
+                          ->build();
 
     newMachine->getIcon()->setPos(this->pos);
 
@@ -31,5 +31,15 @@ Connectable *MachineCloner::clone(Schema *schema)
     newMachine->conf->setId(newId);
     newMachine->conf->setName(newName);
 
+    qDebug() << "Returning a cloned machine...";
     return newMachine;
+}
+
+std::vector<LinkCloner *> MachineCloner::getConnectedLinkCloners()
+{
+    return this->linkCloners;
+}
+void MachineCloner::addConnectedLink(LinkCloner *linkCloner)
+{
+    this->linkCloners.push_back(linkCloner);
 }

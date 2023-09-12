@@ -38,7 +38,7 @@ void Link::showConfiguration()
     // TODO IMPLEMENT
 }
 
-Icon *Link::getIcon()
+LinkIcon *Link::getIcon()
 {
     return this->icon.get();
 }
@@ -48,7 +48,7 @@ LinkConfiguration *Link::getConf()
     return this->conf.get();
 }
 
-Cloner *Link::cloner()
+std::unique_ptr<LinkCloner> Link::cloner(SchemaCloner *parent)
 {
-    return new LinkCloner(this, nullptr);
+    return std::make_unique<LinkCloner>(this, parent);
 }

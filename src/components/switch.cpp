@@ -1,6 +1,7 @@
 #include "components/switch.h"
 #include "components/cloner/switchcloner.h"
 #include "components/conf/switchconfiguration.h"
+#include "components/connectable.h"
 #include "components/link.h"
 #include "components/schema.h"
 #include "icon/pixmapiconbuilder.h"
@@ -9,7 +10,7 @@
 #include <memory>
 
 Switch::Switch(Schema *schema, SwitchConfiguration *conf)
-    : conf(conf), schema(schema), connectedLinks()
+    : conf(conf), schema(schema)
 {
     PixmapIconBuilder iconBuilder;
     this->icon = std::unique_ptr<PixmapIcon>(
@@ -77,7 +78,24 @@ SwitchConfiguration *Switch::getConf()
     return this->conf.get();
 }
 
-Cloner *Switch::cloner()
+std::unique_ptr<ConnectableCloner> Switch::cloner(SchemaCloner *parent)
 {
-    return new SwitchCloner(this, nullptr);
+    return std::make_unique<SwitchCloner>(this, parent);
+}
+
+std::unique_ptr<std::vector<std::string>> Switch::print()
+{
+    auto buffer  = std::string("[" + std::to_string(this->conf->getId()) +
+                              "] = \"" + this->conf->getName() + "\"");
+    auto buffers = new std::vector<std::string>();
+    buffers->push_back(buffer);
+    for (auto &[id, link] : this->connectedLinks) {
+        buffers->push_back(
+            "|- [" + std::to_string(link->conf->getId()) + "] = " +
+            std::to_string(link->connections.begin->getConf()->getId()) +
+            " -> \"" + link->conf->getName() + "\" -> " +
+            std::to_string(link->connections.end->getConf()->getId()));
+    }
+
+    return std::unique_ptr<std::vector<std::string>>(buffers);
 }

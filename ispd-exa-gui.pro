@@ -21,6 +21,7 @@ SOURCES += \
   src/components/cloner/linkcloner.cpp \
   src/components/link.cpp \
   src/components/switch.cpp \
+  src/components/switchbuilder.cpp \
   src/components/machine.cpp \
   src/components/machinebuilder.cpp \
   src/components/schema.cpp \
@@ -58,6 +59,7 @@ HEADERS += \
   include/components/cloner/schemacloner.h \
   include/components/link.h \
   include/components/switch.h \
+  include/components/switchbuilder.h \
   include/components/component.h \
   include/components/connectable.h \
   include/components/machine.h \

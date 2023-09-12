@@ -1,11 +1,13 @@
 #pragma once
 
-#include "components/conf/linkconfiguration.h"
 #include "components/component.h"
+#include "components/conf/linkconfiguration.h"
 #include <memory>
 #include <string>
 
 class LinkIcon;
+class LinkCloner;
+class SchemaCloner;
 class Connectable;
 class Schema;
 
@@ -15,18 +17,18 @@ struct LinkConnections
     Connectable *end;
 };
 
-class Link : public Component
+class Link
 {
 public:
     Link(Schema *schema, LinkConfiguration *conf, LinkConnections connections);
-    ~Link() override;
+    ~Link();
 
-    void               addLine();
-    void               draw();
-    void               showConfiguration() override;
-    Icon              *getIcon() override;
-    LinkConfiguration *getConf() override;
-    Cloner            *cloner() override;
+    void                        addLine();
+    void                        draw();
+    void                        showConfiguration();
+    LinkIcon                   *getIcon();
+    LinkConfiguration          *getConf();
+    std::unique_ptr<LinkCloner> cloner(SchemaCloner *parent);
 
     Schema *schema;
 

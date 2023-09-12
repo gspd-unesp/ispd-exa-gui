@@ -6,12 +6,15 @@
 #include "components/link.h"
 #include "components/machine.h"
 #include "components/switch.h"
+#include "icon/linkicon.h"
 #include "icon/pixmapiconbuilder.h"
 #include "icon/pixmappair.h"
 #include "utils/iconPath.h"
 #include "window/drawingtable/drawingtable.h"
+#include "window/drawingtable/scene.h"
 #include <QDebug>
 #include <algorithm>
+#include <iostream>
 #include <memory>
 
 Schema::Schema()
@@ -30,11 +33,17 @@ Schema::Schema(Schema *parent, SchemaConfiguration *conf)
     this->window = std::make_unique<SchemaWindow>(this);
     this->ids    = parent->ids;
 
+    auto outputConfiguration = new SwitchConfiguration("", 0);
+    this->outputSwitch = std::make_unique<Switch>(this, outputConfiguration);
+
     PixmapIconBuilder iconBuilder;
     this->icon = std::unique_ptr<PixmapIcon>(
         iconBuilder.setOwner(this)
             ->setPixmapPair(PixmapPair(schemaPath, schemaPathSelected))
             ->build());
+
+    this->window->drawingTable->getScene()->addIcon(
+        this->outputSwitch->getIcon());
 }
 
 Schema::~Schema()
@@ -181,11 +190,13 @@ void Schema::addConnectedLink(Link *link)
 
 void Schema::drawItems()
 {
-    std::vector<Connectable *> machineVector;
-    for (auto &it : this->connectables) {
-        machineVector.push_back(it.second.get());
+    for (const auto &[id, connectable] : this->connectables) {
+        this->window->drawingTable->getScene()->addIcon(
+            connectable->getIcon(), connectable->getIcon()->scenePos());
     }
-    this->window->drawingTable->addIcons(&machineVector);
+    for (const auto &[id, link] : this->links) {
+        this->window->drawingTable->getScene()->addLink(link.get());
+    }
 }
 
 SchemaConfiguration *Schema::getConf()
@@ -193,7 +204,38 @@ SchemaConfiguration *Schema::getConf()
     return this->conf.get();
 }
 
-Cloner *Schema::cloner()
+std::unique_ptr<ConnectableCloner> Schema::cloner(SchemaCloner *parent)
 {
-    return new SchemaCloner(this, nullptr);
+    return std::make_unique<SchemaCloner>(this, parent);
+}
+
+std::unique_ptr<std::vector<std::string>> Schema::print()
+{
+    auto stringVector = new std::vector<std::string>();
+    stringVector->push_back(
+        std::string("[" + std::to_string(this->conf->getId()) + "] = \"" +
+                    this->conf->getName() + "\""));
+    for (auto &[id, link] : this->connectedLinks) {
+        stringVector->push_back(
+            "|- [" + std::to_string(link->conf->getId()) + "] = " +
+            std::to_string(link->connections.begin->getConf()->getId()) +
+            " -> \"" + link->conf->getName() + "\" -> " +
+            std::to_string(link->connections.end->getConf()->getId()));
+    }
+    for (auto &[id, connectable] : this->connectables) {
+        auto connectableStrings = connectable->print();
+        for (auto buffer : *connectableStrings.get()) {
+            stringVector->push_back("|- " + buffer);
+        }
+    }
+
+    return std::unique_ptr<std::vector<std::string>>(stringVector);
+}
+
+void Schema::print_as_root()
+{
+    auto buffers = this->print();
+    for (auto buffer : *buffers.get()) {
+        qDebug() << buffer.c_str();
+    }
 }

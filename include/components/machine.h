@@ -5,9 +5,9 @@
 #include <vector>
 
 #include "components/connectable.h"
-#include "components/connectable.h"
 
 class Schema;
+class SchemaCloner;
 class Link;
 class Icon;
 class Cloner;
@@ -25,13 +25,15 @@ public:
     void setConnectedLinks(std::map<unsigned, Link *> *map) override;
     void removeConnectedLink(Link *link) override;
     void addConnectedLink(Link *link) override;
+    std::unique_ptr<std::vector<std::string>> print() override;
 
-    void               showConfiguration() override;
-    PixmapIcon        *getIcon() override;
-    ItemConfiguration *getConf() override;
-    Cloner            *cloner();
+    void                                showConfiguration() override;
+    PixmapIcon                         *getIcon() override;
+    ItemConfiguration                  *getConf() override;
+    std::unique_ptr<ConnectableCloner> cloner(
+        SchemaCloner *parent = nullptr) override;
 
-    std::map<unsigned, Link *> connected_links;
+    std::map<unsigned, Link *> connectedLinks;
 
     Schema                               *schema;
     std::unique_ptr<MachineConfiguration> conf;

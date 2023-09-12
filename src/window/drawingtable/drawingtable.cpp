@@ -2,7 +2,6 @@
 #include "components/conf/machineconfiguration.h"
 #include "components/conf/schemaconfiguration.h"
 #include "components/connectable.h"
-#include "components/connectable.h"
 #include "components/link.h"
 #include "components/machine.h"
 #include "components/schema.h"
@@ -19,8 +18,7 @@
 
 void printSchema(Schema *schema);
 
-DrawingTable::DrawingTable(QFrame *parent)
-    : DrawingTable(new Schema(), parent)
+DrawingTable::DrawingTable(QFrame *parent) : DrawingTable(new Schema(), parent)
 {
     QPixmap image(":/icons/perfil.png");
     QSize   imageSize(30, 30);
@@ -271,20 +269,22 @@ void printSchema(Schema *schema)
          machine != schema->connectables.end();
          machine++) {
 
-        qDebug() << "Connectable #" << machine->second->getConf()->getId() << ": "
-                 << machine->second->getConf()->getName().c_str();
+        qDebug() << "Connectable #" << machine->second->getConf()->getId()
+                 << ": " << machine->second->getConf()->getName().c_str();
     }
 
     for (auto &[id, nswitch] : schema->connectables) {
 
-        qDebug() << "Connectable #" << id << ": " << nswitch->getConf()->getName().c_str();
+        qDebug() << "Connectable #" << id << ": "
+                 << nswitch->getConf()->getName().c_str();
     }
 
-    for (auto sch = schema->connectables.begin(); sch != schema->connectables.end();
+    for (auto sch = schema->connectables.begin();
+         sch != schema->connectables.end();
          sch++) {
 
         qDebug() << "Connectable #" << sch->second->getConf()->getId() << ": "
-                 << sch->second->getConf()->getName();
+                 << sch->second->getConf()->getName().c_str();
     }
 
     for (auto link = schema->links.begin(); link != schema->links.end();
@@ -318,4 +318,9 @@ void DrawingTable::addIcons(std::vector<Connectable *> *items)
         this->scene->addIcon(static_cast<PixmapIcon *>(it->getIcon()),
                              static_cast<PixmapIcon *>(it->getIcon())->pos());
     }
+}
+
+Scene *DrawingTable::getScene()
+{
+    return this->scene;
 }

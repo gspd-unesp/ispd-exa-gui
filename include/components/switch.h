@@ -13,12 +13,13 @@ public:
     std::map<unsigned, Link *> *getConnectedLinks() override;
     PixmapIcon                 *getIcon() override;
     SwitchConfiguration        *getConf() override;
-    void        setConnectedLinks(std::map<unsigned, Link *> *map) override;
-    void        removeConnectedLink(Link *link) override;
-    void        addConnectedLink(Link *link) override;
-    void        showConfiguration() override;
-    Cloner     *cloner() override;
-    std::string getName();
+    void setConnectedLinks(std::map<unsigned, Link *> *map) override;
+    void removeConnectedLink(Link *link) override;
+    void addConnectedLink(Link *link) override;
+    void showConfiguration() override;
+    std::unique_ptr<ConnectableCloner> cloner(SchemaCloner *parent) override;
+    std::unique_ptr<std::vector<std::string>> print() override;
+    std::string                               getName();
 
 private:
     std::unique_ptr<SwitchConfiguration> conf;

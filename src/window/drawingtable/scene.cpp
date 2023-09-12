@@ -27,14 +27,12 @@
 ///
 /// Create the scene following the QGraphicsScene constructor
 ///
-Scene::Scene(DrawingTable *parent) : QGraphicsScene{parent}
+Scene::Scene(DrawingTable *parent)
+    : QGraphicsScene{parent}, pickOp(NONE), table(parent)
 {
-    this->table  = parent;
     this->schema = this->table->schema;
     this->lBegin = nullptr;
     this->lEnd   = nullptr;
-    this->pickOp = NONE;
-
     setSceneRect(0, 0, 2000, 2000);
     drawBackgroundLines();
 }
@@ -70,16 +68,17 @@ void Scene::addIcon(PixmapIcon *icon, QPointF pos)
 void Scene::addLink(Link *link)
 {
     link->addLine();
+    link->getIcon()->draw();
 
     this->addItem(link->icon.get());
 }
 
 void printThisSchema(Schema *schema)
 {
-    qDebug() << "From Schema: " << schema->getConf()->getName();
+    qDebug() << "From Schema: " << schema->getConf()->getName().c_str();
     for (auto &connectable : schema->connectables) {
         qDebug() << "Machine[" << connectable.second->getConf()->getId()
-                 << "] = " << connectable.second->getConf()->getName();
+                 << "] = " << connectable.second->getConf()->getName().c_str();
     }
 }
 
@@ -96,16 +95,14 @@ void Scene::keyPressEvent(QKeyEvent *event)
         break;
     case Qt::Key_C:
         this->sceneCloner =
-            std::unique_ptr<ConnectableCloner>(static_cast<ConnectableCloner *>(
-                whichConnectable(getScenePosition())->cloner()));
+            whichConnectable(getScenePosition())->cloner(nullptr);
         break;
     case Qt::Key_V:
         qDebug() << "Vamos ver se está clonando.";
         auto newConnectable = this->sceneCloner->clone(this->schema);
         this->addIcon(newConnectable->getIcon(), this->getScenePosition());
-        this->schema->connectables
-            [static_cast<Connectable *>(newConnectable)->getConf()->getId()] =
-            std::unique_ptr<Connectable>(newConnectable);
+        this->schema->connectables[newConnectable->getConf()->getId()] =
+            std::move(newConnectable);
 
         break;
     }

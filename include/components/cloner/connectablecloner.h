@@ -4,8 +4,14 @@
 #include "components/connectable.h"
 #include "icon/pixmapicon.h"
 
-class ConnectableCloner : public Cloner
+class LinkCloner;
+class Schema;
+
+class ConnectableCloner
 {
 public:
-    virtual Connectable *clone(Schema *schema) = 0;
+    virtual std::unique_ptr<Connectable> clone(Schema *schema = nullptr) = 0;
+    virtual ~ConnectableCloner()                                 = default;
+    virtual std::vector<LinkCloner *> getConnectedLinkCloners()  = 0;
+    virtual void addConnectedLink(LinkCloner *linkCloner)        = 0;
 };

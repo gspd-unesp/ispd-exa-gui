@@ -42,6 +42,7 @@ public:
     PICK_OP pickOp;
 
     QLabel *machineDescriptionLabel;
+    void                    addLink(Link *link);
 
 private:
     QPointF                 getScenePosition();
@@ -49,7 +50,6 @@ private:
     Schema                 *schema;
     Connectable            *lBegin;
     Connectable            *lEnd;
-    void                    addLink(Link *link);
     Connectable            *whichConnectable(QPointF pos);
     void                    removeLink(Link *link);
     void                    deleteItems();
