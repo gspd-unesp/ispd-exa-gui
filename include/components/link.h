@@ -20,7 +20,7 @@ struct LinkConnections
 class Link
 {
 public:
-    Link(Schema *schema, LinkConfiguration *conf, LinkConnections connections);
+    Link(Schema *schema, LinkConfiguration conf, LinkConnections connections);
     ~Link();
 
     void                        addLine();

@@ -26,9 +26,7 @@ Switch::~Switch()
                                      ? link->connections.end
                                      : link->connections.begin;
 
-        otherIcon->removeConnectedLink(link);
-
-        this->schema->deleteLink(linkId);
+        this->schema->links.erase(linkId);
     }
 }
 

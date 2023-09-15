@@ -7,11 +7,10 @@
 #include <iterator>
 #include <memory>
 
-Link::Link(Schema *schema, LinkConfiguration *conf, LinkConnections connections)
+Link::Link(Schema *schema, LinkConfiguration conf, LinkConnections connections)
+    : schema(schema), connections(connections)
 {
-    this->conf        = std::unique_ptr<LinkConfiguration>(conf);
-    this->connections = connections;
-    this->schema      = schema;
+    this->conf        = std::make_unique<LinkConfiguration>(conf);
 
     this->icon = std::make_unique<LinkIcon>(this);
     this->addLine();
@@ -23,6 +22,8 @@ Link::~Link()
 
     this->connections.begin->removeConnectedLink(this);
     this->connections.end->removeConnectedLink(this);
+
+    qDebug() << "|- End of Link destructor.";
 }
 
 void Link::addLine()

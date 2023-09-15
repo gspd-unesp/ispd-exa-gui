@@ -7,12 +7,11 @@ class MachineConfiguration : public ItemConfiguration
 {
 public:
     MachineConfiguration(std::string name, unsigned id);
-    MachineConfiguration(MachineConfiguration &conf) = default;
 
-    std::string getName();
-    void        setName(std::string name);
-    unsigned    getId();
-    void        setId(unsigned id);
+    std::string getName() final;
+    void        setName(std::string name) final;
+    unsigned    getId() final;
+    void        setId(unsigned id) final;
 
 private:
     std::string name;

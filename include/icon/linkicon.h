@@ -19,7 +19,6 @@ class LinkIcon : public QGraphicsPolygonItem
 {
 public:
     explicit LinkIcon(Link *owner);
-    ~LinkIcon() override;
 
     Link       *owner;
     PixmapIcon *begin; ///< the \link Icon \endlink that the link comes from

@@ -5,6 +5,7 @@
 #include <vector>
 
 #include "components/connectable.h"
+#include "window/machineconfigurationwindow.h"
 
 class Schema;
 class SchemaCloner;
@@ -27,15 +28,19 @@ public:
     void addConnectedLink(Link *link) override;
     std::unique_ptr<std::vector<std::string>> print() override;
 
-    void                                showConfiguration() override;
-    PixmapIcon                         *getIcon() override;
-    ItemConfiguration                  *getConf() override;
+    void                               showConfiguration() override;
+    PixmapIcon                        *getIcon() override;
+    ItemConfiguration                 *getConf() override;
     std::unique_ptr<ConnectableCloner> cloner(
         SchemaCloner *parent = nullptr) override;
 
     std::map<unsigned, Link *> connectedLinks;
 
-    Schema                               *schema;
+    Schema *schema;
+
     std::unique_ptr<MachineConfiguration> conf;
     std::unique_ptr<PixmapIcon>           icon;
+
+private:
+    std::unique_ptr<MachineConfigurationWindow> window;
 };

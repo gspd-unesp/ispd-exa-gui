@@ -78,10 +78,6 @@ public:
     unsigned                                         allocateNewSwitch();
     unsigned allocateNewLink(LinkConnections connections);
     unsigned allocateNewSchema();
-    void     deleteSchema(unsigned schemaId);
-    void     deleteMachine(unsigned machineId);
-    void     deleteLink(unsigned linkId);
-    void     deleteSwitch(unsigned switchId);
 
     std::unique_ptr<ConnectableCloner> cloner(SchemaCloner *parent) override;
     void                               showConfiguration() override;

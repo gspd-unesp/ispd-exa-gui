@@ -13,29 +13,26 @@
 #include <vector>
 
 Machine::Machine(Schema *schema, MachineConfiguration *conf)
-    : schema(schema), conf(std::unique_ptr<MachineConfiguration>(conf))
+    : schema(schema), conf(std::make_unique<MachineConfiguration>(*conf))
 {
     this->icon =
         std::unique_ptr<PixmapIcon>(MachineIconFactory().iconBuilder(this));
+
+    this->window = std::make_unique<MachineConfigurationWindow>(this->conf->getName().c_str());
 }
 
 Machine::~Machine()
 {
+    qDebug() << "Deleting machine";
     for (auto [linkId, link] : this->connectedLinks) {
-        Connectable *otherIcon = (link->connections.begin == this)
-                                     ? link->connections.end
-                                     : link->connections.begin;
-
-        otherIcon->removeConnectedLink(link);
-        this->schema->deleteLink(linkId);
+        this->schema->links.erase(linkId);
     }
+    qDebug() << "|- End of destructor of machine.";
 }
 
 void Machine::showConfiguration()
 {
-    MachineConfigurationWindow *machineIconConfig =
-        new MachineConfigurationWindow(this->conf->getName().c_str());
-    machineIconConfig->show();
+    this->window->show();
 }
 
 PixmapIcon *Machine::getIcon()

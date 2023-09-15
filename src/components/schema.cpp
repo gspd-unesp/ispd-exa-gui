@@ -5,6 +5,7 @@
 #include "components/conf/switchconfiguration.h"
 #include "components/link.h"
 #include "components/machine.h"
+#include "components/machinebuilder.h"
 #include "components/switch.h"
 #include "icon/linkicon.h"
 #include "icon/pixmapiconbuilder.h"
@@ -28,10 +29,9 @@ Schema::Schema()
 }
 
 Schema::Schema(Schema *parent, SchemaConfiguration *conf)
-    : conf(conf), parent(parent)
+    : ids(parent->ids), conf(conf), parent(parent)
 {
     this->window = std::make_unique<SchemaWindow>(this);
-    this->ids    = parent->ids;
 
     auto outputConfiguration = new SwitchConfiguration("", 0);
     this->outputSwitch = std::make_unique<Switch>(this, outputConfiguration);
@@ -55,7 +55,7 @@ Schema::~Schema()
 
         otherIcon->removeConnectedLink(link);
 
-        this->parent->deleteLink(linkId);
+        this->parent->links.erase(linkId);
     }
 }
 
@@ -63,10 +63,11 @@ unsigned Schema::allocateNewMachine()
 {
     auto [newMachineId, newMachineName] = this->ids->getNewMachineBase();
 
-    auto newMachineConf =
-        new MachineConfiguration(newMachineName, newMachineId);
-
-    auto newMachine = std::make_unique<Machine>(this, newMachineConf);
+    MachineConfiguration newMachineConf(newMachineName, newMachineId);
+    auto newMachine = MachineBuilder()
+                          .setConf(newMachineConf)
+                          ->setSchema(this)
+                          ->build();
 
     this->connectables[newMachineId] = std::move(newMachine);
 
@@ -77,8 +78,7 @@ unsigned Schema::allocateNewLink(LinkConnections connections)
 {
     auto [newLinkId, newLinkName] = this->ids->getNewLinkBase();
 
-    auto newLinkConf = new LinkConfiguration(newLinkName, newLinkId);
-
+    LinkConfiguration newLinkConf(newLinkName, newLinkId);
     auto newLink = std::make_unique<Link>(this, newLinkConf, connections);
 
     this->links[newLinkId] = std::move(newLink);
@@ -110,42 +110,6 @@ unsigned Schema::allocateNewSwitch()
     this->connectables[newSwitchId] = std::move(newSwitch);
 
     return newSwitchId;
-}
-
-void Schema::deleteMachine(unsigned machineId)
-{
-    auto machineToDelete = this->connectables.find(machineId);
-
-    if (machineToDelete != this->connectables.end()) {
-        this->connectables.erase(machineToDelete);
-    }
-}
-
-void Schema::deleteSchema(unsigned schemaId)
-{
-    auto schemaToDelete = this->connectables.find(schemaId);
-
-    if (schemaToDelete != this->connectables.end()) {
-        this->connectables.erase(schemaToDelete);
-    }
-}
-
-void Schema::deleteSwitch(unsigned switchId)
-{
-    auto switchToDelete = this->connectables.find(switchId);
-
-    if (switchToDelete != this->connectables.end()) {
-        this->connectables.erase(switchToDelete);
-    }
-}
-
-void Schema::deleteLink(unsigned linkId)
-{
-    auto linkToDelete = this->links.find(linkId);
-
-    if (linkToDelete != this->links.end()) {
-        this->links.erase(linkToDelete);
-    }
 }
 
 void Schema::showConfiguration()

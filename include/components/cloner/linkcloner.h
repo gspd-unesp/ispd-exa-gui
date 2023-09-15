@@ -23,7 +23,7 @@ public:
     ConnectableClonerPair connectionPair;
 
 private:
-    LinkConfiguration *clonedConf;
+    LinkConfiguration clonedConf;
     Link              *base;
     SchemaCloner      *parent;
 };
