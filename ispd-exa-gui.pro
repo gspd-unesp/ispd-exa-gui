@@ -1,4 +1,5 @@
 SOURCES += \
+  forms/scatterplot.cpp \
   qcustomplot.cpp \
   src/window/settings.cpp \
   src/window/adduser.cpp \
@@ -29,6 +30,7 @@ SOURCES += \
 
 INCLUDEPATH += include/
 HEADERS += \
+  forms/scatterplot.h \
   packCircles.h \
   include/window/settings.h \
   include/window/workloads.h \
@@ -72,7 +74,7 @@ HEADERS += \
 
 
 CONFIG += qt c++20 release warn_on
-QT += widgets svg printsupport
+QT += widgets svg printsupport 
 message($$[QT_INSTALL_HEADERS])
 
 
@@ -82,6 +84,7 @@ RESOURCES += \
 FORMS += \
   forms/adduser.ui \
   forms/machineconfigurationwindow.ui \
+  forms/scatterplot.ui \
   forms/simulation.ui \
   forms/userwindow.ui \
   forms/workloads.ui \

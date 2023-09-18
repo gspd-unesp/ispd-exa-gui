@@ -1,56 +1,57 @@
 {
-  "total_simulated_time": "10",
-  "satisfaction": "90",
-  "idleness_processing": "5",
-  "idleness_communication": "3",
-  "efficiency": "80",
+  "total_simulated_time": 10,
+  "satisfaction": 90,
+  "idleness_processing": 5,
+  "idleness_communication": 3.333,
+  "efficiency": 65.7,
   "communication": {
-    "queue_average_time": "10.5",
-    "communication_average_time": "20.3",
-    "system_average_time": "30.7"
+    "queue_average_time": 10.5,
+    "communication_average_time": 20.3,
+    "system_average_time": 30.7
   },
   "processing": {
-    "queue_average_time": "5.2",
-    "processing_average_time": "15.9",
-    "system_average_time": "25.4"
+    "queue_average_time": 5.2,
+    "processing_average_time": 15.9,
+    "system_average_time": 25.4
   },
   "users": [
     {
       "label": "user1",
-      "number_of_tasks": "2",
+      "number_of_tasks": 2,
       "computing_power": [
-        { "time": "10", "rate": 110 },
-        { "time": "32.5", "rate": 110 },
-  { "time": "42.5", "rate": 50 }
+        { "time": 10, "rate": 110 },
+        { "time": 12.5, "rate": 150 },
+        { "time": 32.5, "rate": 110 },
+  { "time": 42.5, "rate": 50 }
       ],
       "communication": {
-        "queue_average_time": "12.1",
-        "communication_average_time": "18.6",
-        "system_average_time": "27.9"
+        "queue_average_time": 12.1,
+        "communication_average_time": 18.6,
+        "system_average_time": 27.9
       },
       "processing": {
-        "queue_average_time": "6.7",
-        "processing_average_time": "14.2",
-        "system_average_time": "22.8"
+        "queue_average_time": 6.7,
+        "processing_average_time": 14.2,
+        "system_average_time": 22.8
       }
     },
     {
       "label": "user2",
-      "number_of_tasks": "3",
+      "number_of_tasks": 3,
       "computing_power": [
-        { "time": "5", "rate": 150 },
-        { "time": "12.5", "rate": 150 },
-  { "time": "45.5", "rate": 55 }
+        { "time": 5, "rate": 150 },
+        { "time": 12.5, "rate": 150 },
+  { "time": 45.5, "rate": 55 }
       ],
       "communication": {
-        "queue_average_time": "15.1",
-        "communication_average_time": "58.6",
-        "system_average_time": "57.9"
+        "queue_average_time": 15.1,
+        "communication_average_time": 58.6,
+        "system_average_time": 57.9
       },
       "processing": {
-        "queue_average_time": "5.7",
-        "processing_average_time": "15.2",
-        "system_average_time": "22.5"
+        "queue_average_time": 5.7,
+        "processing_average_time": 15.2,
+        "system_average_time": 22.5
       }
     }
   ],
@@ -61,12 +62,12 @@
       "id": 1,
       "scheme": 1,
       "computing_power": [
-        { "time": "10", "rate": 90 },
-        { "time": "42.5", "rate": 90 }
+        { "time": 5, "rate": 5 },
+        { "time": 10, "rate": 5 }
       ],
-      "processing_performed": "0.0",
-      "communication_performed": "0.0",
-      "Mflops": "1000"
+      "processing_performed": 10.0,
+      "communication_performed": 3.0,
+      "Mflops": 1000
     },
     {
       "label": "mac1",
@@ -74,12 +75,12 @@
       "id": 2,
       "scheme": 2,
       "computing_power": [
-        { "time": "10", "rate": 90 },
-        { "time": "32.5", "rate": 90 }
+        { "time": 5, "rate": 5 },
+        { "time": 10, "rate": 5 }
       ],
-      "processing_performed": "22.222222",
-      "communication_performed": "0.0",
-      "Mflops": "500"
+      "processing_performed": 22.222222,
+      "communication_performed": 2.0,
+      "Mflops": 500
     },
     {
       "label": "mac2",
@@ -87,12 +88,12 @@
       "id": 3,
       "scheme": 1,
       "computing_power": [
-        { "time": "13", "rate": 30 },
-        { "time": "42.3", "rate": 30 }
+        { "time": 5, "rate": 5 },
+        { "time": 10, "rate": 5 }
       ],
-      "processing_performed": "0.0",
-      "communication_performed": "0.0",
-      "Mflops": "1000"
+      "processing_performed": 4.5,
+      "communication_performed": 9.1,
+      "Mflops": 1000
     },
     {
     "label": "mac3",
@@ -100,12 +101,12 @@
       "id": 4,
       "scheme": 2,
       "computing_power": [
-        { "time": "13", "rate": 93 },
-        { "time": "32.5", "rate": 30 }
+        { "time": 5, "rate": 5 },
+        { "time": 10, "rate": 5 }
       ],
-      "processing_performed": "0.0",
-      "communication_performed": "0.0",
-      "Mflops": "10330"
+      "processing_performed": 10.7,
+      "communication_performed": 11.1,
+      "Mflops": 10330
     },
     {
     "label": "mac4",
@@ -113,12 +114,12 @@
       "id": 5,
       "scheme": 2,
       "computing_power": [
-        { "time": "7", "rate": 97 },
-        { "time": "47.5", "rate": 70 }
+        { "time": 5, "rate": 5 },
+        { "time": 10, "rate": 5 }
       ],
-      "processing_performed": "0.0",
-      "communication_performed": "0.0",
-      "Mflops": "1007"
+      "processing_performed": 6.0,
+      "communication_performed": 11.0,
+      "Mflops": 1007
     }
   ],
   "links": [
@@ -126,32 +127,32 @@
       "source": "mac0",
       "dest": "mac1",
       "label": "link1",
-      "processing_performed": "0.0",
-      "communication_performed": "20.0",
-      "Mbits": "100"
+      "processing_performed": 11.3,
+      "communication_performed": 20.0,
+      "Mbits": 100
     },
     {
       "source": "mac1",
       "dest": "mac2",
       "label": "link2",
-      "processing_performed": "0.0",
-      "communication_performed": "13.3333",
-      "Mbits": "200"
+      "processing_performed": 12.3,
+      "communication_performed": 13.3333,
+      "Mbits": 200
     }
   ],
   "tasks": [
     {
       "label": "task1",
       "computing_power": [
-        { "time": "10", "rate": 55 },
-        { "time": "20", "rate": 55 }
+        { "time": 10, "rate": 55 },
+        { "time": 20, "rate": 55 }
       ]
     },
     {
       "label": "task2",
       "computing_power": [
-        { "time": "10", "rate": 55 },
-        { "time": "42.5", "rate": 55 }
+        { "time": 10, "rate": 55 },
+        { "time": 42.5, "rate": 55 }
       ]
     }
   ]
