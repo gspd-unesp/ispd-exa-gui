@@ -7,7 +7,6 @@
 #include "components/machine.h"
 #include "components/machinebuilder.h"
 #include "components/switch.h"
-#include "icon/linkicon.h"
 #include "icon/pixmapiconbuilder.h"
 #include "icon/pixmappair.h"
 #include "utils/iconPath.h"
@@ -22,18 +21,20 @@ Schema::Schema()
 {
     this->window = std::make_unique<SchemaWindow>(this);
     this->ids    = new ComponentsIds;
+    this->cloneContainer = std::make_shared<ClonerContainer>();
 
     auto [firstSchemaId, firstSchemaName] = this->ids->getNewSchemaBase();
-    this->conf =
-        std::make_unique<SchemaConfiguration>(firstSchemaName, firstSchemaId);
+    this->id                              = firstSchemaId;
+    this->conf = std::make_unique<SchemaConfiguration>(firstSchemaName);
 }
 
-Schema::Schema(Schema *parent, SchemaConfiguration *conf)
-    : ids(parent->ids), conf(conf), parent(parent)
+Schema::Schema(Schema *parent, SchemaConfiguration const &conf)
+    : ids(parent->ids), cloneContainer(parent->cloneContainer),
+      conf(std::make_unique<SchemaConfiguration>(conf)), parent(parent)
 {
     this->window = std::make_unique<SchemaWindow>(this);
 
-    auto outputConfiguration = new SwitchConfiguration("", 0);
+    SwitchConfiguration outputConfiguration("");
     this->outputSwitch = std::make_unique<Switch>(this, outputConfiguration);
 
     PixmapIconBuilder iconBuilder;
@@ -48,14 +49,13 @@ Schema::Schema(Schema *parent, SchemaConfiguration *conf)
 
 Schema::~Schema()
 {
-    for (auto [linkId, link] : this->connectedLinks) {
-        Connectable *otherIcon = (link->connections.begin == this)
-                                     ? link->connections.end
-                                     : link->connections.begin;
+    for (auto const &link : this->connectedLinks) {
+        qDebug() << link.use_count();
+        auto otherConnectable =
+            link.get()->connections.getOtherConnectable(this);
 
-        otherIcon->removeConnectedLink(link);
-
-        this->parent->links.erase(linkId);
+        otherConnectable->removeConnectedLink(link.get());
+        this->parent->links.erase(link.get()->getId());
     }
 }
 
@@ -63,11 +63,10 @@ unsigned Schema::allocateNewMachine()
 {
     auto [newMachineId, newMachineName] = this->ids->getNewMachineBase();
 
-    MachineConfiguration newMachineConf(newMachineName, newMachineId);
-    auto newMachine = MachineBuilder()
-                          .setConf(newMachineConf)
-                          ->setSchema(this)
-                          ->build();
+    MachineConfiguration newMachineConf(newMachineName);
+    auto                 newMachine =
+        MachineBuilder().setConf(newMachineConf)->setSchema(this)->build();
+    newMachine->setId(newMachineId);
 
     this->connectables[newMachineId] = std::move(newMachine);
 
@@ -78,8 +77,13 @@ unsigned Schema::allocateNewLink(LinkConnections connections)
 {
     auto [newLinkId, newLinkName] = this->ids->getNewLinkBase();
 
-    LinkConfiguration newLinkConf(newLinkName, newLinkId);
-    auto newLink = std::make_unique<Link>(this, newLinkConf, connections);
+    LinkConfiguration newLinkConf(newLinkName);
+    auto newLink = std::make_shared<Link>(this, newLinkConf, connections);
+    newLink->setId(newLinkId);
+
+    auto [a, b] = connections;
+    a->addConnectedLink(newLink);
+    b->addConnectedLink(newLink);
 
     this->links[newLinkId] = std::move(newLink);
 
@@ -90,9 +94,10 @@ unsigned Schema::allocateNewSchema()
 {
     auto [newSchemaId, newSchemaName] = this->ids->getNewSchemaBase();
 
-    auto newSchemaConf = new SchemaConfiguration(newSchemaName, newSchemaId);
+    SchemaConfiguration newSchemaConf(newSchemaName);
 
     auto newSchema = std::make_unique<Schema>(this, newSchemaConf);
+    newSchema->setId(newSchemaId);
 
     this->connectables[newSchemaId] = std::move(newSchema);
 
@@ -103,9 +108,10 @@ unsigned Schema::allocateNewSwitch()
 {
     auto [newSwitchId, newSwitchName] = this->ids->getNewSwitchBase();
 
-    auto newSwitchConf = new SwitchConfiguration(newSwitchName, newSwitchId);
+    SwitchConfiguration newSwitchConf(newSwitchName);
 
     auto newSwitch = std::make_unique<Switch>(this, newSwitchConf);
+    newSwitch->setId(newSwitchId);
 
     this->connectables[newSwitchId] = std::move(newSwitch);
 
@@ -116,8 +122,7 @@ void Schema::showConfiguration()
 {
     this->window->show();
 }
-
-std::map<unsigned, Link *> *Schema::getConnectedLinks()
+std::vector<std::shared_ptr<Link>> *Schema::getConnectedLinks()
 {
     return &this->connectedLinks;
 }
@@ -127,7 +132,7 @@ PixmapIcon *Schema::getIcon()
     return this->icon.get();
 }
 
-void Schema::setConnectedLinks(std::map<unsigned, Link *> *map)
+void Schema::setConnectedLinks(std::vector<std::shared_ptr<Link>> *map)
 {
     this->connectedLinks = *map;
 }
@@ -135,30 +140,24 @@ void Schema::setConnectedLinks(std::map<unsigned, Link *> *map)
 void Schema::removeConnectedLink(Link *link)
 {
     qDebug() << "Removing link of " << this->conf->getName().c_str();
-    auto linkToRemove = this->connectedLinks.find(link->conf->getId());
 
-    if (linkToRemove != connectedLinks.end()) {
-        this->connectedLinks.erase(linkToRemove);
-        qDebug() << "Removed link of " << this->conf->getName().c_str();
-    }
+    std::erase_if(this->connectedLinks,
+                  [link](auto iter) { return iter.get() == link; });
 }
-void Schema::addConnectedLink(Link *link)
+void Schema::addConnectedLink(std::shared_ptr<Link> link)
 {
     qDebug() << "Adding link to " << this->conf->getName().c_str();
-    auto linkToAdd = this->connectedLinks.find(link->conf->getId());
 
-    if (linkToAdd == connectedLinks.end()) {
-        this->connectedLinks[link->conf->getId()] = link;
-    }
+    this->connectedLinks.push_back(link);
 }
 
 void Schema::drawItems()
 {
-    for (const auto &[id, connectable] : this->connectables) {
+    for (const auto &[connectableId, connectable] : this->connectables) {
         this->window->drawingTable->getScene()->addIcon(
             connectable->getIcon(), connectable->getIcon()->scenePos());
     }
-    for (const auto &[id, link] : this->links) {
+    for (const auto &[linkId, link] : this->links) {
         this->window->drawingTable->getScene()->addLink(link.get());
     }
 }
@@ -176,15 +175,15 @@ std::unique_ptr<ConnectableCloner> Schema::cloner(SchemaCloner *parent)
 std::unique_ptr<std::vector<std::string>> Schema::print()
 {
     auto stringVector = new std::vector<std::string>();
-    stringVector->push_back(
-        std::string("[" + std::to_string(this->conf->getId()) + "] = \"" +
-                    this->conf->getName() + "\""));
-    for (auto &[id, link] : this->connectedLinks) {
+    stringVector->push_back(std::string("[" + std::to_string(this->getId()) +
+                                        "] = \"" + this->conf->getName() +
+                                        "\""));
+    for (auto &link : this->connectedLinks) {
         stringVector->push_back(
-            "|- [" + std::to_string(link->conf->getId()) + "] = " +
-            std::to_string(link->connections.begin->getConf()->getId()) +
+            "|- [" + std::to_string(link->getId()) +
+            "] = " + std::to_string(link->connections.begin->getId()) +
             " -> \"" + link->conf->getName() + "\" -> " +
-            std::to_string(link->connections.end->getConf()->getId()));
+            std::to_string(link->connections.end->getId()));
     }
     for (auto &[id, connectable] : this->connectables) {
         auto connectableStrings = connectable->print();
@@ -199,7 +198,16 @@ std::unique_ptr<std::vector<std::string>> Schema::print()
 void Schema::print_as_root()
 {
     auto buffers = this->print();
-    for (auto buffer : *buffers.get()) {
+    for (auto const &buffer : *buffers.get()) {
         qDebug() << buffer.c_str();
     }
+}
+
+unsigned Schema::getId() const
+{
+    return this->id;
+}
+void Schema::setId(unsigned newId)
+{
+    this->id = newId;
 }

@@ -18,14 +18,21 @@ Machine::Machine(Schema *schema, MachineConfiguration *conf)
     this->icon =
         std::unique_ptr<PixmapIcon>(MachineIconFactory().iconBuilder(this));
 
-    this->window = std::make_unique<MachineConfigurationWindow>(this->conf->getName().c_str());
+    this->window = std::make_unique<MachineConfigurationWindow>(
+        this->conf->getName().c_str());
 }
 
 Machine::~Machine()
 {
     qDebug() << "Deleting machine";
-    for (auto [linkId, link] : this->connectedLinks) {
-        this->schema->links.erase(linkId);
+
+    for (auto const &link : this->connectedLinks) {
+        qDebug() << link.use_count();
+        auto otherConnectable =
+            link.get()->connections.getOtherConnectable(this);
+
+        otherConnectable->removeConnectedLink(link.get());
+        this->schema->links.erase(link.get()->getId());
     }
     qDebug() << "|- End of destructor of machine.";
 }
@@ -40,32 +47,27 @@ PixmapIcon *Machine::getIcon()
     return this->icon.get();
 }
 
-std::map<unsigned, Link *> *Machine::getConnectedLinks()
+std::vector<std::shared_ptr<Link>> *Machine::getConnectedLinks()
 {
     return &this->connectedLinks;
 }
 
-void Machine::setConnectedLinks(std::map<unsigned, Link *> *map)
+void Machine::setConnectedLinks(std::vector<std::shared_ptr<Link>> *linkVector)
 {
-    this->connectedLinks = *map;
+    this->connectedLinks = *linkVector;
 }
 
 void Machine::removeConnectedLink(Link *link)
 {
-    auto linkToRemove = this->connectedLinks.find(link->conf->getId());
+    qDebug() << "Begin to delete a connected link from machine " << this->id;
 
-    if (linkToRemove != connectedLinks.end()) {
-        this->connectedLinks.erase(linkToRemove);
-    }
+    std::erase_if(this->connectedLinks,
+                  [link](auto iter) { return iter.get() == link; });
 }
 
-void Machine::addConnectedLink(Link *link)
+void Machine::addConnectedLink(std::shared_ptr<Link> link)
 {
-    auto linkToAdd = this->connectedLinks.find(link->conf->getId());
-
-    if (linkToAdd == connectedLinks.end()) {
-        this->connectedLinks.insert(std::pair(link->conf->getId(), link));
-    }
+    this->connectedLinks.push_back(link);
 }
 
 ItemConfiguration *Machine::getConf()
@@ -75,16 +77,15 @@ ItemConfiguration *Machine::getConf()
 
 std::unique_ptr<std::vector<std::string>> Machine::print()
 {
-    auto buffer  = std::string("[" + std::to_string(this->conf->getId()) +
-                              "] = \"" + this->conf->getName() + "\"");
+    auto buffer  = std::string("[" + std::to_string(this->getId()) + "] = \"" +
+                              this->conf->getName() + "\"");
     auto buffers = new std::vector<std::string>();
     buffers->push_back(buffer);
-    for (auto &[id, link] : this->connectedLinks) {
-        buffers->push_back(
-            "|- [" + std::to_string(link->conf->getId()) + "] = " +
-            std::to_string(link->connections.begin->getConf()->getId()) +
-            " -> \"" + link->conf->getName() + "\" -> " +
-            std::to_string(link->connections.end->getConf()->getId()));
+    for (auto &link : this->connectedLinks) {
+        buffers->push_back("|- [" + std::to_string(link->getId()) + "] = " +
+                           std::to_string(link->connections.begin->getId()) +
+                           " -> \"" + link->conf->getName() + "\" -> " +
+                           std::to_string(link->connections.end->getId()));
     }
 
     return std::unique_ptr<std::vector<std::string>>(buffers);
@@ -93,4 +94,14 @@ std::unique_ptr<std::vector<std::string>> Machine::print()
 std::unique_ptr<ConnectableCloner> Machine::cloner(SchemaCloner *parent)
 {
     return std::make_unique<MachineCloner>(this, parent);
+}
+
+unsigned Machine::getId() const
+{
+    return this->id;
+}
+
+void Machine::setId(unsigned newId)
+{
+    this->id = newId;
 }

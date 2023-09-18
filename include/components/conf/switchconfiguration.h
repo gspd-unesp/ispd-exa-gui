@@ -4,15 +4,11 @@
 class SwitchConfiguration : public ItemConfiguration
 {
 public:
-    SwitchConfiguration(std::string name, unsigned id);
+    explicit SwitchConfiguration(std::string_view const &name);
 
-    unsigned    getId() override;
-    std::string getName() override;
-
-    void setId(unsigned id) override;
-    void setName(std::string name) override;
+    std::string getName() const override;
+    void        setName(std::string_view const &newName) override;
 
 private:
-    unsigned    id   = 0;
     std::string name = "";
 };

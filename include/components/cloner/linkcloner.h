@@ -18,12 +18,12 @@ class LinkCloner
 {
 public:
     LinkCloner(Link *base, SchemaCloner *parent);
-    std::unique_ptr<Link> clone(Schema         *schema,
+    std::shared_ptr<Link> clone(Schema         *schema,
                                 LinkConnections linkConnections);
     ConnectableClonerPair connectionPair;
 
 private:
     LinkConfiguration clonedConf;
-    Link              *base;
-    SchemaCloner      *parent;
+    Link             *base;
+    SchemaCloner     *parent;
 };

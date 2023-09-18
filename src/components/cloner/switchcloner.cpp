@@ -25,7 +25,7 @@ std::unique_ptr<Connectable> SwitchCloner::clone(Schema *schema)
     newSwitch->getIcon()->setPos(this->pos);
 
     auto [newId, newName] = schema->ids->getNewSwitchBase();
-    newSwitch->getConf()->setId(newId);
+    newSwitch->setId(newId);
     newSwitch->getConf()->setName(newName);
 
     qDebug() << "Returning a cloned machine...";

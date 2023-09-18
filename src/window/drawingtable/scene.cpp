@@ -39,9 +39,9 @@ Scene::Scene(DrawingTable *parent)
 
 QPointF Scene::getScenePosition()
 {
-    QGraphicsView *view           = this->views().first();
-    QPoint         globalMousePos = QCursor::pos();
-    QPointF        sceneMousePos =
+    QGraphicsView const *view           = this->views().first();
+    QPoint               globalMousePos = QCursor::pos();
+    QPointF              sceneMousePos =
         view->mapToScene(view->mapFromGlobal(globalMousePos));
     return sceneMousePos;
 }
@@ -67,7 +67,6 @@ void Scene::addIcon(PixmapIcon *icon, QPointF pos)
 ///
 void Scene::addLink(Link *link)
 {
-    link->addLine();
     link->getIcon()->draw();
 
     this->addItem(link->icon.get());
@@ -77,7 +76,7 @@ void printThisSchema(Schema *schema)
 {
     qDebug() << "From Schema: " << schema->getConf()->getName().c_str();
     for (auto &connectable : schema->connectables) {
-        qDebug() << "Machine[" << connectable.second->getConf()->getId()
+        qDebug() << "Machine[" << connectable.second->getId()
                  << "] = " << connectable.second->getConf()->getName().c_str();
     }
 }
@@ -90,21 +89,32 @@ void printThisSchema(Schema *schema)
 void Scene::keyPressEvent(QKeyEvent *event)
 {
     switch (event->key()) {
-    case Qt::Key_Delete:
+    case Qt::Key_Delete: {
         this->deleteItems();
         break;
-    case Qt::Key_C:
-        this->sceneCloner =
-            whichConnectable(getScenePosition())->cloner(nullptr);
+    }
+    case Qt::Key_C: {
+        auto newCloner = whichConnectable(getScenePosition())->cloner(nullptr);
+        schema->cloneContainer.get()->setCloner(std::move(newCloner));
         break;
-    case Qt::Key_V:
+    }
+    case Qt::Key_V: {
         qDebug() << "Vamos ver se está clonando.";
-        auto newConnectable = this->sceneCloner->clone(this->schema);
-        this->addIcon(newConnectable->getIcon(), this->getScenePosition());
-        this->schema->connectables[newConnectable->getConf()->getId()] =
-            std::move(newConnectable);
+
+        if (this->schema->cloneContainer.get()->getCloner()) {
+            auto newConnectable =
+                this->schema->cloneContainer.get()->getCloner()->clone(
+                    this->schema);
+            this->addIcon(newConnectable->getIcon(), this->getScenePosition());
+            this->schema->connectables[newConnectable->getId()] =
+                std::move(newConnectable);
+        }
 
         break;
+    }
+    default: {
+        break;
+    }
     }
 
     QGraphicsScene::keyPressEvent(event);
@@ -117,7 +127,20 @@ void Scene::deleteItems()
     };
 
     erase_if(this->schema->connectables, eraseCondition);
-    erase_if(this->schema->links, eraseCondition);
+
+    auto linkIter = this->schema->links.begin();
+    while (linkIter != this->schema->links.end()) {
+        auto temp = linkIter;
+        linkIter++;
+
+        auto link   = temp->second.get();
+        auto linkId = temp->first;
+        if (link->getIcon()->isChosen()) {
+            link->connections.begin->removeConnectedLink(link);
+            link->connections.end->removeConnectedLink(link);
+            this->schema->links.erase(linkId);
+        }
+    }
 }
 
 QRectF getOwnItemsSceneBoundingRect(Schema *schema)
@@ -194,12 +217,12 @@ void Scene::mousePressEvent(QGraphicsSceneMouseEvent *event)
         break;
     }
     case SWITCH: {
-    }
         auto newSwitch = this->table->addSwitch();
 
         this->addIcon(newSwitch, event->scenePos());
 
         break;
+    }
     }
 }
 
@@ -240,8 +263,6 @@ void Scene::mouseReleaseEvent(QGraphicsSceneMouseEvent *event)
 
 void Scene::selectionArea(QGraphicsSceneMouseEvent *event)
 {
-    /* Connection *clickedIcon = whichConnection(event->scenePos()); */
-    /* if (!clickedIcon && !static_cast<Icon *>(clickedIcon)) { */
     if (event->button() == Qt::LeftButton) {
         this->startSelection = event->scenePos();
         this->selectionRect  = new QGraphicsRectItem();
@@ -253,7 +274,6 @@ void Scene::selectionArea(QGraphicsSceneMouseEvent *event)
         this->addItem(this->selectionRect); // Add the selection rectangle
                                             // to the scene
     }
-    /* } */
 }
 
 ///
@@ -294,7 +314,8 @@ void Scene::drawBackgroundLines()
 ///
 Connectable *Scene::whichConnectable(QPointF pos)
 {
-    for (auto &[connectableId, connectable] : this->schema->connectables) {
+    for (auto const &[connectableId, connectable] :
+         this->schema->connectables) {
         if (connectable->getIcon()->sceneBoundingRect().contains(pos)) {
             return connectable.get();
         }

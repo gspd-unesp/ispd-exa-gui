@@ -9,8 +9,8 @@
 #include "utils/iconPath.h"
 #include <memory>
 
-Switch::Switch(Schema *schema, SwitchConfiguration *conf)
-    : conf(conf), schema(schema)
+Switch::Switch(Schema *schema, SwitchConfiguration const &conf)
+    : conf(std::make_unique<SwitchConfiguration>(conf)), schema(schema)
 {
     PixmapIconBuilder iconBuilder;
     this->icon = std::unique_ptr<PixmapIcon>(
@@ -21,16 +21,19 @@ Switch::Switch(Schema *schema, SwitchConfiguration *conf)
 
 Switch::~Switch()
 {
-    for (auto [linkId, link] : this->connectedLinks) {
-        Connectable *otherIcon = (link->connections.begin == this)
-                                     ? link->connections.end
-                                     : link->connections.begin;
+    for (auto const &link : this->connectedLinks) {
+        qDebug() << link.use_count();
+        auto otherConnectable =
+            link.get()->connections.getOtherConnectable(this);
 
-        this->schema->links.erase(linkId);
+        otherConnectable->removeConnectedLink(link.get());
+        this->schema->links.erase(link.get()->getId());
     }
+
+    this->connectedLinks.clear();
 }
 
-std::map<unsigned, Link *> *Switch::getConnectedLinks()
+std::vector<std::shared_ptr<Link>> *Switch::getConnectedLinks()
 {
     return &this->connectedLinks;
 }
@@ -40,27 +43,20 @@ PixmapIcon *Switch::getIcon()
     return this->icon.get();
 }
 
-void Switch::setConnectedLinks(std::map<unsigned, Link *> *map)
+void Switch::setConnectedLinks(std::vector<std::shared_ptr<Link>> *map)
 {
     this->connectedLinks = *map;
 }
 
 void Switch::removeConnectedLink(Link *link)
 {
-    auto linkToRemove = this->connectedLinks.find(link->conf->getId());
-
-    if (linkToRemove != connectedLinks.end()) {
-        this->connectedLinks.erase(linkToRemove);
-    }
+    std::erase_if(this->connectedLinks,
+                  [link](auto iter) { return iter.get() == link; });
 }
 
-void Switch::addConnectedLink(Link *link)
+void Switch::addConnectedLink(std::shared_ptr<Link> link)
 {
-    auto linkToAdd = this->connectedLinks.find(link->conf->getId());
-
-    if (linkToAdd == connectedLinks.end()) {
-        this->connectedLinks.insert(std::pair(link->conf->getId(), link));
-    }
+    this->connectedLinks.push_back(link);
 }
 
 std::string Switch::getName()
@@ -83,17 +79,25 @@ std::unique_ptr<ConnectableCloner> Switch::cloner(SchemaCloner *parent)
 
 std::unique_ptr<std::vector<std::string>> Switch::print()
 {
-    auto buffer  = std::string("[" + std::to_string(this->conf->getId()) +
-                              "] = \"" + this->conf->getName() + "\"");
+    auto buffer  = std::string("[" + std::to_string(this->getId()) + "] = \"" +
+                              this->conf->getName() + "\"");
     auto buffers = new std::vector<std::string>();
     buffers->push_back(buffer);
-    for (auto &[id, link] : this->connectedLinks) {
-        buffers->push_back(
-            "|- [" + std::to_string(link->conf->getId()) + "] = " +
-            std::to_string(link->connections.begin->getConf()->getId()) +
-            " -> \"" + link->conf->getName() + "\" -> " +
-            std::to_string(link->connections.end->getConf()->getId()));
+    for (auto &link : this->connectedLinks) {
+        buffers->push_back("|- [" + std::to_string(link->getId()) + "] = " +
+                           std::to_string(link->connections.begin->getId()) +
+                           " -> \"" + link->conf->getName() + "\" -> " +
+                           std::to_string(link->connections.end->getId()));
     }
 
     return std::unique_ptr<std::vector<std::string>>(buffers);
+}
+
+unsigned Switch::getId() const
+{
+    return this->id;
+}
+void Switch::setId(unsigned newId)
+{
+    this->id = newId;
 }

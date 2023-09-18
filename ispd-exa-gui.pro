@@ -76,7 +76,7 @@ HEADERS += \
 
 
 
-CONFIG += qt c++20 release warn_on
+CONFIG += qt c++20 debug warn_on
 QT += widgets svg printsupport
 message($$[QT_INSTALL_HEADERS])
 

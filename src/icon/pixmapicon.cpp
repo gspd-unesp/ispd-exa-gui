@@ -1,6 +1,5 @@
 #include "icon/pixmapicon.h"
 #include "components/connectable.h"
-#include "components/connectable.h"
 #include "components/link.h"
 #include "icon/linkicon.h"
 #include <QGraphicsItem>
@@ -33,7 +32,14 @@ void PixmapIcon::toggleChoosen()
 
 void PixmapIcon::mousePressEvent(QGraphicsSceneMouseEvent *event)
 {
-    qDebug() << this->owner->getConf()->getName().c_str() << this->owner->getConf()->getId();
+    qDebug() << "Owner: " << owner->getId();
+    qDebug() << "|-Connected Links: ";
+
+    for (auto const &link : *owner->getConnectedLinks()) {
+        qDebug() << "FIND ONE?";
+        // qDebug() << "  |-Name: " << link->getConf()->getName().c_str();
+    }
+
     QGraphicsPixmapItem::mousePressEvent(event);
 }
 
@@ -65,7 +71,7 @@ void PixmapIcon::mouseReleaseEvent(QGraphicsSceneMouseEvent *event)
 
 void PixmapIcon::updatePosition()
 {
-    for (auto &[id, link] : *this->owner->getConnectedLinks()) {
+    for (auto &link : *this->owner->getConnectedLinks()) {
         link->getIcon()->updatePosition();
     }
 }

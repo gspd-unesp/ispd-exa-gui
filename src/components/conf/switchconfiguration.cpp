@@ -1,24 +1,16 @@
 #include "components/conf/switchconfiguration.h"
 
-SwitchConfiguration::SwitchConfiguration(std::string name, unsigned id)
-    : id(id), name(name)
+SwitchConfiguration::SwitchConfiguration(std::string_view const &name)
+    : name(name)
 {}
 
-unsigned SwitchConfiguration::getId()
-{ 
-    return this->id;
-}
-std::string SwitchConfiguration::getName()
+std::string SwitchConfiguration::getName() const
 {
     return this->name;
 }
 
-void SwitchConfiguration::setId(unsigned id)
+void SwitchConfiguration::setName(std::string_view const &newName)
 {
-    this->id = id;
-}
-void SwitchConfiguration::setName(std::string name)
-{
-    this->name = name;
+    this->name = newName;
 }
 

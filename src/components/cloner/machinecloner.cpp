@@ -19,17 +19,16 @@ MachineCloner::MachineCloner(Machine *base, SchemaCloner *parent)
 std::unique_ptr<Connectable> MachineCloner::clone(Schema *schema)
 {
     qDebug() << "Before Cloning a machine";
-    auto newMachineConfiguration =
-        std::make_unique<MachineConfiguration>(*this->clonedConf);
+    MachineConfiguration newMachineConfiguration(*this->clonedConf);
     auto newMachine = MachineBuilder()
                           .setSchema(schema)
-                          ->setConf(std::move(newMachineConfiguration))
+                          ->setConf(newMachineConfiguration)
                           ->build();
 
     newMachine->getIcon()->setPos(this->pos);
 
     auto [newId, newName] = schema->ids->getNewMachineBase();
-    newMachine->conf->setId(newId);
+    newMachine->setId(newId);
     newMachine->conf->setName(newName);
 
     qDebug() << "Returning a cloned machine...";

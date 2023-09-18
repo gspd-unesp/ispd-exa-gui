@@ -1,12 +1,9 @@
 #include "components/cloner/schemacloner.h"
 #include "components/cloner/connectablecloner.h"
 #include "components/cloner/linkcloner.h"
-#include "components/cloner/switchcloner.h"
 #include "components/conf/schemaconfiguration.h"
 #include "components/link.h"
-#include "components/machine.h"
 #include "components/schema.h"
-#include "components/switch.h"
 #include <algorithm>
 #include <memory>
 #include <optional>
@@ -24,14 +21,10 @@ std::unique_ptr<Connectable> SchemaCloner::clone(Schema *schema)
     qDebug() << "Begin to clone a schema.";
     auto [schemaId, schemaName] = schema->ids->getNewSchemaBase();
 
-    qDebug()
-        << "Begin to getting the schemaconfiguration of the cloned schema.";
-    auto newClonedConf = new SchemaConfiguration(*this->clonedConf.get());
-    newClonedConf->setId(schemaId);
-    newClonedConf->setName(schemaName);
-
     qDebug() << "Creating the cloned Schema";
-    auto clonedSchema = std::make_unique<Schema>(schema, newClonedConf);
+    auto clonedSchema = std::make_unique<Schema>(schema, *this->clonedConf.get());
+    clonedSchema->setId(schemaId);
+    clonedSchema->getConf()->setName(schemaName);
 
     qDebug() << "Generating new connectables";
     this->generateConnectables(schema, clonedSchema.get());
@@ -45,26 +38,26 @@ std::unique_ptr<Connectable> SchemaCloner::clone(Schema *schema)
     return clonedSchema;
 }
 
-void SchemaCloner::generateConnectables(Schema *parent, Schema *cloned)
+void SchemaCloner::generateConnectables(Schema *newParent, Schema *cloned)
 {
     ClonerAndConnectableVector vector;
 
     for (const auto &connectableCloner : this->connectableCloners) {
 
         auto newConnectable =
-            std::unique_ptr<Connectable>(connectableCloner->clone(parent));
+            connectableCloner->clone(newParent);
 
         vector.push_back(std::make_unique<ClonerAndConnectable>(
             newConnectable.get(), connectableCloner.get()));
 
-        cloned->connectables[newConnectable->getConf()->getId()] =
+        cloned->connectables[newConnectable->getId()] =
             std::move(newConnectable);
     }
 
-    this->generateLinks(parent, cloned, &vector);
+    this->generateLinks(newParent, cloned, &vector);
 }
 
-void SchemaCloner::generateLinks(Schema                     *parent,
+void SchemaCloner::generateLinks(Schema                     *newParent,
                                  Schema                     *cloned,
                                  ClonerAndConnectableVector *vector)
 {
@@ -76,9 +69,12 @@ void SchemaCloner::generateLinks(Schema                     *parent,
                                             linkCloner->connectionPair.end)};
         qDebug() << "|- Created the link's linkConnections.";
 
-        auto newLink = linkCloner->clone(parent, linkConnections);
+        auto newLink = linkCloner->clone(newParent, linkConnections);
+        auto [a, b] = linkConnections;
+        a->addConnectedLink(newLink);
+        b->addConnectedLink(newLink);
 
-        cloned->links[newLink->getConf()->getId()] = std::move(newLink);
+        cloned->links[newLink->getId()] = std::move(newLink);
         qDebug() << "|- Finished cloning a link";
     }
 }

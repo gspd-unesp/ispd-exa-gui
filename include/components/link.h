@@ -15,6 +15,18 @@ struct LinkConnections
 {
     Connectable *begin;
     Connectable *end;
+
+    Connectable *getOtherConnectable(Connectable const *otherConnectable) {
+        if (otherConnectable == this->begin) {
+            return this->end;
+        }
+
+        if (otherConnectable == this->end) {
+            return this->begin;
+        }
+
+        return nullptr;
+    }
 };
 
 class Link
@@ -23,7 +35,6 @@ public:
     Link(Schema *schema, LinkConfiguration conf, LinkConnections connections);
     ~Link();
 
-    void                        addLine();
     void                        draw();
     void                        showConfiguration();
     LinkIcon                   *getIcon();
@@ -36,4 +47,10 @@ public:
 
     std::unique_ptr<LinkIcon>          icon;
     std::unique_ptr<LinkConfiguration> conf;
+    unsigned                              getId() const;
+    void                                  setId(unsigned newId);
+
+private:
+    unsigned id;
+
 };

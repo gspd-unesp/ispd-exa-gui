@@ -1,6 +1,7 @@
 #pragma once
 
 #include <map>
+#include <memory>
 #include <string>
 #include <vector>
 
@@ -21,11 +22,11 @@ public:
     Machine(Schema *schema, MachineConfiguration *conf);
     ~Machine();
 
-    std::map<unsigned, Link *> *getConnectedLinks() override;
+    std::vector<std::shared_ptr<Link>> *getConnectedLinks() override;
 
-    void setConnectedLinks(std::map<unsigned, Link *> *map) override;
+    void setConnectedLinks(std::vector<std::shared_ptr<Link>> *map) override;
     void removeConnectedLink(Link *link) override;
-    void addConnectedLink(Link *link) override;
+    void addConnectedLink(std::shared_ptr<Link> link) override;
     std::unique_ptr<std::vector<std::string>> print() override;
 
     void                               showConfiguration() override;
@@ -34,13 +35,16 @@ public:
     std::unique_ptr<ConnectableCloner> cloner(
         SchemaCloner *parent = nullptr) override;
 
-    std::map<unsigned, Link *> connectedLinks;
+    std::vector<std::shared_ptr<Link>> connectedLinks;
 
     Schema *schema;
 
     std::unique_ptr<MachineConfiguration> conf;
     std::unique_ptr<PixmapIcon>           icon;
+    unsigned                              getId() const override;
+    void                                  setId(unsigned newId) override;
 
 private:
+    unsigned                                    id;
     std::unique_ptr<MachineConfigurationWindow> window;
 };

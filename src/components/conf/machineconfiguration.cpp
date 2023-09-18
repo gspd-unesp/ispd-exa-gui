@@ -1,22 +1,16 @@
 #include "components/conf/machineconfiguration.h"
 
-MachineConfiguration::MachineConfiguration(std::string name, unsigned id)
+MachineConfiguration::MachineConfiguration(std::string_view const &name)
+    : name(name)
 {
-    this->name = name;
-    this->id   = id;
 }
 
-std::string MachineConfiguration::getName() {
+std::string MachineConfiguration::getName() const 
+{
     return this->name;
 }
-unsigned    MachineConfiguration::getId() {
-    return this->id;
-}
 
-void MachineConfiguration::setName(std::string name) {
-    this->name = name;
-}
-
-void MachineConfiguration::setId(unsigned id) {
-    this->id = id;
+void MachineConfiguration::setName(std::string_view const &newName)
+{
+    this->name = newName;
 }

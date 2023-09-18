@@ -269,7 +269,7 @@ void printSchema(Schema *schema)
          machine != schema->connectables.end();
          machine++) {
 
-        qDebug() << "Connectable #" << machine->second->getConf()->getId()
+        qDebug() << "Connectable #" << machine->second->getId()
                  << ": " << machine->second->getConf()->getName().c_str();
     }
 
@@ -283,14 +283,14 @@ void printSchema(Schema *schema)
          sch != schema->connectables.end();
          sch++) {
 
-        qDebug() << "Connectable #" << sch->second->getConf()->getId() << ": "
+        qDebug() << "Connectable #" << sch->second->getId() << ": "
                  << sch->second->getConf()->getName().c_str();
     }
 
     for (auto link = schema->links.begin(); link != schema->links.end();
          link++) {
 
-        qDebug() << "Link #" << link->second->conf->getId() << ": "
+        qDebug() << "Link #" << link->second->getId() << ": "
                  << link->second->conf->getName().c_str();
     }
 }
