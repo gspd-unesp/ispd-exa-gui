@@ -19,8 +19,18 @@
 #include <QObject>
 #include <QEvent>
 #include <QVBoxLayout>
+#include <QColorDialog>
+#include <QToolTip>
+
+#include <QMouseEvent>
+#include <QVector>
+#include <QColor>
+#include <QPen>
+#include <QBrush>
+
 
 #include "qcustomplot.h"
+#include "forms/scatterplot.h"
 
 //CIRCLE PACKING
 #include "packCircles.h"
@@ -389,13 +399,19 @@ Simulation::Simulation(QWidget *parent) :
 
     QDir directory(QCoreApplication::applicationDirPath());
     directory.cdUp();
-    directory.cdUp();
-    directory.cdUp();
-    directory.cdUp();
-    directory.cdUp();
-    directory.cdUp();
-    directory.cd("ispd-exa-gui");
 
+
+    while (!directory.isRoot())
+    {
+        if (directory.exists("ispd-exa-gui"))
+        {
+            qDebug() << "File" << "ispd-exa-gui" << "found in directory:" << directory.absolutePath();
+            break;
+        }
+
+        directory.cdUp();
+    }
+    directory.cd("ispd-exa-gui");
     originalTextEditPos = ui->textEdit->pos();
     originalTextEditSize = ui->textEdit->size();
     originalLabelPos = ui->label->pos();
@@ -442,25 +458,25 @@ void Simulation::createGlobal(QDir directory)
         {
             QJsonObject jsonObj = jsonDoc.object();
 
-            QString totalTime = jsonObj.value("total_simulated_time").toString();
-            QString satisfaction = jsonObj.value("satisfaction").toString();
-            QString idlenessProcessing = jsonObj.value("idleness_processing").toString();
-            QString idlenessCommunication = jsonObj.value("idleness_communication").toString();
-            QString efficiency = jsonObj.value("efficiency").toString();
+            double totalTime = jsonObj.value("total_simulated_time").toDouble();
+            double satisfaction = jsonObj.value("satisfaction").toDouble();
+            double idlenessProcessing = jsonObj.value("idleness_processing").toDouble();
+            double idlenessCommunication = jsonObj.value("idleness_communication").toDouble();
+            double efficiency = jsonObj.value("efficiency").toDouble();
 
             ui->textEdit->clear();
             ui->textEdit->append("                                                                    Simulation Results                  ");
             ui->textEdit->append("");
-            ui->textEdit->append("Total Simulated Time = " + totalTime);
-            ui->textEdit->append("Satisfaction = " + satisfaction + " %");
-            ui->textEdit->append("Idleness of processing resources = " + idlenessProcessing + " %");
-            ui->textEdit->append("Idleness of communication resources = " + idlenessCommunication + " %");
-            ui->textEdit->append("Efficiency = " + efficiency + " %");
 
-            int efficiencyValue = efficiency.toDouble();
-            if(efficiencyValue > 70.0)
+            ui->textEdit->append("Total Simulated Time = " + QString::number(totalTime));
+            ui->textEdit->append("Satisfaction = " + QString::number(satisfaction) + " %");
+            ui->textEdit->append("Idleness of processing resources = " + QString::number(idlenessProcessing) + " %");
+            ui->textEdit->append("Idleness of communication resources = " + QString::number(idlenessCommunication) + " %");
+            ui->textEdit->append("Efficiency = " + QString::number(efficiency) + " %");
+
+            if(efficiency > 70.0)
                 ui->textEdit->append("Efficiency GOOD");
-            else if(efficiencyValue > 40.0)
+            else if(efficiency > 40.0)
                 ui->textEdit->append("Efficiency MEDIUM");
             else
                 ui->textEdit->append("Efficiency BAD");
@@ -496,25 +512,25 @@ void Simulation::createTasks(QDir directory)
             QJsonObject jsonObj = jsonDoc.object();
 
             QJsonObject communicationObj = jsonObj.value("communication").toObject();
-            QString queueAvgTimeComm = communicationObj.value("queue_average_time").toString();
-            QString communicationAvgTimeComm = communicationObj.value("communication_average_time").toString();
-            QString systemAvgTimeComm = communicationObj.value("system_average_time").toString();
+            double queueAvgTimeComm = communicationObj.value("queue_average_time").toDouble();
+            double communicationAvgTimeComm = communicationObj.value("communication_average_time").toDouble();
+            double systemAvgTimeComm = communicationObj.value("system_average_time").toDouble();
 
             QJsonObject processingObj = jsonObj.value("processing").toObject();
-            QString queueAvgTimeProc = processingObj.value("queue_average_time").toString();
-            QString processingAvgTimeProc = processingObj.value("processing_average_time").toString();
-            QString systemAvgTimeProc = processingObj.value("system_average_time").toString();
+            double queueAvgTimeProc = processingObj.value("queue_average_time").toDouble();
+            double processingAvgTimeProc = processingObj.value("processing_average_time").toDouble();
+            double systemAvgTimeProc = processingObj.value("system_average_time").toDouble();
 
             ui->textEdit_2->clear();
             ui->textEdit_2->append("Communication");
-            ui->textEdit_2->append("   Queue average time: " + queueAvgTimeComm + " seconds");
-            ui->textEdit_2->append("   Communication average time: " + communicationAvgTimeComm + " seconds");
-            ui->textEdit_2->append("   System average time: " + systemAvgTimeComm + " seconds");
+            ui->textEdit_2->append("   Queue average time: " + QString::number(queueAvgTimeComm) + " seconds");
+            ui->textEdit_2->append("   Communication average time: " + QString::number(communicationAvgTimeComm) + " seconds");
+            ui->textEdit_2->append("   System average time: " + QString::number(systemAvgTimeComm) + " seconds");
             ui->textEdit_2->append("");
             ui->textEdit_2->append("Processing");
-            ui->textEdit_2->append("   Queue average time: " + queueAvgTimeProc + " seconds");
-            ui->textEdit_2->append("   Processing average time: " + processingAvgTimeProc + " seconds");
-            ui->textEdit_2->append("   System average time: " + systemAvgTimeProc + " seconds");
+            ui->textEdit_2->append("   Queue average time: " + QString::number(queueAvgTimeProc) + " seconds");
+            ui->textEdit_2->append("   Processing average time: " + QString::number(processingAvgTimeProc) + " seconds");
+            ui->textEdit_2->append("   System average time: " + QString::number(systemAvgTimeProc) + " seconds");
         }
     }
     else
@@ -528,7 +544,7 @@ void Simulation::createUser(QDir directory)
 {
 
     QString fileName = "results.json";
-   QString filePath = directory.filePath(fileName);
+    QString filePath = directory.filePath(fileName);
 
     qDebug() << "File path: " << filePath;
 
@@ -549,31 +565,31 @@ void Simulation::createUser(QDir directory)
             {
                 QJsonObject userObj = usersArray.at(i).toObject();
                 QString userName = userObj.value("label").toString();
-                QString numberOfTasks = userObj.value("number_of_tasks").toString();
+                double numberOfTasks = userObj.value("number_of_tasks").toDouble();
 
                 QJsonObject communicationObj = userObj.value("communication").toObject();
-                QString queueAvgTimeComm = communicationObj.value("queue_average_time").toString();
-                QString communicationAvgTimeComm = communicationObj.value("communication_average_time").toString();
-                QString systemAvgTimeComm = communicationObj.value("system_average_time").toString();
+                double queueAvgTimeComm = communicationObj.value("queue_average_time").toDouble();
+                double communicationAvgTimeComm = communicationObj.value("communication_average_time").toDouble();
+                double systemAvgTimeComm = communicationObj.value("system_average_time").toDouble();
 
                 QJsonObject processingObj = userObj.value("processing").toObject();
-                QString queueAvgTimeProc = processingObj.value("queue_average_time").toString();
-                QString processingAvgTimeProc = processingObj.value("processing_average_time").toString();
-                QString systemAvgTimeProc = processingObj.value("system_average_time").toString();
+                double queueAvgTimeProc = processingObj.value("queue_average_time").toDouble();
+                double processingAvgTimeProc = processingObj.value("processing_average_time").toDouble();
+                double systemAvgTimeProc = processingObj.value("system_average_time").toDouble();
 
                 ui->textEdit_3->append("                        User " + userName);
                 ui->textEdit_3->append("");
-                ui->textEdit_3->append("Number of task: " + numberOfTasks);
+                ui->textEdit_3->append("Number of task: " + QString::number(numberOfTasks));
                 ui->textEdit_3->append("");
                 ui->textEdit_3->append("Communication");
-                ui->textEdit_3->append("   Queue average time: " + queueAvgTimeComm + " seconds");
-                ui->textEdit_3->append("   Communication average time: " + communicationAvgTimeComm + " seconds");
-                ui->textEdit_3->append("   System average time: " + systemAvgTimeComm + " seconds");
+                ui->textEdit_3->append("   Queue average time: " + QString::number(queueAvgTimeComm) + " seconds");
+                ui->textEdit_3->append("   Communication average time: " + QString::number(communicationAvgTimeComm) + " seconds");
+                ui->textEdit_3->append("   System average time: " + QString::number(systemAvgTimeComm) + " seconds");
                 ui->textEdit_3->append("");
                 ui->textEdit_3->append("Processing");
-                ui->textEdit_3->append("   Queue average time: " + queueAvgTimeProc + " seconds");
-                ui->textEdit_3->append("   Processing average time: " + processingAvgTimeProc + " seconds");
-                ui->textEdit_3->append("   System average time:  " + systemAvgTimeProc + " seconds");
+                ui->textEdit_3->append("   Queue average time: " + QString::number(queueAvgTimeProc) + " seconds");
+                ui->textEdit_3->append("   Processing average time: " + QString::number(processingAvgTimeProc) + " seconds");
+                ui->textEdit_3->append("   System average time:  " + QString::number(systemAvgTimeProc) + " seconds");
                 ui->textEdit_3->append("");
             }
         }
@@ -594,7 +610,6 @@ void Simulation::createResources(QDir directory)
     ui->tableWidget->setColumnWidth(2, 184);
     ui->tableWidget->setColumnWidth(3, 185);
 
-           //----------------------------------------------------------------------------------------------------
 
     QPixmap image(":/icons/save.png");
     QSize imageSize(30, 30);
@@ -608,16 +623,13 @@ void Simulation::createResources(QDir directory)
 
     connect(ui->pushButton, &QPushButton::clicked, this, &Simulation::on_pushButton_clicked);
 
-    //----------------------------------------------------------------------------------------
 
 
-   QString fileName = "results.json";
+    QString fileName = "results.json";
 
 
-   QString filePath = directory.filePath(fileName);
-    //QFile file(filePath);
+    QString filePath = directory.filePath(fileName);
 
-           //QString filePath = QCoreApplication::applicationDirPath() + "/results.json";
     qDebug() << "File path: " << filePath;
 
     QFile file(filePath);
@@ -647,13 +659,13 @@ void Simulation::createResources(QDir directory)
                 QJsonObject machineObj = machineValue.toObject();
                 QString label = machineObj.value("label").toString();
                 QString owner = machineObj.value("owner").toString();
-                QString processingPerformed = machineObj.value("processing_performed").toString();
-                QString communicationPerformed = machineObj.value("communication_performed").toString();
+                double processingPerformed = machineObj.value("processing_performed").toDouble();
+                double communicationPerformed = machineObj.value("communication_performed").toDouble();
 
                 ui->tableWidget->setItem(rowIndex, 0, new QTableWidgetItem(label));
                 ui->tableWidget->setItem(rowIndex, 1, new QTableWidgetItem(owner));
-                ui->tableWidget->setItem(rowIndex, 2, new QTableWidgetItem(processingPerformed));
-                ui->tableWidget->setItem(rowIndex, 3, new QTableWidgetItem(communicationPerformed));
+                ui->tableWidget->setItem(rowIndex, 2, new QTableWidgetItem(QString::number(processingPerformed)));
+                ui->tableWidget->setItem(rowIndex, 3, new QTableWidgetItem(QString::number(communicationPerformed)));
 
                 rowIndex++;
             }
@@ -662,15 +674,15 @@ void Simulation::createResources(QDir directory)
             {
                 QJsonObject linksObj = linksValue.toObject();
                 QString label = linksObj.value("label").toString();
-                QString processingPerformed = linksObj.value("processing_performed").toString();
-                QString communicationPerformed = linksObj.value("communication_performed").toString();
+                double processingPerformed = linksObj.value("processing_performed").toDouble();
+                double communicationPerformed = linksObj.value("communication_performed").toDouble();
 
                 ui->tableWidget->setItem(rowIndex, 0, new QTableWidgetItem(label));
 
                 ui->tableWidget->setItem(rowIndex, 1, new QTableWidgetItem("---"));
 
-                ui->tableWidget->setItem(rowIndex, 2, new QTableWidgetItem(processingPerformed));
-                ui->tableWidget->setItem(rowIndex, 3, new QTableWidgetItem(communicationPerformed));
+                ui->tableWidget->setItem(rowIndex, 2, new QTableWidgetItem(QString::number(processingPerformed)));
+                ui->tableWidget->setItem(rowIndex, 3, new QTableWidgetItem(QString::number(communicationPerformed)));
 
                 rowIndex++;
             }
@@ -686,13 +698,10 @@ void Simulation::createResultsFile(QDir directory)
 {
 
 
-   QString fileName = "results.json";
+    QString fileName = "results.json";
 
 
     QString filePath = directory.filePath(fileName);
-    //QFile file(filePath);
-
-           //QString filePath = QCoreApplication::applicationDirPath() + "/results.json";
 
     QFile file(filePath);
 
@@ -713,10 +722,8 @@ void Simulation::createResultsFile(QDir directory)
             QString machines = "machine_values.txt";
             QString links = "link_values.txt";
 
-            //QString machineFilePath = QCoreApplication::applicationDirPath() + "/machine_values.txt";
-            //QString linkFilePath = QCoreApplication::applicationDirPath() + "/link_values.txt";
-             QString machineFilePath = directory.filePath(machines);
-             QString linkFilePath = directory.filePath(links);
+            QString machineFilePath = directory.filePath(machines);
+            QString linkFilePath = directory.filePath(links);
 
 
             QString machineValues;
@@ -725,9 +732,9 @@ void Simulation::createResultsFile(QDir directory)
             {
                 QJsonObject machineObj = machineValue.toObject();
                 QString label = machineObj.value("label").toString();
-                QString mflops = machineObj.value("Mflops").toString();
+                double mflops = machineObj.value("Mflops").toDouble();
 
-                machineValues += mflops + "_" + label + "\n";
+                machineValues += QString::number(mflops) + "_" + label + "\n";
             }
 
             QFile machineFile(machineFilePath);
@@ -744,9 +751,9 @@ void Simulation::createResultsFile(QDir directory)
             {
                 QJsonObject linkObj = linkValue.toObject();
                 QString label = linkObj.value("label").toString();
-                QString mbits = linkObj.value("Mbits").toString();
+                double mbits = linkObj.value("Mbits").toDouble();
 
-                linkValues += mbits + "_" + label + "\n";
+                linkValues += QString::number(mbits) + "_" + label + "\n";
             }
 
             QFile linkFile(linkFilePath);
@@ -833,8 +840,6 @@ void Simulation::circlePacking(int flag, QDir directory)
         input_number = strtoul(line, NULL, 10);
         if (input_number == 0 || input_number == ULONG_MAX)
         {
-            //fprintf(stderr, "Bad number (out of range error) in input line: %s", line);
-            //exit(EXIT_FAILURE);
             continue;
         }
 
@@ -942,20 +947,6 @@ bool Simulation::eventFilter(QObject *obj, QEvent *event)
             QPixmap pixmap_2("output_2.svg");
             ui->label_2->setPixmap(pixmap_2);
             ui->label_2->adjustSize();
-            /*
-
-            QPixmap originalPixmap_2("output_2.svg");
-
-            int newWidth = 800;
-
-            int newHeight = originalPixmap_2.scaledToWidth(newWidth).height();
-
-            QPixmap resizedPixmap_2 = originalPixmap_2.scaled(newWidth, newHeight, Qt::KeepAspectRatio, Qt::SmoothTransformation);
-
-            ui->label_2->setPixmap(resizedPixmap_2);
-            ui->label_2->move(newX, newY);
-*/
-//------------------------------------------------------------------------------------------------------------------------
 
 
             ui->label->move(newX, newY);
@@ -963,15 +954,7 @@ bool Simulation::eventFilter(QObject *obj, QEvent *event)
             QPixmap pixmap("output.svg");
             ui->label->setPixmap(pixmap);
             ui->label->adjustSize();
-/*
-            QPixmap originalPixmap("output.svg");
 
-
-            QPixmap resizedPixmap = originalPixmap.scaled(newWidth, newHeight, Qt::KeepAspectRatio, Qt::SmoothTransformation);
-
-            ui->label->setPixmap(resizedPixmap);
-            ui->label->move(newX, newY);
-            */
         }
         else
         {
@@ -1019,7 +1002,7 @@ void Simulation::createStackedLineGraph(QDir directory)
     QString fileName = "results.json";
     QString filePath = directory.filePath(fileName);
 
-    qDebug() << "File path of results.json: " << filePath;
+    qDebug() << "File path to results.json: " << filePath;
 
     if (!file.open(QIODevice::ReadOnly | QIODevice::Text))
         return;
@@ -1041,19 +1024,20 @@ void Simulation::createStackedLineGraph(QDir directory)
     ui->verticalLayout_3->addWidget(customPlotMachines);
     ui->verticalLayout->addWidget(customPlotTasks);
 
-    QVector<QColor> lineColors = {
-        Qt::red,
-        Qt::blue,
-        Qt::green,
-        Qt::cyan,
-        Qt::magenta,
-        Qt::yellow
-    };
+    QVector<QColor> lineColors;
 
-        auto createGraphs = [lineColors](QCustomPlot* customPlot, const QJsonArray& dataArray, const QString& yAxisLabel) {
+    auto createGraphs = [&lineColors](QCustomPlot* customPlot, const QJsonArray& dataArray, const QString& yAxisLabel) {
 
         QVector<QCPGraph*> graphs;
-        QVector<double> cumulativeYData(dataArray.size(), 0.0);
+
+        for (int i = 0; i < dataArray.size(); ++i) {
+            int hue = (i * 360) / dataArray.size();
+            int saturation = QRandomGenerator::global()->bounded(150, 256);
+            int lightness = QRandomGenerator::global()->bounded(100, 201);
+            QColor color;
+            color.setHsl(hue, saturation, lightness);
+            lineColors.append(color);
+        }
 
         for (int i = 0; i < dataArray.size(); ++i)
         {
@@ -1072,8 +1056,9 @@ void Simulation::createStackedLineGraph(QDir directory)
             for (int j = 0; j < computingPowerArray.size(); ++j)
             {
                 QJsonObject point = computingPowerArray.at(j).toObject();
-                double x = point.value("time").toString().toDouble();
+                double x = point.value("time").toDouble();
                 double y = point.value("rate").toDouble();
+
 
                 xData.append(x);
                 yData.append(y);
@@ -1087,6 +1072,8 @@ void Simulation::createStackedLineGraph(QDir directory)
             brushColor.setAlpha(128);
             graph->setBrush(QBrush(brushColor));
 
+
+            yData.clear();
         }
 
         customPlot->xAxis->setLabel("Time (seconds)");
@@ -1113,5 +1100,9 @@ void Simulation::createStackedLineGraph(QDir directory)
 }
 
 
-
+void Simulation::on_pushButton_2_clicked()
+{
+    this->scatter_plot = new scatterPlot();
+    this->scatter_plot->show();
+}
 

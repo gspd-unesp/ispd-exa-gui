@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>860</width>
+    <width>870</width>
     <height>560</height>
    </rect>
   </property>
@@ -94,7 +94,7 @@ li.checked::marker { content: &quot;\2612&quot;; }
         </rect>
        </property>
        <property name="currentIndex">
-        <number>0</number>
+        <number>2</number>
        </property>
        <widget class="QWidget" name="tab_8">
         <attribute name="title">
@@ -257,12 +257,25 @@ li.checked::marker { content: &quot;\2612&quot;; }
         <rect>
          <x>0</x>
          <y>0</y>
-         <width>841</width>
+         <width>721</width>
          <height>531</height>
         </rect>
        </property>
        <property name="text">
         <string/>
+       </property>
+      </widget>
+      <widget class="QPushButton" name="pushButton_2">
+       <property name="geometry">
+        <rect>
+         <x>730</x>
+         <y>0</y>
+         <width>81</width>
+         <height>32</height>
+        </rect>
+       </property>
+       <property name="text">
+        <string>Scatter Plot</string>
        </property>
       </widget>
      </widget>
