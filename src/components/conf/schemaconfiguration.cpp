@@ -1,23 +1,15 @@
 #include "components/conf/schemaconfiguration.h"
 
-SchemaConfiguration::SchemaConfiguration(std::string name, unsigned id)
-    : name(name), id(id)
+SchemaConfiguration::SchemaConfiguration(std::string_view const &name)
+    : name(name)
 {}
 
-unsigned SchemaConfiguration::getId()
-{ 
-    return this->id;
-}
-std::string SchemaConfiguration::getName()
+std::string SchemaConfiguration::getName() const
 {
     return this->name;
 }
 
-void SchemaConfiguration::setId(unsigned id)
+void SchemaConfiguration::setName(std::string_view const &newName)
 {
-    this->id = id;
-}
-void SchemaConfiguration::setName(std::string name)
-{
-    this->name = name;
+    this->name = newName;
 }

@@ -1,19 +1,16 @@
 #pragma once
-#include "components/conf/itemconfiguration.h"
 
-class LinkConfiguration : public ItemConfiguration
+#include <string>
+
+class LinkConfiguration
 {
 public:
-    LinkConfiguration(std::string name, unsigned id);
-    ~LinkConfiguration() override;
+    explicit LinkConfiguration(std::string_view const name);
 
-    unsigned    getId() override;
-    std::string getName() override;
-
-    void        setId(unsigned id) override;
-    void        setName(std::string name) override;
+    std::string getName() const;
+    void        setName(std::string_view const newName);
 
 private:
-    unsigned id;
+    unsigned    id;
     std::string name;
 };

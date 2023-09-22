@@ -3,22 +3,19 @@
 #include "components/machine.h"
 #include "components/schema.h"
 
-MachineBuilder::MachineBuilder()
-{}
-
-MachineBuilder *MachineBuilder::setSchema(Schema *schema)
+MachineBuilder *MachineBuilder::setSchema(Schema *baseSchema)
 {
-    this->schema = schema;
+    this->schema = baseSchema;
     return this;
 }
 
-MachineBuilder *MachineBuilder::setConf(MachineConfiguration *conf)
+MachineBuilder *MachineBuilder::setConf(MachineConfiguration const &baseConf)
 {
-    this->conf = conf;
+    this->conf = std::make_unique<MachineConfiguration>(baseConf);
     return this;
 }
 
-Machine *MachineBuilder::build()
+std::unique_ptr<Machine> MachineBuilder::build()
 {
-    return new Machine(this->schema, this->conf);
+    return std::make_unique<Machine>(this->schema, this->conf.get());
 }

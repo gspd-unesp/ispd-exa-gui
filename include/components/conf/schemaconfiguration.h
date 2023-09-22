@@ -4,15 +4,11 @@
 class SchemaConfiguration : public ItemConfiguration
 {
 public:
-    SchemaConfiguration(std::string name, unsigned id);
+    explicit SchemaConfiguration(std::string_view const &name);
 
-    unsigned    getId() override;
-    std::string getName() override;
-
-    void        setId(unsigned id) override;
-    void        setName(std::string name) override;
+    std::string getName() const override;
+    void        setName(std::string_view const &newName) override;
 
 private:
-    std::string name;
-    unsigned id;
+    std::string name = "";
 };

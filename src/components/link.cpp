@@ -1,39 +1,23 @@
 #include "components/link.h"
-#include "components/connection.h"
+#include "components/cloner/linkcloner.h"
+#include "components/connectable.h"
 #include "icon/linkicon.h"
 #include "qdebug.h"
 #include <iterator>
 #include <memory>
 
-Link::Link(Schema *schema, LinkConfiguration *conf, LinkConnections connections)
+Link::Link(Schema *schema, LinkConfiguration conf, LinkConnections connections)
+    : schema(schema), connections(connections)
 {
-    this->conf        = std::unique_ptr<LinkConfiguration>(conf);
-    this->connections = connections;
-    this->schema      = schema;
+    this->conf = std::make_unique<LinkConfiguration>(conf);
 
     this->icon = std::make_unique<LinkIcon>(this);
-    this->addLine();
 }
 
-Link::~Link()
-{
-    qDebug() << "Deleting Link";
-
-    this->connections.begin->removeConnectedLink(this);
-    this->connections.end->removeConnectedLink(this);
-}
-
-void Link::addLine()
-{
-    this->connections.begin->addConnectedLink(this);
-    this->connections.end->addConnectedLink(this);
-
-    this->icon->draw();
-}
+Link::~Link() = default;
 
 void Link::showConfiguration()
 {
-    // TODO IMPLEMENT
 }
 
 LinkIcon *Link::getIcon()
@@ -44,4 +28,19 @@ LinkIcon *Link::getIcon()
 LinkConfiguration *Link::getConf()
 {
     return this->conf.get();
+}
+
+std::unique_ptr<LinkCloner> Link::cloner(SchemaCloner *parent)
+{
+    return std::make_unique<LinkCloner>(this, parent);
+}
+
+unsigned Link::getId() const
+{
+    return this->id;
+}
+
+void Link::setId(unsigned newId)
+{
+    this->id = newId;
 }

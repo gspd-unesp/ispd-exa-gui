@@ -15,22 +15,21 @@
 /// their behavior; it moves when they move, for example.
 ///
 /// @see Icon
-class LinkIcon : public QGraphicsPolygonItem, public Icon<Link>
+class LinkIcon : public QGraphicsPolygonItem
 {
 public:
     explicit LinkIcon(Link *owner);
-    ~LinkIcon() override;
 
-    Link        *owner;
-    PixmapIcon  *begin; ///< the \link Icon \endlink that the link comes from
-    PixmapIcon  *end;   ///< the \link Icon \endlink that the link goes to
-    void         mousePressEvent(QGraphicsSceneMouseEvent *event) override;
-    void         updatePositions();
-    std::string *getName();
-    void         draw();
-    Link        *getOwner() override;
-    void         toggleChoosen() override;
-    bool         isChosen() override;
+    Link       *owner;
+    PixmapIcon *begin; ///< the \link Icon \endlink that the link comes from
+    PixmapIcon *end;   ///< the \link Icon \endlink that the link goes to
+    void        mousePressEvent(QGraphicsSceneMouseEvent *event) override;
+    void        toggleChosenIfInside(QRectF area);
+    void        updatePosition();
+    void        draw();
+    Link       *getOwner();
+    void        toggleChoosen();
+    bool        isChosen();
 
 protected:
     void updateArrow();

@@ -1,5 +1,6 @@
 #include "components/cloner/machinecloner.h"
 #include "components/conf/machineconfiguration.h"
+#include "components/machine.h"
 #include "components/machinebuilder.h"
 #include "components/schema.h"
 #include "icon/pixmapicon.h"
@@ -7,28 +8,38 @@
 #include <string>
 
 MachineCloner::MachineCloner(Machine *base, SchemaCloner *parent)
+    : pos(base->getIcon()->scenePos()), parent(parent)
 {
     qDebug() << "Before copying machine conf.";
-    this->clonedConf = new MachineConfiguration(*base->conf);
-    this->parent     = parent;
+    this->clonedConf = std::make_unique<MachineConfiguration>(*base->conf);
     qDebug() << "Before getting machineIcon scenePos.";
-    this->pos = base->getIcon()->scenePos();
+    qDebug() << "After constructor of machineCloner;";
 }
 
-std::unique_ptr<Machine> MachineCloner::clone(Schema *schema)
+std::unique_ptr<Connectable> MachineCloner::clone(Schema *schema)
 {
-    MachineConfiguration *newMachineConfiguration =
-        new MachineConfiguration(*this->clonedConf);
-    Machine *newMachine = MachineBuilder()
-                              .setSchema(schema)
-                              ->setConf(newMachineConfiguration)
-                              ->build();
+    qDebug() << "Before Cloning a machine";
+    MachineConfiguration newMachineConfiguration(*this->clonedConf);
+    auto newMachine = MachineBuilder()
+                          .setSchema(schema)
+                          ->setConf(newMachineConfiguration)
+                          ->build();
 
     newMachine->getIcon()->setPos(this->pos);
 
     auto [newId, newName] = schema->ids->getNewMachineBase();
-    newMachine->conf->setId(newId);
+    newMachine->setId(newId);
     newMachine->conf->setName(newName);
 
-    return std::unique_ptr<Machine>(newMachine);
+    qDebug() << "Returning a cloned machine...";
+    return newMachine;
+}
+
+std::vector<LinkCloner *> MachineCloner::getConnectedLinkCloners()
+{
+    return this->linkCloners;
+}
+void MachineCloner::addConnectedLink(LinkCloner *linkCloner)
+{
+    this->linkCloners.push_back(linkCloner);
 }

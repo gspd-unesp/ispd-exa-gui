@@ -51,14 +51,15 @@ public:
     DrawingTable(Schema *schema, QWidget *parent = nullptr);
     Schema *schema;
 
-    void switchButtonClicked();
-    void pcButtonClicked();
-    void schemaButtonClicked();
-    void linkButtonClicked();
-    void noneButtonClicked();
-    void openUserWindowClicked();
-    void openSimulationWindowClicked();
-    void addIcons(std::vector<Connection *> *items);
+    void   switchButtonClicked();
+    void   pcButtonClicked();
+    void   schemaButtonClicked();
+    void   linkButtonClicked();
+    void   noneButtonClicked();
+    void   openUserWindowClicked();
+    void   openSimulationWindowClicked();
+    void   addIcons(std::vector<Connectable *> *items);
+    Scene *getScene();
 
     void receiveUserWindowData(const QList<QString> &list1Data,
                                const QList<double>  &list2Data);

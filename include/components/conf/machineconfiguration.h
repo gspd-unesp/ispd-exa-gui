@@ -6,17 +6,13 @@
 class MachineConfiguration : public ItemConfiguration
 {
 public:
-    MachineConfiguration(std::string name, unsigned id);
-    MachineConfiguration(MachineConfiguration &conf) = default;
+    explicit MachineConfiguration(std::string_view const &name);
 
-    std::string getName();
-    void        setName(std::string name);
-    unsigned    getId();
-    void        setId(unsigned id);
+    std::string getName() const override;
+    void        setName(std::string_view const &newName) override;
 
 private:
     std::string name;
-    unsigned    id;
     /**
      * It represents the computational power.
      */

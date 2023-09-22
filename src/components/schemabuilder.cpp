@@ -2,22 +2,19 @@
 #include "components/conf/schemaconfiguration.h"
 #include "components/schema.h"
 
-SchemaBuilder::SchemaBuilder()
-{}
-
-SchemaBuilder *SchemaBuilder::setSchema(Schema *schema)
+SchemaBuilder *SchemaBuilder::setSchema(Schema *builderSchema)
 {
-    this->schema = schema;
+    this->schema = builderSchema;
     return this;
 }
 
-SchemaBuilder *SchemaBuilder::setConf(SchemaConfiguration *conf)
+SchemaBuilder *SchemaBuilder::setConf(SchemaConfiguration *builderConfiguration)
 {
-    this->conf = conf;
+    this->conf = builderConfiguration;
     return this;
 }
 
-Schema *SchemaBuilder::build()
+std::unique_ptr<Schema> SchemaBuilder::build()
 {
-    return new Schema(this->schema, this->conf);
+    return std::make_unique<Schema>(this->schema, this->conf);
 }

@@ -1,37 +1,50 @@
 #pragma once
 
 #include <map>
+#include <memory>
 #include <string>
 #include <vector>
 
-#include "components/connection.h"
-#include "components/conf/machineconfiguration.h"
+#include "components/connectable.h"
+#include "window/machineconfigurationwindow.h"
 
-class MachineIcon;
-class MachineCloner;
 class Schema;
+class SchemaCloner;
 class Link;
+class Icon;
+class Cloner;
+class ItemConfiguration;
+class MachineConfiguration;
 
-class Machine : public Connection
+class Machine : public Connectable
 {
 public:
     Machine(Schema *schema, MachineConfiguration *conf);
     ~Machine();
 
-    std::map<unsigned, Link *> *getConnectedLinks() override;
+    std::vector<std::shared_ptr<Link>> *getConnectedLinks() override;
 
-    void setConnectedLinks(std::map<unsigned, Link *> *map) override;
+    void setConnectedLinks(std::vector<std::shared_ptr<Link>> *map) override;
     void removeConnectedLink(Link *link) override;
-    void addConnectedLink(Link *link) override;
+    void addConnectedLink(std::shared_ptr<Link> link) override;
+    std::unique_ptr<std::vector<std::string>> print() override;
 
-    void                  showConfiguration() override;
-    PixmapIcon           *getIcon() override;
-    MachineConfiguration *getConf() override;
-    MachineCloner        *cloner();
+    void                               showConfiguration() override;
+    PixmapIcon                        *getIcon() override;
+    ItemConfiguration                 *getConf() override;
+    std::unique_ptr<ConnectableCloner> cloner(
+        SchemaCloner *parent = nullptr) override;
 
-    std::map<unsigned, Link *> connected_links;
+    std::vector<std::shared_ptr<Link>> connectedLinks;
 
-    Schema                               *schema;
+    Schema *schema;
+
     std::unique_ptr<MachineConfiguration> conf;
     std::unique_ptr<PixmapIcon>           icon;
+    unsigned                              getId() const override;
+    void                                  setId(unsigned newId) override;
+
+private:
+    unsigned                                    id;
+    std::unique_ptr<MachineConfigurationWindow> window;
 };

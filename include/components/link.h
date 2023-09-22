@@ -1,31 +1,45 @@
 #pragma once
 
+#include "components/component.h"
 #include "components/conf/linkconfiguration.h"
-#include "components/item.h"
 #include <memory>
 #include <string>
 
 class LinkIcon;
-class Connection;
+class LinkCloner;
+class SchemaCloner;
+class Connectable;
 class Schema;
 
 struct LinkConnections
 {
-    Connection *begin;
-    Connection *end;
+    Connectable *begin;
+    Connectable *end;
+
+    Connectable *getOtherConnectable(Connectable const *otherConnectable) {
+        if (otherConnectable == this->begin) {
+            return this->end;
+        }
+
+        if (otherConnectable == this->end) {
+            return this->begin;
+        }
+
+        return nullptr;
+    }
 };
 
-class Link : public Item<LinkIcon>
+class Link
 {
 public:
-    Link(Schema *schema, LinkConfiguration *conf, LinkConnections connections);
-    ~Link() override;
+    Link(Schema *schema, LinkConfiguration conf, LinkConnections connections);
+    ~Link();
 
-    void               addLine();
-    void               draw();
-    void               showConfiguration() override;
-    LinkIcon          *getIcon() override;
-    LinkConfiguration *getConf() override;
+    void                        draw();
+    void                        showConfiguration();
+    LinkIcon                   *getIcon();
+    LinkConfiguration          *getConf();
+    std::unique_ptr<LinkCloner> cloner(SchemaCloner *parent);
 
     Schema *schema;
 
@@ -33,4 +47,10 @@ public:
 
     std::unique_ptr<LinkIcon>          icon;
     std::unique_ptr<LinkConfiguration> conf;
+    unsigned                              getId() const;
+    void                                  setId(unsigned newId);
+
+private:
+    unsigned id;
+
 };

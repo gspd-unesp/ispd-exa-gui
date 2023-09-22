@@ -1,5 +1,7 @@
 #pragma once
 
+#include "components/conf/machineconfiguration.h"
+#include <memory>
 #include <string>
 
 class Schema;
@@ -10,13 +12,13 @@ class MachineConfiguration;
 class MachineBuilder
 {
 public:
-    MachineBuilder();
-    MachineBuilder *setSchema(Schema *schema);
-    MachineBuilder *setConf(MachineConfiguration *conf);
-    Machine        *build();
+    MachineBuilder() = default;
+
+    MachineBuilder          *setSchema(Schema *baseSchema);
+    MachineBuilder          *setConf(MachineConfiguration const &baseConf);
+    std::unique_ptr<Machine> build();
 
 private:
-    Schema               *schema;
-    PixmapIcon          *icon;
-    MachineConfiguration *conf;
+    Schema                               *schema;
+    std::unique_ptr<MachineConfiguration> conf;
 };

@@ -7,17 +7,18 @@
 
 #define CLICK_DURATION 200
 
-class Connection;
+class Connectable;
 
-class PixmapIcon : public QGraphicsPixmapItem, public Icon<Connection>
+class PixmapIcon : public QGraphicsPixmapItem, public Icon
 {
 public:
-    PixmapIcon(Connection *owner, PixmapPair pixmapPair);
+    PixmapIcon(Connectable *owner, PixmapPair pixmapPair);
 
-    Connection *getOwner() override;
-    void        toggleChoosen() override;
-    void        updatePosition();
-    bool        isChosen() override;
+    Component *getOwner() override;
+    void  toggleChoosen() override;
+    void  updatePosition() override;
+    bool  isChosen() override;
+    void  toggleChosenIfInside(QRectF selectionAreaRect) override;
 
 protected:
     void mousePressEvent(QGraphicsSceneMouseEvent *event) override;
@@ -27,7 +28,7 @@ protected:
 
 private:
     QTimer      clickTimer = QTimer();
-    Connection *owner      = nullptr;
+    Connectable *owner      = nullptr;
     bool        chose      = false;
     PixmapPair  pixmapPair;
 };

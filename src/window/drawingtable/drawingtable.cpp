@@ -1,6 +1,7 @@
 #include "window/drawingtable/drawingtable.h"
 #include "components/conf/machineconfiguration.h"
 #include "components/conf/schemaconfiguration.h"
+#include "components/connectable.h"
 #include "components/link.h"
 #include "components/machine.h"
 #include "components/schema.h"
@@ -17,8 +18,7 @@
 
 void printSchema(Schema *schema);
 
-DrawingTable::DrawingTable(QFrame *parent)
-    : DrawingTable(new Schema(), parent)
+DrawingTable::DrawingTable(QFrame *parent) : DrawingTable(new Schema(), parent)
 {
     QPixmap image(":/icons/perfil.png");
     QSize   imageSize(30, 30);
@@ -172,7 +172,7 @@ PixmapIcon *DrawingTable::addMachine()
 {
     const unsigned machineId = schema->allocateNewMachine();
 
-    return schema->machines.at(machineId)->getIcon();
+    return schema->connectables.at(machineId)->getIcon();
 }
 
 ///
@@ -187,7 +187,7 @@ PixmapIcon *DrawingTable::addSwitch()
     // FOR DEBUG
     printSchema(schema);
 
-    return schema->switches.at(switchId)->getIcon();
+    return schema->connectables.at(switchId)->getIcon();
 }
 
 ///
@@ -202,7 +202,7 @@ PixmapIcon *DrawingTable::addSchema()
     // FOR DEBUG
     printSchema(schema);
 
-    return schema->schemas.at(schemaId)->getIcon();
+    return schema->connectables.at(schemaId)->getIcon();
 }
 
 ///
@@ -265,30 +265,32 @@ void DrawingTable::schemaButtonClicked()
 ///
 void printSchema(Schema *schema)
 {
-    for (auto machine = schema->machines.begin();
-         machine != schema->machines.end();
+    for (auto machine = schema->connectables.begin();
+         machine != schema->connectables.end();
          machine++) {
 
-        qDebug() << "Machine #" << machine->second->conf->getId() << ": "
-                 << machine->second->conf->getName().c_str();
+        qDebug() << "Connectable #" << machine->second->getId()
+                 << ": " << machine->second->getConf()->getName().c_str();
     }
 
-    for (auto &[id, nswitch] : schema->switches) {
+    for (auto &[id, nswitch] : schema->connectables) {
 
-        qDebug() << "Switch #" << id << ": " << nswitch->getName().c_str();
+        qDebug() << "Connectable #" << id << ": "
+                 << nswitch->getConf()->getName().c_str();
     }
 
-    for (auto sch = schema->schemas.begin(); sch != schema->schemas.end();
+    for (auto sch = schema->connectables.begin();
+         sch != schema->connectables.end();
          sch++) {
 
-        qDebug() << "Schema #" << sch->second->getConf()->getId() << ": "
-                 << sch->second->getConf()->getName();
+        qDebug() << "Connectable #" << sch->second->getId() << ": "
+                 << sch->second->getConf()->getName().c_str();
     }
 
     for (auto link = schema->links.begin(); link != schema->links.end();
          link++) {
 
-        qDebug() << "Link #" << link->second->conf->getId() << ": "
+        qDebug() << "Link #" << link->second->getId() << ": "
                  << link->second->conf->getName().c_str();
     }
 }
@@ -310,10 +312,15 @@ void DrawingTable::openSimulationWindowClicked()
     simulationWindow->show();
 }
 
-void DrawingTable::addIcons(std::vector<Connection *> *items)
+void DrawingTable::addIcons(std::vector<Connectable *> *items)
 {
     for (auto it : *items) {
         this->scene->addIcon(static_cast<PixmapIcon *>(it->getIcon()),
                              static_cast<PixmapIcon *>(it->getIcon())->pos());
     }
+}
+
+Scene *DrawingTable::getScene()
+{
+    return this->scene;
 }

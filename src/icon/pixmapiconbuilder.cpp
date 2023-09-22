@@ -1,12 +1,13 @@
 #include "icon/pixmapiconbuilder.h"
 #include "icon/pixmapicon.h"
-#include "components/connection.h"
+#include "components/connectable.h"
+#include "components/connectable.h"
 #include "icon/pixmappair.h"
 
 PixmapIconBuilder::PixmapIconBuilder()
 {}
 
-PixmapIconBuilder *PixmapIconBuilder::setOwner(Connection *owner)
+PixmapIconBuilder *PixmapIconBuilder::setOwner(Connectable *owner)
 {
     this->owner = owner;
     return this;

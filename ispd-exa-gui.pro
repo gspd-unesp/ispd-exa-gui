@@ -17,8 +17,12 @@ SOURCES += \
   src/components/conf/schemaconfiguration.cpp \
   src/components/conf/switchconfiguration.cpp \
   src/components/cloner/machinecloner.cpp \
+  src/components/cloner/switchcloner.cpp \
+  src/components/cloner/schemacloner.cpp \
+  src/components/cloner/linkcloner.cpp \
   src/components/link.cpp \
   src/components/switch.cpp \
+  src/components/switchbuilder.cpp \
   src/components/machine.cpp \
   src/components/machinebuilder.cpp \
   src/components/schema.cpp \
@@ -57,8 +61,9 @@ HEADERS += \
   include/components/cloner/schemacloner.h \
   include/components/link.h \
   include/components/switch.h \
-  include/components/item.h \
-  include/components/connection.h \
+  include/components/switchbuilder.h \
+  include/components/component.h \
+  include/components/connectable.h \
   include/components/machine.h \
   include/components/machinebuilder.h \
   include/components/schema.h \
@@ -70,6 +75,7 @@ HEADERS += \
   include/icon/pixmapiconbuilder.h \
   include/icon/pixmappair.h \
   qcustomplot.h
+
 
 
 
