@@ -5,6 +5,7 @@
 #include <QDir>
 #include <QColor>
 #include "forms/scatterplot.h"
+#include "qcustomplot.h"
 
 
 namespace Ui {
@@ -37,8 +38,6 @@ private:
     QColor generateColor(int index);
 
     void createStackedLineGraph(QDir directory);
-    //void createScatterPlot(QDir directory);
-
 
     QPoint originalTextEditPos;
     QSize originalTextEditSize;

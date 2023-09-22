@@ -19,8 +19,8 @@
 #include <QObject>
 #include <QEvent>
 #include <QVBoxLayout>
-#include "qcustomplot.h"
 
+#include "qcustomplot.h"
 scatterPlot::scatterPlot(QWidget *parent) :
       QWidget(parent),
       ui(new Ui::scatterPlot)
@@ -87,13 +87,13 @@ void scatterPlot::createScatterPlot(QDir directory)
     for (const QJsonValue &machineValue : machines) {
         QJsonObject machine = machineValue.toObject();
         int id = machine["id"].toInt();
-        double mflops = machine["Mflops"].toString().toDouble();
+        double mflops = machine["Mflops"].toDouble();
         int scheme = machine["scheme"].toInt();
         yData.append(mflops);
         xData.append(id);
 
         if (!clusterColorMap.contains(scheme)) {
-            QColor newColor = QColor::fromHsv((scheme * 75) % 360, 255, 255);
+            QColor newColor = QColor::fromHsv((scheme * 150) % 360, 255, 255);
             clusterColorMap.insert(scheme, newColor);
         }
         dotColors.append(clusterColorMap.value(scheme));
