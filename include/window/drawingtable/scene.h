@@ -15,7 +15,8 @@ typedef enum PICK_OP
     PC,
     SCHEMA,
     LINK,
-    SWITCH
+    SWITCH,
+    SET,
 } PICK_OP;
 
 class LinkIcon;

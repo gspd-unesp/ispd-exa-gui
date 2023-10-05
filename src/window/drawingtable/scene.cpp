@@ -182,6 +182,14 @@ void Scene::mousePressEvent(QGraphicsSceneMouseEvent *event)
 
         break;
     }
+    case SET: {
+        auto newSet = this->table->addSet();
+        this->addIcon(newSet, event->scenePos());
+        if (newSet->getOwner()) {
+            break;
+        }
+        break;
+    }
     case SCHEMA: {
         auto newSchema = this->table->addSchema();
         this->addIcon(newSchema, event->scenePos());

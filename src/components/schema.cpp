@@ -3,12 +3,14 @@
 #include "components/conf/machineconfiguration.h"
 #include "components/conf/schemaconfiguration.h"
 #include "components/conf/switchconfiguration.h"
+#include "components/conf/connectablesetconfiguration.h"
 #include "components/link.h"
 #include "components/machine.h"
 #include "components/machinebuilder.h"
+#include "components/connectablesetbuilder.h"
+#include "components/connectableset.h"
 #include "components/switch.h"
 #include "icon/pixmapiconbuilder.h"
-#include "icon/pixmappair.h"
 #include "utils/iconPath.h"
 #include "window/drawingtable/drawingtable.h"
 #include "window/drawingtable/scene.h"
@@ -57,6 +59,20 @@ Schema::~Schema()
         otherConnectable->removeConnectedLink(link.get());
         this->parent->links.erase(link.get()->getId());
     }
+}
+
+unsigned Schema::allocateNewSet()
+{
+    auto [newSetId, newSetName] = this->ids->getNewSetBase();
+
+    ConnectableSetConfiguration newSetConf(newSetName);
+    auto                 newSet =
+        ConnectableSetBuilder().setConf(newSetConf)->setSchema(this)->build();
+    newSet->setId(newSetId);
+
+    this->connectables[newSetId] = std::move(newSet);
+
+    return newSetId;
 }
 
 unsigned Schema::allocateNewMachine()

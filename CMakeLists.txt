@@ -46,6 +46,7 @@ add_executable(ispd-exa-gui src/ispd-exa-gui.cpp
   src/components/machinebuilder.cpp include/components/machinebuilder.h 
   src/components/schema.cpp include/components/schema.h 
   src/components/connectableset.cpp include/components/connectableset.h
+  src/components/connectablesetbuilder.cpp include/components/connectablesetbuilder.h
 
   # Components cloner
   include/components/cloner/connectablecloner.h 
@@ -60,7 +61,7 @@ add_executable(ispd-exa-gui src/ispd-exa-gui.cpp
   src/components/conf/linkconfiguration.cpp include/components/conf/linkconfiguration.h 
   src/components/conf/schemaconfiguration.cpp include/components/conf/schemaconfiguration.h 
   src/components/conf/switchconfiguration.cpp include/components/conf/switchconfiguration.h 
-  src/components/conf/connectablesetconfiguration.cpp
+  src/components/conf/connectablesetconfiguration.cpp include/components/conf/connectablesetconfiguration.h
 
   # Icons
   include/icon/icon.h 
@@ -68,6 +69,7 @@ add_executable(ispd-exa-gui src/ispd-exa-gui.cpp
   src/icon/linkicon.cpp include/icon/linkicon.h 
   src/icon/pixmapiconbuilder.cpp include/icon/pixmapiconbuilder.h 
   src/icon/machineiconfactory.cpp include/icon/machineiconfactory.h 
+  src/icon/seticonfactory.cpp include/icon/seticonfactory.h 
   include/utils/iconSize.h 
   include/utils/iconPath.h 
 )
@@ -79,6 +81,7 @@ qt_add_resources(ispd-exa-gui imageresources
         icons/cluster.png icons/clusterSelected.png
         icons/pc.png icons/pcSelected.png
         icons/switch.svg icons/switchSelected.png
+        icons/connectableset.png
 
         icons/connection.png
         icons/cursor.png

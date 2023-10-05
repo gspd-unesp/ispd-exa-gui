@@ -75,6 +75,12 @@ public:
         return std::pair(newSwitchId, "Switch" + std::to_string(newSwitchId));
     }
 
+    std::pair<unsigned, std::string> getNewSetBase()
+    {
+        unsigned newSetId = this->getNewConnectableId();
+        return std::pair(newSetId, "Set" + std::to_string(newSetId));
+    }
+
 private:
     unsigned connectableId = 0;
     unsigned linkId        = 0;
@@ -98,6 +104,7 @@ public:
     std::unique_ptr<Switch>                          outputSwitch;
     void                                             drawItems();
     unsigned                                         allocateNewMachine();
+    unsigned                                         allocateNewSet();
     unsigned                                         allocateNewSwitch();
     unsigned allocateNewLink(LinkConnections connections);
     unsigned allocateNewSchema();
