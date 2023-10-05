@@ -1,7 +1,7 @@
 #pragma once
 #include "icon.h"
-#include "icon/pixmappair.h"
 #include "qtimer.h"
+#include "utils/iconSize.h"
 #include <QGraphicsPixmapItem>
 #include <QLabel>
 
@@ -9,16 +9,46 @@
 
 class Connectable;
 
+class PixmapPair
+{
+public:
+    PixmapPair(const char *const normalPath, const char *const selectedPath)
+    {
+        this->normal = QPixmap(normalPath)
+                           .scaled(iconSize,
+                                   Qt::IgnoreAspectRatio,
+                                   Qt::SmoothTransformation);
+        this->selected = QPixmap(selectedPath)
+                             .scaled(iconSize,
+                                     Qt::IgnoreAspectRatio,
+                                     Qt::SmoothTransformation);
+    }
+
+    QPixmap getNormal() const
+    {
+        return this->normal;
+    }
+
+    QPixmap getSelected() const
+    {
+        return this->selected;
+    }
+
+private:
+    QPixmap normal;
+    QPixmap selected;
+};
+
 class PixmapIcon : public QGraphicsPixmapItem, public Icon
 {
 public:
     PixmapIcon(Connectable *owner, PixmapPair pixmapPair);
 
     Component *getOwner() override;
-    void  toggleChoosen() override;
-    void  updatePosition() override;
-    bool  isChosen() override;
-    void  toggleChosenIfInside(QRectF selectionAreaRect) override;
+    void       toggleChoosen() override;
+    void       updatePosition() override;
+    bool       isChosen() override;
+    void       toggleChosenIfInside(QRectF selectionAreaRect) override;
 
 protected:
     void mousePressEvent(QGraphicsSceneMouseEvent *event) override;
@@ -27,8 +57,8 @@ protected:
     void mouseReleaseEvent(QGraphicsSceneMouseEvent *event) override;
 
 private:
-    QTimer      clickTimer = QTimer();
+    QTimer       clickTimer = QTimer();
     Connectable *owner      = nullptr;
-    bool        chose      = false;
-    PixmapPair  pixmapPair;
+    bool         chose      = false;
+    PixmapPair   pixmapPair;
 };

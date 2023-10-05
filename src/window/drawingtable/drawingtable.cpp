@@ -71,6 +71,7 @@ DrawingTable::DrawingTable(Schema *schema, QWidget *parent) : QWidget{parent}
     this->setupNoneButton();
     this->setupPcButton();
     this->setupSchemaButton();
+    this->setupSetButton();
     this->setupLinkButton();
     this->setupSwitchButton();
 
@@ -97,6 +98,16 @@ void DrawingTable::setupPcButton()
     this->buttonsLayout->addWidget(pcButton);
     QObject::connect(
         pcButton, &QRadioButton::clicked, this, &DrawingTable::pcButtonClicked);
+}
+
+void DrawingTable::setupSetButton()
+{
+    this->setButton = new QRadioButton(this->buttonsRow);
+    this->setButton->setIcon(QIcon(QPixmap::fromImage(QImage(":icons/connectableset.png"))));
+    this->setButton->setIconSize(buttonSize);
+    this->buttonsLayout->addWidget(setButton);
+    QObject::connect(
+        setButton, &QRadioButton::clicked, this, &DrawingTable::setButtonClicked);
 }
 
 ///
@@ -205,6 +216,16 @@ PixmapIcon *DrawingTable::addSchema()
     return schema->connectables.at(schemaId)->getIcon();
 }
 
+PixmapIcon *DrawingTable::addSet()
+{
+    const unsigned schemaId = schema->allocateNewSet();
+
+    // FOR DEBUG
+    printSchema(schema);
+
+    return schema->connectables.at(schemaId)->getIcon();
+}
+
 ///
 /// @brief  Creates a Link inside the DrawingTable's Schema
 ///
@@ -226,6 +247,11 @@ Link *DrawingTable::addLink(LinkConnections connections)
 void DrawingTable::pcButtonClicked()
 {
     this->scene->pickOp = PC;
+}
+
+void DrawingTable::setButtonClicked()
+{
+    this->scene->pickOp = SET;
 }
 
 ///

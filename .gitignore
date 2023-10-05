@@ -1,5 +1,7 @@
 # Build folders
 build/
+ispd-exa-gui_autogen
+CMakeFiles
 
 # Clangd configuration
 compile_commands.json
@@ -22,5 +24,3 @@ ispd-exa-gui
 documentation
 .gitmodules
 .DS_Store
-*.txt
-*.svg

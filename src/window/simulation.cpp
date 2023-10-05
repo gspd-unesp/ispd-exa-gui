@@ -29,11 +29,11 @@
 #include <QBrush>
 
 
-#include "qcustomplot.h"
-#include "forms/scatterplot.h"
+#include "window/qcustomplot.h"
+#include "window/scatterplot.h"
 
 //CIRCLE PACKING
-#include "packCircles.h"
+#include "window/packcircles.h"
 #include <stdlib.h>
 #include <stdio.h>
 #include <limits.h>

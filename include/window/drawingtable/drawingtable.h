@@ -19,12 +19,10 @@ private:
     Scene *scene;
     View  *view;
 
-    /* QList<QString> list1Data; */
-    /* QList<double>  list2Data; */
-
     QWidget      *buttonsRow;
     QHBoxLayout  *buttonsLayout;
     QRadioButton *pcButton;
+    QRadioButton *setButton;
     QRadioButton *schemaButton;
     QRadioButton *linkButton;
     QRadioButton *noneButton;
@@ -37,6 +35,7 @@ private:
 
     void setupPcButton();
     void setupSwitchButton();
+    void setupSetButton();
     void setupNoneButton();
     void setupSchemaButton();
     void setupLinkButton();
@@ -52,6 +51,7 @@ public:
     Schema *schema;
 
     void   switchButtonClicked();
+    void   setButtonClicked();
     void   pcButtonClicked();
     void   schemaButtonClicked();
     void   linkButtonClicked();
@@ -67,5 +67,6 @@ public:
     PixmapIcon *addSwitch();
     PixmapIcon *addMachine();
     PixmapIcon *addSchema();
+    PixmapIcon *addSet();
     Link       *addLink(LinkConnections connections);
 };
