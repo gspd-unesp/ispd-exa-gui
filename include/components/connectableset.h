@@ -1,3 +1,4 @@
+#include "components/conf/connectablesetconfiguration.h"
 #include "components/connectable.h"
 #include <memory>
 
@@ -16,6 +17,8 @@ public:
     std::unique_ptr<ConnectableCloner> cloner(SchemaCloner *parent) override;
 
 private:
+    unsigned                                     id;
     std::unique_ptr<ConnectableSetConfiguration> conf;
     std::unique_ptr<PixmapIcon>                  icon;
+    std::vector<std::shared_ptr<Link>>           connectedLinks;
 };

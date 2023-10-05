@@ -22,5 +22,3 @@ ispd-exa-gui
 documentation
 .gitmodules
 .DS_Store
-*.txt
-*.svg

@@ -1,4 +1,5 @@
-#include "scatterplot.h"
+#include "window/qcustomplot.h"
+#include "window/scatterplot.h"
 #include "ui_scatterplot.h"
 #include <QDir>
 #include <QFile>
@@ -20,7 +21,6 @@
 #include <QEvent>
 #include <QVBoxLayout>
 
-#include "qcustomplot.h"
 scatterPlot::scatterPlot(QWidget *parent) :
       QWidget(parent),
       ui(new Ui::scatterPlot)

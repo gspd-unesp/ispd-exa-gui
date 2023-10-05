@@ -4,8 +4,8 @@
 #include <QWidget>
 #include <QDir>
 #include <QColor>
-#include "forms/scatterplot.h"
-#include "qcustomplot.h"
+#include "window/scatterplot.h"
+#include "window/qcustomplot.h"
 
 
 namespace Ui {
