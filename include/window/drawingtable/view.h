@@ -17,6 +17,7 @@ public:
     void setGScene(Scene *scene);
 protected:
     void mousePressEvent(QMouseEvent *event) override;
+    void wheelEvent(QWheelEvent *event) override;
 };
 
 #endif

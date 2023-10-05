@@ -1,5 +1,5 @@
 #pragma once
-#include "icon/pixmappair.h"
+#include "icon/pixmapicon.h"
 
 class PixmapIcon;
 class Connectable;
