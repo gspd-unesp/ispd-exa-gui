@@ -1,13 +1,11 @@
-#pragma once
 #include "components/conf/itemconfiguration.h"
 
-class SwitchConfiguration : public ItemConfiguration
+class MachineSetConfiguration : public ItemConfiguration
 {
 public:
-    explicit SwitchConfiguration(std::string_view const &name);
-
+    explicit MachineSetConfiguration(std::string_view const &name);
     std::string getName() const override;
-    void        setName(std::string_view const &newName) override;
+    void        setName(std::string_view const &name) override;
     unsigned    getBandwidth() const;
     void        setBandwidth(const unsigned newBandwidth);
     double      getLatency() const;

@@ -4,9 +4,9 @@
 #include <string>
 
 class Schema;
-class ConnectableSet;
+class MachineSet;
 class PixmapIcon;
-class ConnectableSetConfiguration;
+class MachineSetConfiguration;
 
 class ConnectableSetBuilder
 {
@@ -14,10 +14,10 @@ public:
     ConnectableSetBuilder() = default;
 
     ConnectableSetBuilder *setSchema(Schema *baseSchema);
-    ConnectableSetBuilder *setConf(ConnectableSetConfiguration const &baseConf);
-    std::unique_ptr<ConnectableSet> build();
+    ConnectableSetBuilder *setConf(MachineSetConfiguration const &baseConf);
+    std::unique_ptr<MachineSet> build();
 
 private:
     Schema                                      *schema;
-    std::unique_ptr<ConnectableSetConfiguration> conf;
+    std::unique_ptr<MachineSetConfiguration> conf;
 };

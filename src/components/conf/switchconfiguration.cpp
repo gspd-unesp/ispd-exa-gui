@@ -14,3 +14,27 @@ void SwitchConfiguration::setName(std::string_view const &newName)
     this->name = newName;
 }
 
+unsigned SwitchConfiguration::getBandwidth() const
+{
+    return this->bandwidth;
+}
+void SwitchConfiguration::setBandwidth(const unsigned newBandwidth)
+{
+    this->bandwidth = newBandwidth;
+}
+double SwitchConfiguration::getLatency() const
+{
+    return this->latency;
+}
+void SwitchConfiguration::setLatency(const double newLatency)
+{
+    this->latency = newLatency;
+}
+double SwitchConfiguration::getloadFactor() const
+{
+    return this->loadFactor;
+}
+void SwitchConfiguration::setloadFactor(const double newloadFactor)
+{
+    this->loadFactor = newloadFactor;
+}

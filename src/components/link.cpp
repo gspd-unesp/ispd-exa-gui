@@ -2,7 +2,7 @@
 #include "components/cloner/linkcloner.h"
 #include "components/connectable.h"
 #include "icon/linkicon.h"
-#include "qdebug.h"
+#include "window/linkconfigurationwindow.h"
 #include <iterator>
 #include <memory>
 
@@ -10,14 +10,15 @@ Link::Link(Schema *schema, LinkConfiguration conf, LinkConnections connections)
     : schema(schema), connections(connections)
 {
     this->conf = std::make_unique<LinkConfiguration>(conf);
-
     this->icon = std::make_unique<LinkIcon>(this);
+    this->window = std::make_unique<LinkConfigurationWindow>(this->conf.get());
 }
 
 Link::~Link() = default;
 
 void Link::showConfiguration()
 {
+    this->window->show();
 }
 
 LinkIcon *Link::getIcon()

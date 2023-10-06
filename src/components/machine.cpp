@@ -18,8 +18,7 @@ Machine::Machine(Schema *schema, MachineConfiguration *conf)
     this->icon =
         std::unique_ptr<PixmapIcon>(MachineIconFactory().iconBuilder(this));
 
-    this->window = std::make_unique<MachineConfigurationWindow>(
-        this->conf->getName().c_str());
+    this->window = std::make_unique<MachineConfigurationWindow>(this->conf.get());
 }
 
 Machine::~Machine()

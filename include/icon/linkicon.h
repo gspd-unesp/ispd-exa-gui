@@ -32,6 +32,7 @@ public:
     bool        isChosen();
 
 protected:
+    void mouseDoubleClickEvent(QGraphicsSceneMouseEvent *event) override;
     void updateArrow();
     void paint(QPainter                       *painter,
                const QStyleOptionGraphicsItem *option,
