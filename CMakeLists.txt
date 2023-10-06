@@ -36,6 +36,8 @@ add_executable(ispd-exa-gui src/ispd-exa-gui.cpp
   src/window/workloads.cpp include/window/workloads.h forms/workloads.ui
   src/window/users.cpp include/window/users.h forms/userwindow.ui
 
+  src/window/linkconfigurationwindow.cpp include/window/linkconfigurationwindow.h forms/linkconfigurationwindow.ui
+
   # Components
   include/components/component.h 
   include/components/connectable.h 

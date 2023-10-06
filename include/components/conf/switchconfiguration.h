@@ -7,7 +7,7 @@ public:
     explicit SwitchConfiguration(std::string_view const &name);
 
     std::string getName() const override;
-    void        setName(std::string_view const &newName) override;
+    void        setName(std::string_view const &newName);
 
 private:
     std::string name = "";

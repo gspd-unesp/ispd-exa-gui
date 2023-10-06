@@ -95,8 +95,17 @@ void LinkIcon::paint(QPainter                       *painter,
     painter->drawPolygon(QPolygonF() << line.p2() << arrowP1 << arrowP2);
 }
 
+void LinkIcon::mouseDoubleClickEvent(QGraphicsSceneMouseEvent *event)
+{
+    this->owner->showConfiguration();
+}
+
 void LinkIcon::mousePressEvent(QGraphicsSceneMouseEvent *event)
 {
+    qDebug() << "Nome: " << this->owner->conf.get()->getName().c_str();
+    qDebug() << "Bandwidth: " << this->owner->conf.get()->getBandwidth();
+    qDebug() << "Latency: " << this->owner->conf.get()->getLatency();
+    qDebug() << "Load Factor: " << this->owner->conf.get()->getloadFactor();
     toggleChoosen(); // Call the select function to toggle the color
     QGraphicsPolygonItem::mousePressEvent(event);
 }

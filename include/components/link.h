@@ -2,6 +2,7 @@
 
 #include "components/component.h"
 #include "components/conf/linkconfiguration.h"
+#include "window/linkconfigurationwindow.h"
 #include <memory>
 #include <string>
 
@@ -16,7 +17,8 @@ struct LinkConnections
     Connectable *begin;
     Connectable *end;
 
-    Connectable *getOtherConnectable(Connectable const *otherConnectable) {
+    Connectable *getOtherConnectable(Connectable const *otherConnectable)
+    {
         if (otherConnectable == this->begin) {
             return this->end;
         }
@@ -45,12 +47,12 @@ public:
 
     LinkConnections connections;
 
-    std::unique_ptr<LinkIcon>          icon;
-    std::unique_ptr<LinkConfiguration> conf;
-    unsigned                              getId() const;
-    void                                  setId(unsigned newId);
+    std::unique_ptr<LinkIcon>                icon;
+    std::unique_ptr<LinkConfiguration>       conf;
+    std::unique_ptr<LinkConfigurationWindow> window;
+    unsigned                                 getId() const;
+    void                                     setId(unsigned newId);
 
 private:
     unsigned id;
-
 };

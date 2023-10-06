@@ -1,4 +1,5 @@
 #include "icon/pixmapicon.h"
+#include "components/conf/itemconfiguration.h"
 #include "components/connectable.h"
 #include "components/link.h"
 #include "icon/linkicon.h"
@@ -47,6 +48,7 @@ void PixmapIcon::mouseDoubleClickEvent(QGraphicsSceneMouseEvent *event)
 {
     this->clickTimer.start();
     this->owner->showConfiguration();
+    qDebug() << this->owner->getConf()->getName().c_str();
 
     QGraphicsPixmapItem::mouseDoubleClickEvent(event);
 }

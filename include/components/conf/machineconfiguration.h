@@ -1,5 +1,8 @@
 #pragma once
 #include "components/conf/itemconfiguration.h"
+#include <QString>
+#include <qobject.h>
+#include <qtmetamacros.h>
 #include <string>
 #include <vector>
 
@@ -7,6 +10,7 @@ class MachineConfiguration : public ItemConfiguration
 {
 public:
     explicit MachineConfiguration(std::string_view const &name);
+    ~MachineConfiguration() = default;
 
     std::string getName() const override;
     void        setName(std::string_view const &newName) override;
