@@ -3,12 +3,12 @@
 #include "components/conf/machineconfiguration.h"
 #include "components/conf/schemaconfiguration.h"
 #include "components/conf/switchconfiguration.h"
-#include "components/conf/connectablesetconfiguration.h"
+#include "components/conf/machinesetconfiguration.h"
 #include "components/link.h"
 #include "components/machine.h"
 #include "components/machinebuilder.h"
-#include "components/connectablesetbuilder.h"
-#include "components/connectableset.h"
+#include "components/machinesetbuilder.h"
+#include "components/machineset.h"
 #include "components/switch.h"
 #include "icon/pixmapiconbuilder.h"
 #include "utils/iconPath.h"
@@ -65,7 +65,7 @@ unsigned Schema::allocateNewSet()
 {
     auto [newSetId, newSetName] = this->ids->getNewSetBase();
 
-    ConnectableSetConfiguration newSetConf(newSetName);
+    MachineSetConfiguration newSetConf(newSetName);
     auto                 newSet =
         ConnectableSetBuilder().setConf(newSetConf)->setSchema(this)->build();
     newSet->setId(newSetId);

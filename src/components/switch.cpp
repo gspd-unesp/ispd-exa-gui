@@ -7,12 +7,14 @@
 #include "icon/pixmapiconbuilder.h"
 #include "icon/pixmappair.h"
 #include "utils/iconPath.h"
+#include "window/switchconfigurationwindow.h"
 #include <memory>
 
 Switch::Switch(Schema *schema, SwitchConfiguration const &conf)
     : conf(std::make_unique<SwitchConfiguration>(conf)), schema(schema)
 {
     PixmapIconBuilder iconBuilder;
+    this->window = std::make_unique<SwitchConfigurationWindow>(this->conf.get());
     this->icon = std::unique_ptr<PixmapIcon>(
         iconBuilder.setOwner(this)
             ->setPixmapPair(PixmapPair(switchPath, switchPathSelected))
@@ -65,7 +67,9 @@ std::string Switch::getName()
 }
 
 void Switch::showConfiguration()
-{}
+{
+    this->window->show();
+}
 
 SwitchConfiguration *Switch::getConf()
 {

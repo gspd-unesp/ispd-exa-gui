@@ -2,6 +2,7 @@
 #include "components/conf/switchconfiguration.h"
 #include "components/connectable.h"
 #include "icon/pixmapicon.h"
+#include "window/switchconfigurationwindow.h"
 
 class Schema;
 
@@ -11,8 +12,8 @@ public:
     Switch(Schema *schema, SwitchConfiguration const &conf);
     ~Switch() override;
     std::vector<std::shared_ptr<Link>> *getConnectedLinks() override;
-    PixmapIcon                 *getIcon() override;
-    SwitchConfiguration        *getConf() override;
+    PixmapIcon                         *getIcon() override;
+    SwitchConfiguration                *getConf() override;
     void setConnectedLinks(std::vector<std::shared_ptr<Link>> *map) override;
     void removeConnectedLink(Link *link) override;
     void addConnectedLink(std::shared_ptr<Link> link) override;
@@ -25,9 +26,10 @@ public:
     void     setId(unsigned newId) override;
 
 private:
-    unsigned                             id;
-    std::unique_ptr<SwitchConfiguration> conf;
-    Schema                              *schema;
-    std::vector<std::shared_ptr<Link>>           connectedLinks;
-    std::unique_ptr<PixmapIcon>          icon;
+    std::unique_ptr<SwitchConfigurationWindow> window;
+    unsigned                                   id;
+    std::unique_ptr<SwitchConfiguration>       conf;
+    Schema                                    *schema;
+    std::vector<std::shared_ptr<Link>>         connectedLinks;
+    std::unique_ptr<PixmapIcon>                icon;
 };
