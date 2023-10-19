@@ -1,0 +1,295 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>MachineSetConfigurationWindow</class>
+ <widget class="QWidget" name="MachineSetConfigurationWindow">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>400</width>
+    <height>405</height>
+   </rect>
+  </property>
+  <property name="sizePolicy">
+   <sizepolicy hsizetype="Expanding" vsizetype="Minimum">
+    <horstretch>0</horstretch>
+    <verstretch>0</verstretch>
+   </sizepolicy>
+  </property>
+  <property name="maximumSize">
+   <size>
+    <width>400</width>
+    <height>600</height>
+   </size>
+  </property>
+  <property name="windowTitle">
+   <string>Machine Set Icon Configuration</string>
+  </property>
+  <layout class="QGridLayout" name="gridLayout">
+   <property name="sizeConstraint">
+    <enum>QLayout::SetMinimumSize</enum>
+   </property>
+   <item row="0" column="0">
+    <layout class="QVBoxLayout" name="verticalLayout">
+     <property name="sizeConstraint">
+      <enum>QLayout::SetMinimumSize</enum>
+     </property>
+     <item>
+      <widget class="QLabel" name="title">
+       <property name="sizePolicy">
+        <sizepolicy hsizetype="Preferred" vsizetype="Minimum">
+         <horstretch>0</horstretch>
+         <verstretch>0</verstretch>
+        </sizepolicy>
+       </property>
+       <property name="maximumSize">
+        <size>
+         <width>16777215</width>
+         <height>50</height>
+        </size>
+       </property>
+       <property name="font">
+        <font>
+         <pointsize>16</pointsize>
+         <bold>true</bold>
+        </font>
+       </property>
+       <property name="text">
+        <string>Machine Set Configuration</string>
+       </property>
+       <property name="alignment">
+        <set>Qt::AlignCenter</set>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QFrame" name="attributes">
+       <property name="sizePolicy">
+        <sizepolicy hsizetype="Preferred" vsizetype="Minimum">
+         <horstretch>0</horstretch>
+         <verstretch>0</verstretch>
+        </sizepolicy>
+       </property>
+       <property name="frameShape">
+        <enum>QFrame::NoFrame</enum>
+       </property>
+       <layout class="QFormLayout" name="formLayout">
+        <property name="fieldGrowthPolicy">
+         <enum>QFormLayout::ExpandingFieldsGrow</enum>
+        </property>
+        <property name="labelAlignment">
+         <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignTop</set>
+        </property>
+        <property name="horizontalSpacing">
+         <number>10</number>
+        </property>
+        <property name="verticalSpacing">
+         <number>15</number>
+        </property>
+        <property name="leftMargin">
+         <number>10</number>
+        </property>
+        <property name="rightMargin">
+         <number>10</number>
+        </property>
+        <property name="bottomMargin">
+         <number>10</number>
+        </property>
+        <item row="1" column="0">
+         <widget class="QLabel" name="nameLabel">
+          <property name="text">
+           <string>Name</string>
+          </property>
+         </widget>
+        </item>
+        <item row="1" column="1">
+         <widget class="QLineEdit" name="nameEditLine">
+          <property name="font">
+           <font>
+            <bold>false</bold>
+           </font>
+          </property>
+          <property name="layoutDirection">
+           <enum>Qt::RightToLeft</enum>
+          </property>
+          <property name="maxLength">
+           <number>32</number>
+          </property>
+          <property name="alignment">
+           <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+          </property>
+         </widget>
+        </item>
+        <item row="2" column="0">
+         <widget class="QLabel" name="coresLabel">
+          <property name="locale">
+           <locale language="English" country="UnitedStates"/>
+          </property>
+          <property name="text">
+           <string>Cores</string>
+          </property>
+         </widget>
+        </item>
+        <item row="2" column="1">
+         <widget class="QSpinBox" name="coresSpinBox">
+          <property name="sizePolicy">
+           <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+            <horstretch>0</horstretch>
+            <verstretch>0</verstretch>
+           </sizepolicy>
+          </property>
+          <property name="autoFillBackground">
+           <bool>false</bool>
+          </property>
+          <property name="alignment">
+           <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+          </property>
+          <property name="minimum">
+           <number>1</number>
+          </property>
+          <property name="maximum">
+           <number>256</number>
+          </property>
+         </widget>
+        </item>
+        <item row="3" column="0">
+         <widget class="QLabel" name="computationPowerLabel">
+          <property name="locale">
+           <locale language="English" country="UnitedStates"/>
+          </property>
+          <property name="text">
+           <string>Computation Power</string>
+          </property>
+         </widget>
+        </item>
+        <item row="3" column="1">
+         <widget class="QSpinBox" name="computationPowerSpinBox">
+          <property name="sizePolicy">
+           <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+            <horstretch>0</horstretch>
+            <verstretch>0</verstretch>
+           </sizepolicy>
+          </property>
+          <property name="autoFillBackground">
+           <bool>false</bool>
+          </property>
+          <property name="alignment">
+           <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+          </property>
+          <property name="suffix">
+           <string> MFLOP/s</string>
+          </property>
+          <property name="minimum">
+           <number>1</number>
+          </property>
+          <property name="maximum">
+           <number>2048</number>
+          </property>
+         </widget>
+        </item>
+        <item row="4" column="0">
+         <widget class="QLabel" name="ramLabel">
+          <property name="text">
+           <string>Memory</string>
+          </property>
+         </widget>
+        </item>
+        <item row="4" column="1">
+         <widget class="QSpinBox" name="ramSpinBox">
+          <property name="sizePolicy">
+           <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+            <horstretch>0</horstretch>
+            <verstretch>0</verstretch>
+           </sizepolicy>
+          </property>
+          <property name="autoFillBackground">
+           <bool>false</bool>
+          </property>
+          <property name="alignment">
+           <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+          </property>
+          <property name="suffix">
+           <string> GB</string>
+          </property>
+          <property name="minimum">
+           <number>1</number>
+          </property>
+          <property name="maximum">
+           <number>2048</number>
+          </property>
+         </widget>
+        </item>
+        <item row="5" column="0">
+         <widget class="QLabel" name="diskLabel">
+          <property name="text">
+           <string>Disk</string>
+          </property>
+         </widget>
+        </item>
+        <item row="5" column="1">
+         <widget class="QSpinBox" name="diskSpinBox">
+          <property name="sizePolicy">
+           <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+            <horstretch>0</horstretch>
+            <verstretch>0</verstretch>
+           </sizepolicy>
+          </property>
+          <property name="autoFillBackground">
+           <bool>false</bool>
+          </property>
+          <property name="alignment">
+           <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+          </property>
+          <property name="suffix">
+           <string> GB</string>
+          </property>
+          <property name="minimum">
+           <number>1</number>
+          </property>
+          <property name="maximum">
+           <number>102400</number>
+          </property>
+         </widget>
+        </item>
+        <item row="6" column="0">
+         <widget class="QLabel" name="energyConsumptionLabel">
+          <property name="text">
+           <string>Energy Consumption</string>
+          </property>
+         </widget>
+        </item>
+        <item row="6" column="1">
+         <widget class="QSpinBox" name="energyConsumptionSpinBox">
+          <property name="sizePolicy">
+           <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+            <horstretch>0</horstretch>
+            <verstretch>0</verstretch>
+           </sizepolicy>
+          </property>
+          <property name="autoFillBackground">
+           <bool>false</bool>
+          </property>
+          <property name="alignment">
+           <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+          </property>
+          <property name="suffix">
+           <string> Wh</string>
+          </property>
+          <property name="minimum">
+           <number>1</number>
+          </property>
+          <property name="maximum">
+           <number>10000</number>
+          </property>
+         </widget>
+        </item>
+       </layout>
+      </widget>
+     </item>
+    </layout>
+   </item>
+  </layout>
+ </widget>
+ <resources/>
+ <connections/>
+</ui>

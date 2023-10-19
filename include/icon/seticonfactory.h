@@ -1,8 +1,8 @@
 class PixmapIcon;
-class ConnectableSet;
+class MachineSet;
 
 class SetIconFactory
 {
 public:
-    PixmapIcon *iconBuilder(ConnectableSet *set);
+    PixmapIcon *iconBuilder(MachineSet *set);
 };

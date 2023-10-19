@@ -1,13 +1,15 @@
 #include "components/connectable.h"
+#include "window/machinesetconfigurationwindow.h"
 #include <memory>
 
-class ConnectableSetConfiguration;
+class MachineSetConfiguration;
 class Schema;
 
-class ConnectableSet : public Connectable
+class MachineSet : public Connectable
 {
 public:
-    ConnectableSet(Schema *schema, ConnectableSetConfiguration *conf);
+    MachineSet(Schema *schema, MachineSetConfiguration *conf);
+    ~MachineSet() override;
     std::vector<std::shared_ptr<Link>> *getConnectedLinks() override;
     void                                setConnectedLinks(
                                        std::vector<std::shared_ptr<Link>> *linksVector) override;
@@ -18,14 +20,14 @@ public:
     void        setId(unsigned newId) override;
     std::unique_ptr<std::vector<std::string>> print() override;
     std::unique_ptr<ConnectableCloner> cloner(SchemaCloner *parent) override;
-    void showConfiguration() override;   
-    ItemConfiguration *getConf() override;
-
+    void                               showConfiguration() override;
+    ItemConfiguration                 *getConf() override;
 
 private:
     Schema                                      *schema;
     unsigned                                     id;
-    std::unique_ptr<ConnectableSetConfiguration> conf;
+    std::unique_ptr<MachineSetConfigurationWindow>      window;
+    std::unique_ptr<MachineSetConfiguration> conf;
     std::unique_ptr<PixmapIcon>                  icon;
     std::vector<std::shared_ptr<Link>>           connectedLinks;
 };

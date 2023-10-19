@@ -10,8 +10,8 @@ set(CMAKE_RUNTIME_OUTPUT_DIRECTORY "${CMAKE_SOURCE_DIR}/")
 set(CMAKE_LIBRARY_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/lib")
 set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/lib")
 
-
-
+# set clang-format flags
+set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
 find_package(Qt6 REQUIRED COMPONENTS Widgets Svg PrintSupport)
 qt_standard_project_setup()
@@ -29,14 +29,17 @@ add_executable(ispd-exa-gui src/ispd-exa-gui.cpp
   src/window/drawingtable/view.cpp include/window/drawingtable/view.h 
   src/window/drawingtable/scene.cpp include/window/drawingtable/scene.h 
   src/window/drawingtable/drawingtable.cpp include/window/drawingtable/drawingtable.h 
-  src/window/machineconfigurationwindow.cpp include/window/machineconfigurationwindow.h forms/machineconfigurationwindow.ui
   src/window/main.cpp include/window/main.h forms/mainwindow.ui
   src/window/schemawindow.cpp include/window/schemawindow.h 
   src/window/simulation.cpp include/window/simulation.h forms/simulation.ui
   src/window/workloads.cpp include/window/workloads.h forms/workloads.ui
   src/window/users.cpp include/window/users.h forms/userwindow.ui
 
+  ## Component configuration window
+  src/window/machineconfigurationwindow.cpp include/window/machineconfigurationwindow.h forms/machineconfigurationwindow.ui
   src/window/linkconfigurationwindow.cpp include/window/linkconfigurationwindow.h forms/linkconfigurationwindow.ui
+  src/window/machinesetconfigurationwindow.cpp include/window/machinesetconfigurationwindow.h forms/machinesetconfigurationwindow.ui
+  src/window/switchconfigurationwindow.cpp include/window/switchconfigurationwindow.h  forms/switchconfigurationwindow.ui
 
   # Components
   include/components/component.h 
@@ -47,8 +50,8 @@ add_executable(ispd-exa-gui src/ispd-exa-gui.cpp
   src/components/machine.cpp include/components/machine.h 
   src/components/machinebuilder.cpp include/components/machinebuilder.h 
   src/components/schema.cpp include/components/schema.h 
-  src/components/connectableset.cpp include/components/connectableset.h
-  src/components/connectablesetbuilder.cpp include/components/connectablesetbuilder.h
+  src/components/machineset.cpp include/components/machineset.h
+  src/components/machinesetbuilder.cpp include/components/machinesetbuilder.h
 
   # Components cloner
   include/components/cloner/connectablecloner.h 
@@ -63,7 +66,7 @@ add_executable(ispd-exa-gui src/ispd-exa-gui.cpp
   src/components/conf/linkconfiguration.cpp include/components/conf/linkconfiguration.h 
   src/components/conf/schemaconfiguration.cpp include/components/conf/schemaconfiguration.h 
   src/components/conf/switchconfiguration.cpp include/components/conf/switchconfiguration.h 
-  src/components/conf/connectablesetconfiguration.cpp include/components/conf/connectablesetconfiguration.h
+  src/components/conf/machinesetconfiguration.cpp include/components/conf/machinesetconfiguration.h
 
   # Icons
   include/icon/icon.h 
