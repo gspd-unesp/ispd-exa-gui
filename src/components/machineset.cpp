@@ -7,6 +7,7 @@
 #include "icon/seticonfactory.h"
 #include <memory>
 #include <vector>
+#include <QDebug>
 
 MachineSet::MachineSet(Schema *schema, MachineSetConfiguration *conf)
     : schema(schema), conf(std::make_unique<MachineSetConfiguration>(*conf))

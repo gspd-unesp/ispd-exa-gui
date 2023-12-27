@@ -45,3 +45,12 @@ void Link::setId(unsigned newId)
 {
     this->id = newId;
 }
+
+void to_json(json& j, const Link& l) {
+    j["id"] = l.getId();
+    j["from"] = l.connections.begin->getId();
+    j["to"] = l.connections.end->getId();
+    j.update(*l.conf.get());
+}
+void from_json(const json& j, Link& m) {
+}

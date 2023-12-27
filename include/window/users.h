@@ -1,7 +1,6 @@
 #ifndef USERWINDOW_H
 #define USERWINDOW_H
-#include "icon/pixmapicon.h"
-#include "window/adduser.h"
+#include "context/context.h"
 #include <QComboBox>
 #include <QDebug>
 #include <QGraphicsItem>
@@ -14,58 +13,30 @@
 #include <QMainWindow>
 #include <QVBoxLayout>
 #include <QWidget>
-#include <string>
+#include <qtablewidget.h>
 #include <ui_userwindow.h>
-// #include "item/icon.h"
-
-// #include "drawingtable/drawingtable.h"
 class DrawingTable;
 
-namespace Ui
-{
-class UserWindow;
-} // namespace Ui
-
-class UserWindow : public QMainWindow
+class UserWindow : public QWidget
 {
     Q_OBJECT
 
 public:
-    UserWindow(QWidget                   *parent       = nullptr,
-               DrawingTable              *drawingTable = nullptr,
-               const QList<QString>      &list1Data    = QList<QString>(),
-               const QList<double>       &list2Data    = QList<double>(),
-               const QList<PixmapIcon *> &icons        = QList<PixmapIcon *>());
-    void addOnList1(const QString &valor);
-    void addOnList2(double valor);
-    void setDrawingTable(DrawingTable *drawingTable);
-    void receiveUserWindowData(const QList<QString> &list1Data,
-                               const QList<double>  &list2Data);
-    ~UserWindow();
+    UserWindow(Context::MainContext *context, QWidget *parent = nullptr);
 
 protected:
 private:
-    Ui::UserWindow     *ui;
-    QListWidget        *listWidget;
-    QListWidget        *listWidget_2;
-    addUser            *adduser;
-    QImage             *fecharImg;
-    QImage             *addIcon;
-    QStringList         list1Values;
-    QStringList         list2Values;
-    int                 mnSelected = -1;
-    DrawingTable       *drawingTable;
-    QList<PixmapIcon *> icons;
+    void                  onItemChanged(QTableWidgetItem *item);
+    QTableWidget          usersTable;
+    Context::MainContext *context;
+    void                  insertUsers();
+
+    QPushButton *addUserB    = new QPushButton("Add");
+    QPushButton *deleteUserB = new QPushButton("Del");
 
 private slots:
-    void on_addButton_clicked();
-    void on_pushButton_clicked();
-    void on_listWidget_currentRowChanged(int currentRow);
-    void on_listWidget_2_currentRowChanged(int currentRow);
-    void on_okButton_clicked();
-    void clearListWidgets();
+    void addUser();
 
 signals:
-    void itemMoved(const QPointF &pos);
 };
 #endif // USERWINDOW_H

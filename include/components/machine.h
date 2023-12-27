@@ -1,11 +1,11 @@
 #pragma once
 
-#include <map>
 #include <memory>
 #include <string>
 #include <vector>
 
 #include "components/connectable.h"
+#include "nlohmann/json.hpp"
 #include "window/machineconfigurationwindow.h"
 
 class Schema;
@@ -43,8 +43,19 @@ public:
     std::unique_ptr<PixmapIcon>           icon;
     unsigned                              getId() const override;
     void                                  setId(unsigned newId) override;
+        /* j = json{{"name", p.name}, {"address", p.address}, {"age", p.age}}; */
+
+        /* j.at("name").get_to(p.name); */
+        /* j.at("address").get_to(p.address); */
+        /* j.at("age").get_to(p.age); */
 
 private:
     unsigned                                    id;
     std::unique_ptr<MachineConfigurationWindow> window;
 };
+
+
+using json = nlohmann::json;
+
+void to_json(json& j, const Machine& m);
+void from_json(const json& j, Machine& m);

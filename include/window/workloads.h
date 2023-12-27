@@ -1,29 +1,23 @@
-#ifndef WORKLOADS_H
-#define WORKLOADS_H
+#pragma once
 
-#include <QMainWindow>
+#include "context/workload.h"
+#include <QDialog>
 #include <QTextStream>
+#include <QTableView>
+#include <vector>
 
-QT_BEGIN_NAMESPACE
-namespace Ui
-{
-class Workloads;
-}
-QT_END_NAMESPACE
-
-class WorkloadsWindow : public QMainWindow
+class WorkloadsWindow : public QDialog
 {
     Q_OBJECT
 
-  public:
-    WorkloadsWindow(QWidget *parent = nullptr);
-    ~WorkloadsWindow();
+public:
+    WorkloadsWindow(std::vector<Context::Workload> *workloads, QWidget *parent = nullptr);
 
-  private slots:
-    void on_pushButton_clicked();
+private:
+    QTableView *workloadTable = new QTableView(this);
+    std::vector<Context::Workload> *workloads;
 
-  private:
-    Ui::Workloads *ui;
+private slots:
+    void                            on_pushButton_clicked();
+
 };
-
-#endif

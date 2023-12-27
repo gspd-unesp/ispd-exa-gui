@@ -101,7 +101,14 @@ unsigned Switch::getId() const
 {
     return this->id;
 }
+
 void Switch::setId(unsigned newId)
 {
     this->id = newId;
+}
+
+void to_json(json &j, const Switch &s) {
+    json cJ = *s.conf.get();
+    cJ["id"] = s.getId();
+    j = cJ;
 }

@@ -1,53 +1,79 @@
 #include "window/drawingtable/drawingtable.h"
-#include "components/conf/machineconfiguration.h"
-#include "components/conf/schemaconfiguration.h"
 #include "components/connectable.h"
 #include "components/link.h"
 #include "components/machine.h"
 #include "components/schema.h"
 #include "components/switch.h"
+#include "context/user.h"
 #include "utils/iconSize.h"
 #include "window/drawingtable/scene.h"
 #include "window/users.h"
+#include "window/workloads.h"
 #include <QDebug>
 #include <QImage>
 #include <QPixmap>
 #include <QPushButton>
 #include <QRadioButton>
+#include <QSizePolicy>
 #include <QVBoxLayout>
+#include <memory>
+#include <qt5/QtWidgets/qsizepolicy.h>
 
 void printSchema(Schema *schema);
 
 DrawingTable::DrawingTable(QFrame *parent) : DrawingTable(new Schema(), parent)
 {
+    mainContext.mainSchema = std::shared_ptr<Schema>(this->schema);
+    int id = mainContext.mainSchema->allocateNewMachine();
+    auto machine = &mainContext.mainSchema->connectables[id];
+
+    //-------------------------------------------------------------------------
+    // TEMPORARY
+    mainContext.users.push_back(Context::User{.name="John", .allowedUsage=0.9});
+    mainContext.workloads.push_back(Context::Workload{.owner=std::make_shared<Context::User>(mainContext.users[0]), .master=static_cast<Machine *>(machine->get())});
+
+    //-------------------------------------------------------------------------
+
+    /* QPixmap workloadIcon(":/icons/perfil.png"); */
+    /* QPixmap  = image.scaled(buttonSize); */
+
+    auto workloadButton = new QPushButton("Workload", this);
+    workloadButton->setSizePolicy(
+        QSizePolicy(QSizePolicy::Maximum, QSizePolicy::Maximum));
+    workloadButton->setFixedSize(70, 40);
+
+    //-------------------------------------------------------------------------
+
     QPixmap image(":/icons/perfil.png");
-    QSize   imageSize(30, 30);
-    QPixmap resizedImage =
-        image.scaled(imageSize, Qt::KeepAspectRatio, Qt::SmoothTransformation);
+    QPixmap resizedImage = image.scaled(buttonSize);
 
-    openUserWindow = new QPushButton(this);
+    openUserWindow = new QPushButton("Users", this);
     openUserWindow->setIcon(QIcon(resizedImage));
-    openUserWindow->setIconSize(image.size());
-    openUserWindow->setFixedSize(40, 40);
+    openUserWindow->setSizePolicy(
+        QSizePolicy(QSizePolicy::Maximum, QSizePolicy::Maximum));
+    openUserWindow->setFixedSize(70, 40);
 
-    //----------------------------------------------------------------------------------------
+    //-------------------------------------------------------------------------
 
     QPixmap image_2(":/icons/engine.png");
-    QSize   imageSize_2(30, 30);
-    QPixmap resizedImage_2 = image_2.scaled(
-        imageSize_2, Qt::KeepAspectRatio, Qt::SmoothTransformation);
+    QPixmap resizedImage_2 = image_2.scaled(buttonSize);
 
     openSimulationWindow = new QPushButton("Simulate", this);
     openSimulationWindow->setIcon(QIcon(resizedImage_2));
-    openSimulationWindow->setIconSize(imageSize_2);
-
+    openUserWindow->setSizePolicy(
+        QSizePolicy(QSizePolicy::Maximum, QSizePolicy::Maximum));
     openSimulationWindow->setFixedSize(100, 40);
 
-    //----------------------------------------------------------------------------------------
+    //-------------------------------------------------------------------------
 
+    buttonsLayout->addWidget(workloadButton, 0, Qt::AlignRight);
     buttonsLayout->addWidget(openUserWindow, 0, Qt::AlignRight);
     buttonsLayout->addWidget(openSimulationWindow, 0, Qt::AlignRight);
 
+    connect(workloadButton, &QPushButton::clicked, this, [=, this]() {
+        auto workloadWindow = new WorkloadsWindow(&this->mainContext.workloads);
+        workloadWindow->exec();
+    });
     connect(openUserWindow,
             &QPushButton::clicked,
             this,
@@ -103,11 +129,14 @@ void DrawingTable::setupPcButton()
 void DrawingTable::setupSetButton()
 {
     this->setButton = new QRadioButton(this->buttonsRow);
-    this->setButton->setIcon(QIcon(QPixmap::fromImage(QImage(":icons/connectableset.png"))));
+    this->setButton->setIcon(
+        QIcon(QPixmap::fromImage(QImage(":icons/connectableset.png"))));
     this->setButton->setIconSize(buttonSize);
     this->buttonsLayout->addWidget(setButton);
-    QObject::connect(
-        setButton, &QRadioButton::clicked, this, &DrawingTable::setButtonClicked);
+    QObject::connect(setButton,
+                     &QRadioButton::clicked,
+                     this,
+                     &DrawingTable::setButtonClicked);
 }
 
 ///
@@ -295,8 +324,8 @@ void printSchema(Schema *schema)
          machine != schema->connectables.end();
          machine++) {
 
-        qDebug() << "Connectable #" << machine->second->getId()
-                 << ": " << machine->second->getConf()->getName().c_str();
+        qDebug() << "Connectable #" << machine->second->getId() << ": "
+                 << machine->second->getConf()->getName().c_str();
     }
 
     for (auto &[id, nswitch] : schema->connectables) {
@@ -322,20 +351,18 @@ void printSchema(Schema *schema)
 }
 void DrawingTable::openUserWindowClicked()
 {
-    /* this->userWindow = */
-    /*     new UserWindow(nullptr, */
-    /*                    this, */
-    /*                    list1Data, */
-    /*                    list2Data); // Pass the lists to UserWindow
-     * constructor */
+    auto userWindow = new UserWindow(&this->mainContext);
 
     userWindow->show();
 }
 
 void DrawingTable::openSimulationWindowClicked()
 {
-    this->simulationWindow = new Simulation();
-    simulationWindow->show();
+    json j     = *this->schema;
+    j["users"] = this->mainContext.users;
+    qDebug() << j.dump().c_str();
+    /* this->simulationWindow = new Simulation(); */
+    /* simulationWindow->show(); */
 }
 
 void DrawingTable::addIcons(std::vector<Connectable *> *items)

@@ -107,7 +107,7 @@ void scatterPlot::createScatterPlot(QDir directory)
     }
 
     QVBoxLayout *legendLayout = new QVBoxLayout;
-    QVector<int> schemes = clusterColorMap.keys();
+    QList<int> schemes = clusterColorMap.keys();
 
     for (int scheme : schemes) {
         QString legendText = QString("Scheme %1").arg(scheme);

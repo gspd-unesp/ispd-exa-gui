@@ -5,30 +5,40 @@
 #include <QSettings>
 #include <qlineedit.h>
 #include <qspinbox.h>
+#include <qt6/QtCore/qglobal.h>
 
 SwitchConfigurationWindow::SwitchConfigurationWindow(SwitchConfiguration *conf,
                                                      QWidget *parent)
     : QDialog(parent), ui(new Ui::SwitchConfigurationWindow), conf(conf)
 {
     this->ui->setupUi(this);
+    this->setupConfAndWindow();
+}
+
+void SwitchConfigurationWindow::setupConfAndWindow()
+{
+    this->ui->nameEditLine->setText(QString(this->conf->getName().c_str()));
+    this->ui->loadFactorSpinBox->setValue(this->conf->getloadFactor());
+    this->ui->latencySpinBox->setValue(this->conf->getLatency());
+    this->ui->bandwidthSpinBox->setValue(this->conf->getBandwidth());
+
 
     connect(this->ui->nameEditLine,
             &QLineEdit::textChanged,
             this,
             &SwitchConfigurationWindow::setName);
     connect(this->ui->bandwidthSpinBox,
-            &QSpinBox::valueChanged,
+            qOverload<int>(&QSpinBox::valueChanged),
             this,
             &SwitchConfigurationWindow::setBandwidth);
     connect(this->ui->latencySpinBox,
-            &QDoubleSpinBox::valueChanged,
+            qOverload<double>(&QDoubleSpinBox::valueChanged),
             this,
             &SwitchConfigurationWindow::setLatency);
     connect(this->ui->loadFactorSpinBox,
-            &QDoubleSpinBox::valueChanged,
+            qOverload<double>(&QDoubleSpinBox::valueChanged),
             this,
             &SwitchConfigurationWindow::setLoadFactor);
-    this->ui->nameEditLine->setText(QString(this->conf->getName().c_str()));
 }
 
 void SwitchConfigurationWindow::setName(const QString &newName)

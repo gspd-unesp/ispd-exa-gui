@@ -42,3 +42,9 @@ void LinkConfiguration::setloadFactor(const double newloadFactor)
 {
     this->loadFactor = newloadFactor;
 }
+
+void to_json(json &j, const LinkConfiguration &lc) {
+    j["bandwidth"] = lc.getBandwidth();
+    j["load"] = lc.getloadFactor();
+    j["latency"] = lc.getLatency();
+}

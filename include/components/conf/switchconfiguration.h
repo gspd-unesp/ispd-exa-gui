@@ -21,3 +21,9 @@ private:
     double      loadFactor;
     double      latency;
 };
+
+#include "nlohmann/json.hpp"
+
+using json = nlohmann::json;
+
+void to_json(json &j, const SwitchConfiguration &sc);

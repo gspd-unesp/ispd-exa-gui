@@ -1,143 +1,102 @@
 #include "window/users.h"
-#include "window/drawingtable/drawingtable.h"
+#include "window/adduser.h"
 #include <QGraphicsItem>
 #include <QPushButton>
 #include <QSettings>
+#include <qboxlayout.h>
+#include <qt5/QtWidgets/qpushbutton.h>
+#include <qtablewidget.h>
 #include <ui_userwindow.h>
 
 #include <QDebug>
 #include <QGraphicsScene>
 #include <QGraphicsView>
 #include <QKeyEvent>
-#include <string>
+#include <QMessageBox>
 
-UserWindow::UserWindow(QWidget                   *parent,
-                       DrawingTable              *drawingTable,
-                       const QList<QString>      &list1Data,
-                       const QList<double>       &list2Data,
-                       const QList<PixmapIcon *> &icons)
-    : QMainWindow(parent), ui(new Ui::UserWindow)
+UserWindow::UserWindow(Context::MainContext *context, QWidget *parent)
+    : QWidget(parent), context{context}
 {
-    ui->setupUi(this);
+    // Configure main layout of the window
+    auto mainLayout = new QVBoxLayout(this);
 
-    this->icons        = icons;
-    this->drawingTable = drawingTable;
-    // Add a close icon and a add icon
-    this->fecharImg = new QImage(":/icons/x_button.png");
-    this->addIcon   = new QImage(":/icons/add_icon.png");
-    // Remove button Stylesheet
-    this->ui->pushButton->setCursor(Qt::PointingHandCursor);
-    this->ui->pushButton->setIcon(QIcon(QPixmap::fromImage(*fecharImg)));
-    this->ui->pushButton->setStyleSheet(
-        "QPushButton {background-color: #f53b57; border-radius: 3px;}"
-        "QPushButton:hover { border-color: #4A69BD; border-width: 1px; "
-        "border-style:inset; background-color: #e90c2d;}");
-    this->ui->pushButton->setFixedSize(50, 22);
-    this->ui->pushButton->setIconSize(QSize(14, 14));
-    // Add Button Stylesheet
-    this->ui->addButton->setCursor(Qt::PointingHandCursor);
-    this->ui->addButton->setIcon(QIcon(QPixmap::fromImage(*addIcon)));
-    this->ui->addButton->setStyleSheet(
-        "QPushButton {background-color: #2bc48a; border-radius: 3px;}"
-        "QPushButton:hover { border-color: #4A69BD; border-width: 1px; "
-        "border-style:inset; background-color: #29bc78}");
-    this->ui->addButton->setFixedSize(50, 22);
-    this->ui->addButton->setIconSize(QSize(12, 12));
+    // Create buttons row
+    auto buttonFrame  = new QFrame();
+    auto buttonLayout = new QHBoxLayout(buttonFrame);
 
-    ui->listWidget->addItems(list1Data);
-    for (const double value : list2Data) {
-        ui->listWidget_2->addItem(QString::number(value));
+    // Add more buttons as needed
+    buttonLayout->addWidget(addUserB);
+    buttonLayout->addWidget(deleteUserB);
+
+    mainLayout->addWidget(buttonFrame);
+
+    QStringList headers;
+    headers << "User"
+            << "Usage Limit";
+
+    /* this->usersTable.setRowCount(1); */
+    this->usersTable.setColumnCount(2);
+    this->usersTable.setHorizontalHeaderLabels(headers);
+    this->usersTable.horizontalHeader()->setSectionResizeMode(QHeaderView::Stretch);
+
+    mainLayout->addWidget(&this->usersTable);
+    this->insertUsers();
+
+    connect(&this->usersTable, &QTableWidget::itemChanged, this, &UserWindow::onItemChanged);
+    connect(this->addUserB, &QPushButton::pressed, this, &UserWindow::addUser);
+}
+
+void UserWindow::addUser() {
+    auto newAddUser = new AddUserWindow(&this->context->users);
+
+    connect(newAddUser, &AddUserWindow::addAnUser, this, &UserWindow::insertUsers);
+
+    newAddUser->exec();
+}
+
+void UserWindow::insertUsers()
+{
+    while (this->usersTable.rowCount() > 0) {
+        this->usersTable.removeRow(0);
+    }
+
+    this->usersTable.setRowCount(this->context->users.size());
+
+    int i = 0;
+    for (const auto iter : this->context->users) {
+        this->usersTable.setItem(
+            i, 0, new QTableWidgetItem(QString(iter.name.c_str())));
+        this->usersTable.setItem(
+            i, 1, new QTableWidgetItem(QString::number(iter.allowedUsage * 100.0) + " %"));
+
+        i++;
     }
 }
 
-UserWindow::~UserWindow()
+void UserWindow::onItemChanged(QTableWidgetItem *item)
 {
-    delete ui;
-}
+    static QString lastString;
+    if (item->column() == 1) { // Check if the change is in the 'Age' column
+        if (lastString == item->text()) {
+            return;
+        }
 
-void UserWindow::addOnList1(const QString &valor)
-{
+        bool ok;
+        int value = item->text().split(' ')[0].toInt(&ok);
 
-    ui->listWidget->addItem(valor);
-}
+        int newValue = 0;
+        if (!ok || value < 0 || value > 100) { // Constraint: Age must be between 0 and 100
+            QMessageBox::warning(this, "Invalid Input", "\'Allowed Usage\' must be a integer number between 0 and 100.");
+            newValue = 0;
+        } else {
+            newValue = value;
+        }
 
-void UserWindow::addOnList2(double valor)
-{
-    QString strValor = QString::number(valor);
-    ui->listWidget_2->addItem(strValor);
-}
+        qDebug() << item->text();
 
-void UserWindow::on_addButton_clicked()
-{
-    this->adduser = new addUser();
-    this->adduser->show();
-}
-
-void UserWindow::on_pushButton_clicked()
-{
-    if (mnSelected != -1) {
-
-        QListWidgetItem *it2 = ui->listWidget_2->takeItem(mnSelected);
-        QListWidgetItem *it  = ui->listWidget->takeItem(mnSelected);
-
-        delete it;
-        delete it2;
-
-        ui->listWidget_2->setCurrentRow(-1);
-        ui->listWidget->setCurrentRow(-1);
+        this->context->users[item->row()].allowedUsage = newValue / 100.0;
+        QString newString = QString::number(newValue) + " %";
+        lastString = newString;
+        item->setText(newString); // Revert to a default value
     }
-}
-
-void UserWindow::on_listWidget_currentRowChanged(int currentRow)
-{
-    mnSelected = currentRow;
-}
-
-void UserWindow::setDrawingTable(DrawingTable *drawingTable)
-{
-    this->drawingTable = drawingTable;
-}
-
-void UserWindow::on_listWidget_2_currentRowChanged(int currentRow)
-{
-    mnSelected = currentRow;
-}
-
-void UserWindow::on_okButton_clicked()
-{
-    if (drawingTable) {
-        QList<QString> list1Data;
-        QList<double>  list2Data;
-
-        for (int i = 0; i < ui->listWidget->count(); ++i) {
-            list1Data.append(ui->listWidget->item(i)->text());
-        }
-
-        for (int i = 0; i < ui->listWidget_2->count(); ++i) {
-            list2Data.append(ui->listWidget_2->item(i)->text().toDouble());
-        }
-
-        // Passar a lista de usuários para a função saveConfiguration
-        for (int i = 0; i < ui->listWidget->count(); ++i) {
-            list1Data.append(ui->listWidget->item(i)->text());
-        }
-
-        drawingTable->receiveUserWindowData(list1Data, list2Data);
-        /* for (Icon *icon : this->icons) // Replace "icons" with your actual
-         * list of icons */
-        /* { */
-        /*     if (machineIconConfiguration *config =
-         * dynamic_cast<machineIconConfiguration*>(icon)) */
-        /*     { */
-        /*         config->addUsersToOwnerComboBox(list1Data); */
-        /*     } */
-        /* } */
-    }
-    close();
-}
-
-void UserWindow::clearListWidgets()
-{
-    ui->listWidget->clear();
-    ui->listWidget_2->clear();
 }

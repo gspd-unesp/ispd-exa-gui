@@ -11,6 +11,7 @@
 #include <QHBoxLayout>
 #include <QMainWindow>
 #include <QVBoxLayout>
+#include "context/context.h"
 
 namespace Ui
 {
@@ -23,13 +24,17 @@ class MainWindow : public QMainWindow
 public:
     explicit MainWindow(QWidget *parent = nullptr);
     ~MainWindow();
+    void show();
 
+protected:
 private:
     DrawingTable   *drawingTable;
+    std::shared_ptr<Context::MainContext> context;
     Ui::MainWindow *ui;
     Scene          *scene;
     QImage         *headp;
     QImage         *headc;
+
 
     UserWindow      *userWindow;
     WorkloadsWindow *workloadsWindow;

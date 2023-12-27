@@ -4,7 +4,7 @@
 #include "components/link.h"
 #include "icon/linkicon.h"
 #include <QGraphicsItem>
-#include <chrono>
+#include <QDebug>
 
 PixmapIcon::PixmapIcon(Connectable *owner, PixmapPair pixmapPair)
     : owner(owner), pixmapPair(pixmapPair)

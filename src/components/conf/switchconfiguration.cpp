@@ -38,3 +38,9 @@ void SwitchConfiguration::setloadFactor(const double newloadFactor)
 {
     this->loadFactor = newloadFactor;
 }
+
+void to_json(json &j, const SwitchConfiguration &sc) {
+    j["bandwidth"] = sc.getBandwidth();
+    j["load"] = sc.getloadFactor();
+    j["latency"] = sc.getLatency();
+}

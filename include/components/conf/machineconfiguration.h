@@ -2,9 +2,10 @@
 #include "components/conf/itemconfiguration.h"
 #include <QString>
 #include <qobject.h>
-#include <qtmetamacros.h>
 #include <string>
 #include <vector>
+#include "nlohmann/json.hpp"
+using json = nlohmann::json;
 
 class MachineConfiguration : public ItemConfiguration
 {
@@ -15,7 +16,6 @@ public:
     std::string getName() const override;
     void        setName(std::string_view const &newName) override;
 
-private:
     std::string name;
     /**
      * It represents the computational power.
@@ -78,4 +78,13 @@ private:
      * It contains the scheduling algorithm used.
      */
     std::string schedulingAlgorithm;
+    double gpuPower;
+    int gpuCoreCount;
+    double gpuInterconnectionBandwidth;
+    double wattageIdle;
+    double wattageMax;
+    std::string scheduler;
+    std::vector<unsigned> slaves;
 };
+
+void to_json(json &j, const MachineConfiguration &m);

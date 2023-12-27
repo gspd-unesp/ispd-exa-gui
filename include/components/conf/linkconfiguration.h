@@ -1,6 +1,7 @@
 #pragma once
 
 #include <string>
+#include "nlohmann/json.hpp"
 
 class LinkConfiguration
 {
@@ -22,3 +23,7 @@ private:
     double      loadFactor;
     double      latency;
 };
+
+using nlohmann::json;
+
+void to_json(json &j, const LinkConfiguration &lc);

@@ -1,29 +1,32 @@
-#ifndef ADDUSER_H
-#define ADDUSER_H
+#pragma once
+
+#include "context/user.h"
 #include <QWidget>
 #include <QLineEdit>
-namespace Ui {
-class addUser;
-}
+#include <qdialog.h>
+#include <vector>
 
-class addUser : public QWidget
+class AddUserWindow : public QDialog
 {
     Q_OBJECT
 
 public:
-    explicit addUser(QWidget *parent = nullptr);
-    QString getText();
-    QString getText2();
-    ~addUser();
+    AddUserWindow(std::vector<Context::User> *users, QWidget *parent = nullptr);
+    QString name;
+    double consumptionLimit;
+    std::vector<Context::User> *users;
+    QLineEdit *nameEdit = new QLineEdit();
+    QLineEdit *consumptionEdit = new QLineEdit();
+
 
 private slots:
-    void on_okButton_clicked();
-    void on_cancelButton_clicked();
+    void addUserAction();
+    void cancelButtonAction();
+
+signals:
+    void addAnUser();
 
 private:
     QLineEdit *lineEdit1;
     QLineEdit *lineEdit2;
-    Ui::addUser *ui;
 };
-
-#endif // ADDUSER_H

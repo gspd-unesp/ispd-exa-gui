@@ -6,7 +6,7 @@
 #include "components/schema.h"
 #include <algorithm>
 #include <memory>
-#include <optional>
+#include <QDebug>
 
 SchemaCloner::SchemaCloner(Schema *base, SchemaCloner *parent) : parent(parent)
 {

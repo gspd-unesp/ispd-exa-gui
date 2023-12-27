@@ -25,6 +25,7 @@ public:
                                      QWidget           *parent = nullptr);
 
 private:
+    void setupConfAndWindow();
     Ui::SwitchConfigurationWindow *ui;
     SwitchConfiguration           *conf;
 };

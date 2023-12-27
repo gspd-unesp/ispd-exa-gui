@@ -131,3 +131,4 @@ private:
     std::unique_ptr<SchemaConfiguration> conf;
     Schema                              *parent;
 };
+void to_json(json &j, const Schema &s);

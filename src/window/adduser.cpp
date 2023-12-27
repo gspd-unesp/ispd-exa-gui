@@ -1,48 +1,47 @@
 #include "window/adduser.h"
-#include "ui_adduser.h"
-#include "window/users.h"
-addUser::addUser(QWidget *parent) :
-      QWidget(parent),
-      ui(new Ui::addUser)
-{
-    ui->setupUi(this);
+#include <qboxlayout.h>
+#include <QFormLayout>
+#include <qpushbutton.h>
+#include <qt5/QtWidgets/qlineedit.h>
+#include <vector>
 
+AddUserWindow::AddUserWindow(std::vector<Context::User> *users, QWidget *parent) :
+      QDialog(parent), users{users}
+{
+    this->setMaximumWidth(300);
+    auto editFrame = new QFrame();
+    auto editLayout = new QFormLayout(editFrame);
+    editLayout->addRow("Name:", this->nameEdit);
+    editLayout->addRow("Consumption Limit:", this->consumptionEdit);
+
+    auto buttonsFrame = new QFrame();
+    auto buttonsLayout = new QHBoxLayout(buttonsFrame);
+    auto okButton = new QPushButton("Ok");
+    auto cancelButton = new QPushButton("Cancel");
+    buttonsLayout->addStretch();
+    buttonsLayout->addWidget(okButton);
+    buttonsLayout->addWidget(cancelButton);
+
+    auto mainLayout = new QVBoxLayout(this);
+    mainLayout->addWidget(editFrame);
+    mainLayout->addWidget(buttonsFrame);
+
+    connect(okButton, &QPushButton::pressed, this, &AddUserWindow::addUserAction);
+    connect(cancelButton, &QPushButton::pressed, this, &AddUserWindow::cancelButtonAction);
 }
 
-addUser::~addUser()
+void AddUserWindow::addUserAction()
 {
-    delete ui;
+    double usageCorrected = this->consumptionEdit->text().toDouble() / 100;
+
+    this->users->push_back(Context::User{.name = this->nameEdit->text().toStdString(), .allowedUsage = usageCorrected});
+
+    addAnUser();
+    this->close();
 }
 
 
-void addUser::on_okButton_clicked()
-{
-    QString valor1 = ui->lineEdit->text();
-    QString valor2 = ui->lineEdit_2->text();
-
-    double valor2int = valor2.toDouble();
-
-    UserWindow *userwindow = nullptr;
-    QList<QWidget*> topLevelWidgets = QApplication::topLevelWidgets();
-    for (QWidget *widget : topLevelWidgets) {
-        if (widget->inherits("UserWindow")) {
-            userwindow = dynamic_cast<UserWindow*>(widget);
-            break;
-        }
-    }
-
-    if (!userwindow) {
-        userwindow = new UserWindow(this);
-        userwindow->show();
-    }
-    userwindow->addOnList1(valor1);
-    userwindow->addOnList2(valor2int);
-
-    close();
-}
-
-
-void addUser::on_cancelButton_clicked()
+void AddUserWindow::cancelButtonAction()
 {
     close();
 }

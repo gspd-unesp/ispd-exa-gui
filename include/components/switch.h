@@ -13,7 +13,7 @@ public:
     ~Switch() override;
     std::vector<std::shared_ptr<Link>> *getConnectedLinks() override;
     PixmapIcon                         *getIcon() override;
-    SwitchConfiguration                *getConf() override;
+    SwitchConfiguration                 *getConf() override;
     void setConnectedLinks(std::vector<std::shared_ptr<Link>> *map) override;
     void removeConnectedLink(Link *link) override;
     void addConnectedLink(std::shared_ptr<Link> link) override;
@@ -25,11 +25,17 @@ public:
     unsigned getId() const override;
     void     setId(unsigned newId) override;
 
+    std::unique_ptr<SwitchConfiguration>       conf;
 private:
     std::unique_ptr<SwitchConfigurationWindow> window;
     unsigned                                   id;
-    std::unique_ptr<SwitchConfiguration>       conf;
     Schema                                    *schema;
     std::vector<std::shared_ptr<Link>>         connectedLinks;
     std::unique_ptr<PixmapIcon>                icon;
 };
+
+#include "nlohmann/json.hpp"
+
+using json = nlohmann::json;
+
+void to_json(json &j, const Switch &s);

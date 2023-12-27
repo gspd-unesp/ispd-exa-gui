@@ -1,9 +1,4 @@
 #include "window/main.h"
-#include "window/users.h"
-#include "window/workloads.h"
-
-#include "window/drawingtable/scene.h"
-
 #include <QBrush>
 #include <QColor>
 #include <QFormLayout>
@@ -14,7 +9,6 @@
 #include <QPen>
 #include <QPixmap>
 #include <QPushButton>
-#include <iostream>
 #include <QSettings>
 
 MainWindow::MainWindow(QWidget *parent)
@@ -26,4 +20,13 @@ MainWindow::MainWindow(QWidget *parent)
 MainWindow::~MainWindow()
 {
     delete ui;
+}
+
+void MainWindow::show() {
+    if (this->context != nullptr) {
+        qDebug() << "Need a context!";
+        return;
+    }
+
+    QMainWindow::show();
 }

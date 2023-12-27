@@ -1,4 +1,6 @@
 #pragma once
+#include "context/context.h"
+#include "icon/pixmapicon.h"
 #include "window/drawingtable/view.h"
 #include "window/simulation.h"
 #include "window/users.h"
@@ -29,6 +31,7 @@ private:
 
     QPushButton *openUserWindow;
     QPushButton *openSimulationWindow;
+    Context::MainContext mainContext;
 
     UserWindow *userWindow;
     Simulation *simulationWindow;

@@ -11,6 +11,8 @@
 #include <memory>
 #include <string>
 #include <vector>
+#include <QDebug>
+using json = nlohmann::json;
 
 Machine::Machine(Schema *schema, MachineConfiguration *conf)
     : schema(schema), conf(std::make_unique<MachineConfiguration>(*conf))
@@ -18,7 +20,8 @@ Machine::Machine(Schema *schema, MachineConfiguration *conf)
     this->icon =
         std::unique_ptr<PixmapIcon>(MachineIconFactory().iconBuilder(this));
 
-    this->window = std::make_unique<MachineConfigurationWindow>(this->conf.get());
+    this->window =
+        std::make_unique<MachineConfigurationWindow>(this->conf.get());
 }
 
 Machine::~Machine()
@@ -104,3 +107,15 @@ void Machine::setId(unsigned newId)
 {
     this->id = newId;
 }
+
+using json = nlohmann::json;
+
+void to_json(json &j, const Machine &m)
+{
+    json cJ = *m.conf.get();
+    cJ["id"] = m.getId();
+    j = cJ;
+}
+
+void from_json(const json &j, Machine &m)
+{}

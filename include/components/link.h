@@ -5,6 +5,7 @@
 #include "window/linkconfigurationwindow.h"
 #include <memory>
 #include <string>
+#include "nlohmann/json.hpp"
 
 class LinkIcon;
 class LinkCloner;
@@ -56,3 +57,8 @@ public:
 private:
     unsigned id;
 };
+
+using nlohmann::json;
+
+void to_json(json& j, const Link& m);
+void from_json(const json& j, Link& m);

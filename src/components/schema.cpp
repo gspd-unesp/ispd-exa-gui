@@ -1,28 +1,26 @@
 #include "components/schema.h"
 #include "components/cloner/schemacloner.h"
 #include "components/conf/machineconfiguration.h"
+#include "components/conf/machinesetconfiguration.h"
 #include "components/conf/schemaconfiguration.h"
 #include "components/conf/switchconfiguration.h"
-#include "components/conf/machinesetconfiguration.h"
 #include "components/link.h"
 #include "components/machine.h"
 #include "components/machinebuilder.h"
-#include "components/machinesetbuilder.h"
 #include "components/machineset.h"
+#include "components/machinesetbuilder.h"
 #include "components/switch.h"
 #include "icon/pixmapiconbuilder.h"
 #include "utils/iconPath.h"
 #include "window/drawingtable/drawingtable.h"
 #include "window/drawingtable/scene.h"
 #include <QDebug>
-#include <algorithm>
-#include <iostream>
 #include <memory>
 
 Schema::Schema()
 {
-    this->window = std::make_unique<SchemaWindow>(this);
-    this->ids    = new ComponentsIds;
+    this->window         = std::make_unique<SchemaWindow>(this);
+    this->ids            = new ComponentsIds;
     this->cloneContainer = std::make_shared<ClonerContainer>();
 
     auto [firstSchemaId, firstSchemaName] = this->ids->getNewSchemaBase();
@@ -66,7 +64,7 @@ unsigned Schema::allocateNewSet()
     auto [newSetId, newSetName] = this->ids->getNewSetBase();
 
     MachineSetConfiguration newSetConf(newSetName);
-    auto                 newSet =
+    auto                    newSet =
         ConnectableSetBuilder().setConf(newSetConf)->setSchema(this)->build();
     newSet->setId(newSetId);
 
@@ -214,6 +212,7 @@ std::unique_ptr<std::vector<std::string>> Schema::print()
 void Schema::print_as_root()
 {
     auto buffers = this->print();
+
     for (auto const &buffer : *buffers.get()) {
         qDebug() << buffer.c_str();
     }
@@ -223,7 +222,41 @@ unsigned Schema::getId() const
 {
     return this->id;
 }
+
 void Schema::setId(unsigned newId)
 {
     this->id = newId;
+}
+
+void to_json(json &j, const Schema &s)
+{
+    j["users"]     = json::array();
+    j["workloads"] = json::array();
+    j["services"]  = {{"machines", json::array()},
+                      {"masters", json::array()},
+                      {"links", json::array()},
+                      {"switches", json::array()}};
+    for (auto &i : s.connectables) {
+        if (auto machine = dynamic_cast<Machine *>(i.second.get());
+            machine != nullptr) {
+            if (machine->conf->master) {
+                j["services"]["masters"].push_back(*machine);
+            }
+            else {
+                j["services"]["machines"].push_back(*machine);
+            }
+        }
+        else if (auto switchC = dynamic_cast<Switch *>(i.second.get());
+                 switchC != nullptr) {
+            j["services"]["switches"].push_back(*switchC);
+        }
+        /* } else if (auto schema = static_cast<Schema*>(i.second.get()) !=
+         * nullptr) { */
+        /*     j["services"]["machines"].push_back(); */
+        /* } */
+    }
+
+    for (auto &i : s.links) {
+        j["services"]["links"].push_back(*i.second.get());
+    }
 }

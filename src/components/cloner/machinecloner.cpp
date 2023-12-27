@@ -5,7 +5,7 @@
 #include "components/schema.h"
 #include "icon/pixmapicon.h"
 #include <memory>
-#include <string>
+#include <QDebug>
 
 MachineCloner::MachineCloner(Machine *base, SchemaCloner *parent)
     : pos(base->getIcon()->scenePos()), parent(parent)

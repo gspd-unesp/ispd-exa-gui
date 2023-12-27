@@ -5,16 +5,25 @@ project(ispd-exa-gui VERSION 1.0.0 LANGUAGES CXX)
 
 set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
-set(CMAKE_BINARY_DIR "${CMAKE_SOURCE_DIR}/build")
-set(CMAKE_RUNTIME_OUTPUT_DIRECTORY "${CMAKE_SOURCE_DIR}/")
-set(CMAKE_LIBRARY_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/lib")
-set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/lib")
+
+set(CMAKE_AUTOMOC ON)
+set(CMAKE_AUTORCC ON)
+set(CMAKE_AUTOUIC ON)
+# set(CMAKE_BINARY_DIR "${CMAKE_SOURCE_DIR}/build")
+# set(CMAKE_RUNTIME_OUTPUT_DIRECTORY "${CMAKE_SOURCE_DIR}/")
+# set(CMAKE_LIBRARY_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/lib")
+# set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/lib")
 
 # set clang-format flags
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
+include(FetchContent)
+
+FetchContent_Declare(json URL https://github.com/nlohmann/json/releases/download/v3.11.3/json.tar.xz)
+FetchContent_MakeAvailable(json)
+
 find_package(Qt6 REQUIRED COMPONENTS Widgets Svg PrintSupport)
-qt_standard_project_setup()
+# qt_standard_project_setup()
 
 set(CMAKE_AUTOUIC_SEARCH_PATHS forms)
 
@@ -34,6 +43,7 @@ add_executable(ispd-exa-gui src/ispd-exa-gui.cpp
   src/window/simulation.cpp include/window/simulation.h forms/simulation.ui
   src/window/workloads.cpp include/window/workloads.h forms/workloads.ui
   src/window/users.cpp include/window/users.h forms/userwindow.ui
+  src/window/addworkloadwindow.cpp include/window/addworkloadwindow.h
 
   ## Component configuration window
   src/window/machineconfigurationwindow.cpp include/window/machineconfigurationwindow.h forms/machineconfigurationwindow.ui
@@ -77,6 +87,11 @@ add_executable(ispd-exa-gui src/ispd-exa-gui.cpp
   src/icon/seticonfactory.cpp include/icon/seticonfactory.h 
   include/utils/iconSize.h 
   include/utils/iconPath.h 
+
+  # Context
+  include/context/context.h
+  include/context/user.h
+  include/context/workload.h
 )
 
 qt_add_resources(ispd-exa-gui imageresources
@@ -101,7 +116,14 @@ qt_add_resources(ispd-exa-gui imageresources
         icons/x_button.png
 )
 
-target_link_libraries(ispd-exa-gui PRIVATE Qt6::Widgets Qt6::PrintSupport Qt6::Svg)
+# Set different compile options for debug and release builds
+if(CMAKE_BUILD_TYPE MATCHES Debug)
+    target_compile_options(ispd-exa-gui PRIVATE -g) # or any other debug-specific flags
+elseif(CMAKE_BUILD_TYPE MATCHES Release)
+    target_compile_options(ispd-exa-gui PRIVATE -O3) # or any other release-specific flags
+endif()
+
+target_link_libraries(ispd-exa-gui PRIVATE Qt6::Widgets Qt6::PrintSupport Qt6::Svg nlohmann_json::nlohmann_json)
 target_include_directories(ispd-exa-gui PUBLIC include)
 
 
