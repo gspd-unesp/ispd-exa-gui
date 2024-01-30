@@ -19,6 +19,7 @@ MachineConfigurationWindow::MachineConfigurationWindow(
 
 void MachineConfigurationWindow::setupConfAndWindow()
 {
+    this->setFixedHeight(700);
     this->ui->nameEditLine->setText(this->conf->getName().c_str());
     this->ui->coresSpinBox->setValue(this->conf->coreCount);
     this->ui->computationPowerSpinBox->setValue(this->conf->computationalPower);
@@ -32,6 +33,7 @@ void MachineConfigurationWindow::setupConfAndWindow()
     this->ui->energyIdleSpinBox->setValue(this->conf->wattageIdle);
     this->ui->masterCheckBox->setChecked(this->conf->master);
     this->ui->schedulersComboBox->setCurrentText(this->conf->scheduler.c_str());
+
 
     connect(this->ui->nameEditLine,
             &QLineEdit::textChanged,
@@ -156,3 +158,16 @@ void MachineConfigurationWindow::setName(const QString &newName)
 {
     this->conf->setName(newName.toStdString());
 }
+
+void MachineConfigurationWindow::on_pushButton_clicked()
+{
+    QString slaves = ui->idPlainText->toPlainText();
+    QStringList slavelist = slaves.split(" ");
+
+    for (const QString& slave : slavelist) {
+        this->conf->slaves.push_back(slave.toInt());
+    }
+
+    this->close();
+}
+

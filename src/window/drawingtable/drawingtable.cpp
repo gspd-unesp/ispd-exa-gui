@@ -5,6 +5,8 @@
 #include "components/schema.h"
 #include "components/switch.h"
 #include "context/user.h"
+#include <fstream>
+
 #include "utils/iconSize.h"
 #include "window/drawingtable/scene.h"
 #include "window/users.h"
@@ -360,7 +362,19 @@ void DrawingTable::openSimulationWindowClicked()
 {
     json j     = *this->schema;
     j["users"] = this->mainContext.users;
-    qDebug() << j.dump().c_str();
+
+    std::string fileName = "output.json";
+    std::ofstream outputFile(fileName);
+
+    if (outputFile.is_open()) {
+        outputFile << j.dump(4);
+        outputFile.close();
+        QMessageBox::information(nullptr, "Sucesso", "Arquivo criado com sucesso.");
+
+    } else {
+        QMessageBox::critical(nullptr, "Erro", "Erro ao abrir o arquivo para escrita.");
+
+    }
     /* this->simulationWindow = new Simulation(); */
     /* simulationWindow->show(); */
 }

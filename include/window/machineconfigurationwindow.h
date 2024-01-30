@@ -33,6 +33,9 @@ public slots:
 public:
     explicit MachineConfigurationWindow(MachineConfiguration *conf, QWidget *parent = nullptr);
 
+private slots:
+    void on_pushButton_clicked();
+
 private:
     Ui::MachineConfigurationWindow *ui;
     MachineConfiguration *conf;

@@ -485,7 +485,7 @@
         <item row="21" column="0">
          <widget class="QLabel" name="label_6">
           <property name="text">
-           <string>Slaves</string>
+           <string>Slaves id</string>
           </property>
          </widget>
         </item>
