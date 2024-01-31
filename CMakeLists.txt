@@ -41,9 +41,8 @@ add_executable(ispd-exa-gui src/ispd-exa-gui.cpp
   src/window/main.cpp include/window/main.h forms/mainwindow.ui
   src/window/schemawindow.cpp include/window/schemawindow.h 
   src/window/simulation.cpp include/window/simulation.h forms/simulation.ui
-  src/window/workloads.cpp include/window/workloads.h forms/workloads.ui
   src/window/users.cpp include/window/users.h forms/userwindow.ui
-  src/window/addworkloadwindow.cpp include/window/addworkloadwindow.h
+  src/window/addworkloadwindow.cpp include/window/addworkloadwindow.h forms/addworkloadwindow.ui
 
   ## Component configuration window
   src/window/machineconfigurationwindow.cpp include/window/machineconfigurationwindow.h forms/machineconfigurationwindow.ui
@@ -92,6 +91,7 @@ add_executable(ispd-exa-gui src/ispd-exa-gui.cpp
   include/context/context.h
   include/context/user.h
   include/context/workload.h
+  src/workload.cpp
 )
 
 qt_add_resources(ispd-exa-gui imageresources
