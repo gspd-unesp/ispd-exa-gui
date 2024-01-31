@@ -9,7 +9,7 @@ addWorkloadWindow::addWorkloadWindow(QWidget *parent, Context::MainContext *cont
     ui->setupUi(this);
     this->setFixedSize(800,600);
     ui->shape_label->setVisible(false);
-    ui->secondValueSpinBox->setVisible(false);    connect(ui->exponentialRdn, &QRadioButton::toggled, this, &addWorkloadWindow::on_poisonRdn_toggled);
+    ui->secondValueSpinBox->setVisible(false);
 
     ui->secondValueSpinBox->setValue(0);
 }
