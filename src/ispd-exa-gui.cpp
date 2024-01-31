@@ -1,7 +1,6 @@
 #include "context/context.h"
 #include <memory>
 #include <window/simulation.h>
-#include "window/addworkloadwindow.h"
 #include <window/main.h>
 #include <QApplication>
 #include <QScreen>

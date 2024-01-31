@@ -8,7 +8,9 @@
 #include "components/cloner/connectablecloner.h"
 #include <map>
 #include <memory>
+
 #include <string>
+
 
 struct LinkConnections;
 class SchemaIcon;
@@ -81,6 +83,8 @@ public:
         return std::pair(newSetId, "Set" + std::to_string(newSetId));
     }
 
+
+
 private:
     unsigned connectableId = 0;
     unsigned linkId        = 0;
@@ -125,6 +129,7 @@ public:
     unsigned getId() const override;
     void     setId(unsigned newId) override;
     std::shared_ptr<ClonerContainer>   cloneContainer;
+    unsigned getMasterId();
 
 private:
     unsigned                             id;

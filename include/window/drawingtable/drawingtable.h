@@ -61,6 +61,7 @@ public:
     void   noneButtonClicked();
     void   openUserWindowClicked();
     void   openSimulationWindowClicked();
+    void openWorkloadWindow();
     void   addIcons(std::vector<Connectable *> *items);
     Scene *getScene();
 

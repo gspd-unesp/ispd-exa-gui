@@ -227,6 +227,18 @@ void Schema::setId(unsigned newId)
 {
     this->id = newId;
 }
+unsigned Schema::getMasterId()
+{
+    for (auto &i : connectables)
+    {
+        if (auto machine = dynamic_cast<Machine *>(i.second.get());
+            machine != nullptr){
+            if(machine->conf->master)
+                return machine->getId();
+
+        }
+    }
+}
 
 void to_json(json &j, const Schema &s)
 {

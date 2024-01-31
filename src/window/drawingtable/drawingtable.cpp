@@ -10,7 +10,6 @@
 #include "utils/iconSize.h"
 #include "window/drawingtable/scene.h"
 #include "window/users.h"
-#include "window/workloads.h"
 #include <QDebug>
 #include <QImage>
 #include <QPixmap>
@@ -20,7 +19,7 @@
 #include <QVBoxLayout>
 #include <memory>
 #include <qt5/QtWidgets/qsizepolicy.h>
-
+#include <window/addworkloadwindow.h>
 void printSchema(Schema *schema);
 
 DrawingTable::DrawingTable(QFrame *parent) : DrawingTable(new Schema(), parent)
@@ -32,7 +31,7 @@ DrawingTable::DrawingTable(QFrame *parent) : DrawingTable(new Schema(), parent)
     //-------------------------------------------------------------------------
     // TEMPORARY
     mainContext.users.push_back(Context::User{.name="John", .allowedUsage=0.9});
-    mainContext.workloads.push_back(Context::Workload{.owner=std::make_shared<Context::User>(mainContext.users[0]), .master=static_cast<Machine *>(machine->get())});
+//   mainContext.workloads.push_back(Context::Workload{.owner=std::make_shared<Context::User>(mainContext.users[0]), .master=static_cast<Machine *>(machine->get())});
 
     //-------------------------------------------------------------------------
 
@@ -72,10 +71,7 @@ DrawingTable::DrawingTable(QFrame *parent) : DrawingTable(new Schema(), parent)
     buttonsLayout->addWidget(openUserWindow, 0, Qt::AlignRight);
     buttonsLayout->addWidget(openSimulationWindow, 0, Qt::AlignRight);
 
-    connect(workloadButton, &QPushButton::clicked, this, [=, this]() {
-        auto workloadWindow = new WorkloadsWindow(&this->mainContext.workloads);
-        workloadWindow->exec();
-    });
+
     connect(openUserWindow,
             &QPushButton::clicked,
             this,
@@ -84,6 +80,11 @@ DrawingTable::DrawingTable(QFrame *parent) : DrawingTable(new Schema(), parent)
             &QPushButton::clicked,
             this,
             &DrawingTable::openSimulationWindowClicked);
+    connect(workloadButton,
+            &QPushButton::clicked,
+            this,
+            &DrawingTable::openWorkloadWindow);
+
 }
 
 DrawingTable::DrawingTable(Schema *schema, QWidget *parent) : QWidget{parent}
@@ -360,8 +361,16 @@ void DrawingTable::openUserWindowClicked()
 
 void DrawingTable::openSimulationWindowClicked()
 {
+    /// temporary must be removed when simulation allows more than one workload
+    this->mainContext.workloads.at(0).master_id = this->schema->getMasterId();
+
+
     json j     = *this->schema;
     j["users"] = this->mainContext.users;
+
+    j["workloads"] = this->mainContext.workloads;
+
+
 
     std::string fileName = "output.json";
     std::ofstream outputFile(fileName);
@@ -386,6 +395,14 @@ void DrawingTable::addIcons(std::vector<Connectable *> *items)
                              static_cast<PixmapIcon *>(it->getIcon())->pos());
     }
 }
+
+void DrawingTable::openWorkloadWindow()
+{
+    addWorkloadWindow *workloadwindow = new addWorkloadWindow(this, &this->mainContext);
+
+    workloadwindow->show();
+}
+
 
 Scene *DrawingTable::getScene()
 {

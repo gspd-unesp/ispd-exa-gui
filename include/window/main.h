@@ -5,7 +5,6 @@
 #include "window/drawingtable/scene.h"
 #include "ui_mainwindow.h"
 #include "window/users.h"
-#include "window/workloads.h"
 
 #include <QGraphicsScene>
 #include <QHBoxLayout>
@@ -37,7 +36,6 @@ private:
 
 
     UserWindow      *userWindow;
-    WorkloadsWindow *workloadsWindow;
 
     QImage *bPcIcon;
     QImage *bNoneIcon;
