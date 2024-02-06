@@ -384,6 +384,23 @@ void DrawingTable::openSimulationWindowClicked()
         QMessageBox::critical(nullptr, "Erro", "Erro ao abrir o arquivo para escrita.");
 
     }
+
+    QFile file("routes.route");
+
+           /// @todo treat it
+    if (!file.open(QIODevice::WriteOnly | QIODevice::Text)) {
+        exit(0);
+    }
+
+    QTextStream outStream(&file);
+
+    for (const auto &link : this->schema->links) {
+        outStream << link.second->connections.begin->getId() << " ";
+        outStream << link.second->getId() << " ";
+        outStream << link.second->connections.end->getId() << "\n";
+    }
+
+    file.close();
     /* this->simulationWindow = new Simulation(); */
     /* simulationWindow->show(); */
 }
