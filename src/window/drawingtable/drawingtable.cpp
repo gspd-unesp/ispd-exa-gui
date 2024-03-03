@@ -3,6 +3,7 @@
 #include "components/link.h"
 #include "components/machine.h"
 #include "components/schema.h"
+#include "window/run_simulation_window.h"
 #include "components/switch.h"
 #include "context/user.h"
 #include <fstream>
@@ -360,7 +361,7 @@ void DrawingTable::openUserWindowClicked()
 }
 
 void DrawingTable::openSimulationWindowClicked()
-{
+{/*
     /// temporary must be removed when simulation allows more than one workload
     this->mainContext.workloads.at(0).master_id = this->schema->getMasterId();
 
@@ -400,9 +401,14 @@ void DrawingTable::openSimulationWindowClicked()
         outStream << link.second->connections.end->getId() << "\n";
     }
 
-    file.close();
+    file.close();*/
+
+
     /* this->simulationWindow = new Simulation(); */
     /* simulationWindow->show(); */
+
+    run_simulation_window *window = new run_simulation_window();
+    window->show();
 }
 
 void DrawingTable::addIcons(std::vector<Connectable *> *items)
