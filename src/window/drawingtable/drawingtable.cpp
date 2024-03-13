@@ -361,54 +361,60 @@ void DrawingTable::openUserWindowClicked()
 }
 
 void DrawingTable::openSimulationWindowClicked()
-{/*
+{
     /// temporary must be removed when simulation allows more than one workload
-    this->mainContext.workloads.at(0).master_id = this->schema->getMasterId();
 
 
-    json j     = *this->schema;
-    j["users"] = this->mainContext.users;
-
-    j["workloads"] = this->mainContext.workloads;
-
+    if (this->schema->connectables.size() > 1)
+    {
+        this->mainContext.workloads.at(0).master_id = this->schema->getMasterId();
 
 
-    std::string fileName = "output.json";
-    std::ofstream outputFile(fileName);
+        json j     = *this->schema;
+        j["users"] = this->mainContext.users;
 
-    if (outputFile.is_open()) {
-        outputFile << j.dump(4);
-        outputFile.close();
-        QMessageBox::information(nullptr, "Sucesso", "Arquivo criado com sucesso.");
+        j["workloads"] = this->mainContext.workloads;
 
-    } else {
-        QMessageBox::critical(nullptr, "Erro", "Erro ao abrir o arquivo para escrita.");
 
+
+        std::string fileName = "output.json";
+        std::ofstream outputFile(fileName);
+
+        if (outputFile.is_open()) {
+            outputFile << j.dump(4);
+            outputFile.close();
+            QMessageBox::information(nullptr, "Sucesso", "Arquivo criado com sucesso.");
+
+        } else {
+            QMessageBox::critical(nullptr, "Erro", "Erro ao abrir o arquivo para escrita.");
+
+        }
+
+        QFile file("routes.route");
+
+               /// @todo treat it
+        if (!file.open(QIODevice::WriteOnly | QIODevice::Text)) {
+            exit(0);
+        }
+
+        QTextStream outStream(&file);
+
+        for (const auto &link : this->schema->links) {
+            outStream << link.second->connections.begin->getId() << " ";
+            outStream << link.second->getId() << " ";
+            outStream << link.second->connections.end->getId() << "\n";
+        }
+
+        file.close();
     }
-
-    QFile file("routes.route");
-
-           /// @todo treat it
-    if (!file.open(QIODevice::WriteOnly | QIODevice::Text)) {
-        exit(0);
-    }
-
-    QTextStream outStream(&file);
-
-    for (const auto &link : this->schema->links) {
-        outStream << link.second->connections.begin->getId() << " ";
-        outStream << link.second->getId() << " ";
-        outStream << link.second->connections.end->getId() << "\n";
-    }
-
-    file.close();*/
-
-
-    /* this->simulationWindow = new Simulation(); */
-    /* simulationWindow->show(); */
 
     run_simulation_window *window = new run_simulation_window();
     window->show();
+
+    this->simulationWindow = new Simulation();
+    simulationWindow->show();
+
+
 }
 
 void DrawingTable::addIcons(std::vector<Connectable *> *items)
