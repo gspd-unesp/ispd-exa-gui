@@ -49,7 +49,7 @@ add_executable(ispd-exa-gui src/ispd-exa-gui.cpp
   src/window/linkconfigurationwindow.cpp include/window/linkconfigurationwindow.h forms/linkconfigurationwindow.ui
   src/window/machinesetconfigurationwindow.cpp include/window/machinesetconfigurationwindow.h forms/machinesetconfigurationwindow.ui
   src/window/switchconfigurationwindow.cpp include/window/switchconfigurationwindow.h  forms/switchconfigurationwindow.ui
-
+    include/window/schedulergenerator.h src/window/schedulergenerator.cpp forms/schedulergenerator.ui
   # Components
   include/components/component.h 
   include/components/connectable.h 

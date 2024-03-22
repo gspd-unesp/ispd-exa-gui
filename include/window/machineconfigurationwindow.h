@@ -36,6 +36,10 @@ public:
 private slots:
     void on_pushButton_clicked();
 
+    void on_generatedSchedulerCheckbox_stateChanged(int arg1);
+
+    void on_selectGeneratedBtn_clicked();
+
 private:
     Ui::MachineConfigurationWindow *ui;
     MachineConfiguration *conf;

@@ -4,6 +4,7 @@
 #include <QDialog>
 #include <QSettings>
 #include <qcheckbox.h>
+#include <QFileDialog>
 #include <qlineedit.h>
 #include <qnamespace.h>
 #include <qspinbox.h>
@@ -15,6 +16,7 @@ MachineConfigurationWindow::MachineConfigurationWindow(
     this->ui->setupUi(this);
 
     this->setupConfAndWindow();
+    this->setFixedSize(500,1000);
 }
 
 void MachineConfigurationWindow::setupConfAndWindow()
@@ -33,6 +35,10 @@ void MachineConfigurationWindow::setupConfAndWindow()
     this->ui->energyIdleSpinBox->setValue(this->conf->wattageIdle);
     this->ui->masterCheckBox->setChecked(this->conf->master);
     this->ui->schedulersComboBox->setCurrentText(this->conf->scheduler.c_str());
+    this->ui->selectGeneratedBtn->setDisabled(true);
+    this->ui->generatedSchedulerCheckbox->setDisabled(true);
+    this->ui->idPlainText->setDisabled(true);
+
 
 
     connect(this->ui->nameEditLine,
@@ -148,9 +154,15 @@ void MachineConfigurationWindow::checkMaster(const int checked)
 {
     if (checked == Qt::Checked) {
         this->conf->master = true;
+        this->ui->generatedSchedulerCheckbox->setDisabled(false);
+        this->ui->idPlainText->setDisabled(false);
+
     }
     else {
         this->conf->master = false;
+        this->ui->generatedSchedulerCheckbox->setDisabled(true);
+        this->ui->idPlainText->setDisabled(true);
+
     }
 }
 
@@ -168,6 +180,39 @@ void MachineConfigurationWindow::on_pushButton_clicked()
         this->conf->slaves.push_back(slave.toInt());
     }
 
+
+
     this->close();
+}
+
+
+void MachineConfigurationWindow::on_generatedSchedulerCheckbox_stateChanged(int arg1)
+{
+    if (arg1 == Qt::Checked)
+    {
+        this->ui->selectGeneratedBtn->setDisabled(false);
+        this->ui->schedulersComboBox->setDisabled(true);
+    }
+    else
+    {
+        this->ui->schedulersComboBox->setDisabled(false);
+        this->ui->selectGeneratedBtn->setDisabled(true);
+    }
+
+}
+
+
+void MachineConfigurationWindow::on_selectGeneratedBtn_clicked()
+{
+    QFileDialog fileDialog(this);
+    fileDialog.setFileMode(QFileDialog::ExistingFile);
+    fileDialog.setNameFilter("IMSFiles (*.ims)");
+    if (fileDialog.exec()){
+        QStringList selectedFiles = fileDialog.selectedFiles();
+        QString selectedFilePath = selectedFiles.first();
+        ui->selectGeneratedBtn->setText(selectedFilePath);
+        this->conf->scheduler = selectedFilePath.toStdString();
+
+    }
 }
 

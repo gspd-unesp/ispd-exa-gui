@@ -68,9 +68,16 @@ DrawingTable::DrawingTable(QFrame *parent) : DrawingTable(new Schema(), parent)
 
     //-------------------------------------------------------------------------
 
+    openSchedulerGenerator = new QPushButton("Scheduler generator", this);
+    openSchedulerGenerator->setSizePolicy(QSizePolicy(QSizePolicy::Maximum, QSizePolicy::Maximum));
+    openSchedulerGenerator->setFixedSize(120,40);
+
+
+
     buttonsLayout->addWidget(workloadButton, 0, Qt::AlignRight);
     buttonsLayout->addWidget(openUserWindow, 0, Qt::AlignRight);
     buttonsLayout->addWidget(openSimulationWindow, 0, Qt::AlignRight);
+    buttonsLayout->addWidget(openSchedulerGenerator, 0, Qt::AlignRight);
 
 
     connect(openUserWindow,
@@ -85,6 +92,10 @@ DrawingTable::DrawingTable(QFrame *parent) : DrawingTable(new Schema(), parent)
             &QPushButton::clicked,
             this,
             &DrawingTable::openWorkloadWindow);
+    connect(openSchedulerGenerator,
+            &QPushButton::clicked,
+            this,
+            &DrawingTable::openSchedulerGeneratorClicked);
 
 }
 
@@ -411,8 +422,8 @@ void DrawingTable::openSimulationWindowClicked()
     run_simulation_window *window = new run_simulation_window();
     window->show();
 
-    this->simulationWindow = new Simulation();
-    simulationWindow->show();
+//    this->simulationWindow = new Simulation();
+//    simulationWindow->show();
 
 
 }
@@ -432,7 +443,13 @@ void DrawingTable::openWorkloadWindow()
     workloadwindow->show();
 }
 
+void DrawingTable::openSchedulerGeneratorClicked()
+{
+    SchedulerGenerator *generator = new SchedulerGenerator(this);
+    generator->show();
+    // running the scheduler generator ends the program.
 
+}
 Scene *DrawingTable::getScene()
 {
     return this->scene;
