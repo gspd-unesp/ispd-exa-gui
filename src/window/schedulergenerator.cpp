@@ -206,6 +206,7 @@ void SchedulerGenerator::on_randomRdn_toggled(bool checked)
     ui->formulaLabel->setText("RANDOM");
     disable_variables(true);
     disable_operands(true);
+    formula = "RANDOM";
 }
 
 
@@ -214,6 +215,8 @@ void SchedulerGenerator::on_fifoRdn_toggled(bool checked)
     ui->formulaLabel->setText("FIFO");
     disable_variables(true);
     disable_operands(true);
+    formula = "FIFO";
+
 }
 
 void SchedulerGenerator::append_variable(QString variable)
@@ -283,7 +286,12 @@ void SchedulerGenerator::on_lastOkBtn_clicked()
 
 void SchedulerGenerator::on_finishBtn_clicked()
 {
-    QFile file (scheduler_name + ".ims");
+    QString prefix;
+    if (scheduler_type.toUpper() == "DYNAMIC")
+        prefix = "d_";
+    else
+        prefix = "s_";
+    QFile file (prefix + scheduler_name + ".ims");
     if (file.open(QIODevice::WriteOnly | QIODevice::Text))
     {
         QTextStream stream(&file);
@@ -293,5 +301,12 @@ void SchedulerGenerator::on_finishBtn_clicked()
         QMessageBox::information(this, "Warning","Scheduler generated");
         exit(1);
     }
+}
+
+
+void SchedulerGenerator::on_lastBack_clicked()
+{
+    ui->confirmLbl->clear();
+    change_page(true);
 }
 

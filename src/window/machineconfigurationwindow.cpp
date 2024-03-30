@@ -213,6 +213,12 @@ void MachineConfigurationWindow::on_selectGeneratedBtn_clicked()
         ui->selectGeneratedBtn->setText(selectedFilePath);
         this->conf->scheduler = selectedFilePath.toStdString();
 
+        QString selectedFileName = QFileInfo(selectedFilePath).baseName();
+        if (selectedFileName.contains("d_"))
+            this->conf->isDynamic = true;
+
+
     }
+
 }
 

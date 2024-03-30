@@ -78,6 +78,8 @@ public:
      * It contains the scheduling algorithm used.
      */
     std::string schedulingAlgorithm;
+
+    bool isDynamic;
     double gpuPower;
     int gpuCoreCount;
     double gpuInterconnectionBandwidth;

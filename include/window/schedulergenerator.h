@@ -46,6 +46,8 @@ private slots:
 
     void on_finishBtn_clicked();
 
+    void on_lastBack_clicked();
+
 private:
     Ui::SchedulerGenerator *ui;
     QString scheduler_name;
