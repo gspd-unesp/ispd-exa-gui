@@ -463,7 +463,7 @@
          <rect>
           <x>30</x>
           <y>80</y>
-          <width>251</width>
+          <width>353</width>
           <height>80</height>
          </rect>
         </property>
@@ -515,6 +515,19 @@
         </property>
         <property name="text">
          <string>OK</string>
+        </property>
+       </widget>
+       <widget class="QRadioButton" name="noRestrictBtn">
+        <property name="geometry">
+         <rect>
+          <x>40</x>
+          <y>170</y>
+          <width>96</width>
+          <height>23</height>
+         </rect>
+        </property>
+        <property name="text">
+         <string>No restriction</string>
         </property>
        </widget>
       </widget>

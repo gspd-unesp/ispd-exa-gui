@@ -259,6 +259,8 @@ void SchedulerGenerator::on_secondBackBtn_clicked()
 
 void SchedulerGenerator::on_thirdOkBtn_clicked()
 {
+    if(ui->noRestrictBtn->isChecked())
+        restriction = "NO RESTRICTION";
     change_page(false);
 }
 
@@ -275,7 +277,7 @@ void SchedulerGenerator::on_lastOkBtn_clicked()
     restriction = ui->restrictionSpinBox->text();
 
     QString general = "SCHEDULER " + scheduler_name.toUpper() +" \n" + "RESTRICT " + restriction + " TASKS PER RESOURCE \n" +
-                      scheduler_type.toUpper() + "\n" +formula;
+                      scheduler_type.toUpper() + "\n" +"FORMULA " + formula;
 
     ui->confirmLbl->setText(general);
 
