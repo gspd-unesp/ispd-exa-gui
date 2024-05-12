@@ -48,6 +48,11 @@ private slots:
 
     void on_lastBack_clicked();
 
+
+    void on_noRestrictBtn_toggled(bool checked);
+
+    void on_restrictionSpinBox_valueChanged(int arg1);
+
 private:
     Ui::SchedulerGenerator *ui;
     QString scheduler_name;
