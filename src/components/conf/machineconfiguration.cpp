@@ -19,6 +19,7 @@ MachineConfiguration::MachineConfiguration(std::string_view const &name)
     this->costPerMemory = 1.0;
     this->costPerProcessing = 1.0;
     this->hardDisk = 1.0;
+    this->isDynamic = false;
 }
 
 std::string MachineConfiguration::getName() const 
@@ -36,6 +37,7 @@ void to_json(json &j, const MachineConfiguration &m) {
         j = json{
             {"scheduler", m.scheduler},
             {"slaves", m.slaves},
+            {"isDynamic", m.isDynamic}
         };
     } else {
         j = json{
