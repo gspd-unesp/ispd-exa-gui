@@ -11,7 +11,8 @@ SchedulerGenerator::SchedulerGenerator(QWidget *parent) :
     ui->setupUi(this);
     disable_operands(true);
     disable_variables(true);
-
+    ui->stackedWidget->setCurrentWidget(0);
+    restriction = " ";
     this->setFixedSize(1350,600);
 
     connect(ui->cpuCoresBtn, &QPushButton::clicked, this, [=](){
@@ -230,8 +231,10 @@ void SchedulerGenerator::append_variable(QString variable)
 void SchedulerGenerator::append_operands(QString operand)
 {
     formula.append(" " + operand);
-    disable_variables(false);
+    if(operand != ')' || operand != ')')
+    {disable_variables(false);
     disable_operands(true);
+    }
     ui->formulaLabel->setText(formula);
 }
 
@@ -259,6 +262,10 @@ void SchedulerGenerator::on_secondBackBtn_clicked()
 
 void SchedulerGenerator::on_thirdOkBtn_clicked()
 {
+    if(ui->noRestrictBtn->isChecked() || ui->restrictionSpinBox->value() == 0)
+        restriction = "NO RESTRICTION";
+    else
+        restriction = QString::number(ui->restrictionSpinBox->value());
     change_page(false);
 }
 
@@ -272,10 +279,9 @@ void SchedulerGenerator::on_thirdBackbtn_clicked()
 
 void SchedulerGenerator::on_lastOkBtn_clicked()
 {
-    restriction = ui->restrictionSpinBox->text();
 
     QString general = "SCHEDULER " + scheduler_name.toUpper() +" \n" + "RESTRICT " + restriction + " TASKS PER RESOURCE \n" +
-                      scheduler_type.toUpper() + "\n" +formula;
+                      scheduler_type.toUpper() + "\n" +"FORMULA " + formula;
 
     ui->confirmLbl->setText(general);
 
@@ -308,5 +314,29 @@ void SchedulerGenerator::on_lastBack_clicked()
 {
     ui->confirmLbl->clear();
     change_page(true);
+}
+
+
+
+
+void SchedulerGenerator::on_noRestrictBtn_toggled(bool checked)
+{
+    if (checked)
+    {
+        ui->restrictionSpinBox->setDisabled(true);
+        ui->restrictionSpinBox->setValue(0);
+        restriction = "NO RESTRICTION";
+    }
+    else
+    {
+        ui->restrictionSpinBox->setDisabled(false);
+        restriction = " ";
+    }
+}
+
+
+void SchedulerGenerator::on_restrictionSpinBox_valueChanged(int arg1)
+{
+    restriction = QString::number(arg1);
 }
 
