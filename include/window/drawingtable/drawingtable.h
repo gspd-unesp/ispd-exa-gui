@@ -4,6 +4,7 @@
 #include "window/drawingtable/view.h"
 #include "window/simulation.h"
 #include "window/users.h"
+#include "window/schedulergenerator.h"
 #include <QListWidget>
 #include <QPushButton>
 #include <QRadioButton>
@@ -31,6 +32,7 @@ private:
 
     QPushButton *openUserWindow;
     QPushButton *openSimulationWindow;
+    QPushButton *openSchedulerGenerator;
     Context::MainContext mainContext;
 
     UserWindow *userWindow;
@@ -62,6 +64,7 @@ public:
     void   openUserWindowClicked();
     void   openSimulationWindowClicked();
     void openWorkloadWindow();
+    void openSchedulerGeneratorClicked();
     void   addIcons(std::vector<Connectable *> *items);
     Scene *getScene();
 

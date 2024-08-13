@@ -3,6 +3,7 @@
 #include "components/link.h"
 #include "components/machine.h"
 #include "components/schema.h"
+#include "window/run_simulation_window.h"
 #include "components/switch.h"
 #include "context/user.h"
 #include <fstream>
@@ -67,9 +68,16 @@ DrawingTable::DrawingTable(QFrame *parent) : DrawingTable(new Schema(), parent)
 
     //-------------------------------------------------------------------------
 
+    openSchedulerGenerator = new QPushButton("Scheduler generator", this);
+    openSchedulerGenerator->setSizePolicy(QSizePolicy(QSizePolicy::Maximum, QSizePolicy::Maximum));
+    openSchedulerGenerator->setFixedSize(120,40);
+
+
+
     buttonsLayout->addWidget(workloadButton, 0, Qt::AlignRight);
     buttonsLayout->addWidget(openUserWindow, 0, Qt::AlignRight);
     buttonsLayout->addWidget(openSimulationWindow, 0, Qt::AlignRight);
+    buttonsLayout->addWidget(openSchedulerGenerator, 0, Qt::AlignRight);
 
 
     connect(openUserWindow,
@@ -84,6 +92,10 @@ DrawingTable::DrawingTable(QFrame *parent) : DrawingTable(new Schema(), parent)
             &QPushButton::clicked,
             this,
             &DrawingTable::openWorkloadWindow);
+    connect(openSchedulerGenerator,
+            &QPushButton::clicked,
+            this,
+            &DrawingTable::openSchedulerGeneratorClicked);
 
 }
 
@@ -362,47 +374,58 @@ void DrawingTable::openUserWindowClicked()
 void DrawingTable::openSimulationWindowClicked()
 {
     /// temporary must be removed when simulation allows more than one workload
-    this->mainContext.workloads.at(0).master_id = this->schema->getMasterId();
 
 
-    json j     = *this->schema;
-    j["users"] = this->mainContext.users;
-
-    j["workloads"] = this->mainContext.workloads;
-
+    if (this->schema->connectables.size() > 1)
+    {
+        this->mainContext.workloads.at(0).master_id = this->schema->getMasterId();
 
 
-    std::string fileName = "output.json";
-    std::ofstream outputFile(fileName);
+        json j     = *this->schema;
+        j["users"] = this->mainContext.users;
 
-    if (outputFile.is_open()) {
-        outputFile << j.dump(4);
-        outputFile.close();
-        QMessageBox::information(nullptr, "Sucesso", "Arquivo criado com sucesso.");
+        j["workloads"] = this->mainContext.workloads;
 
-    } else {
-        QMessageBox::critical(nullptr, "Erro", "Erro ao abrir o arquivo para escrita.");
 
+
+        std::string fileName = "output.json";
+        std::ofstream outputFile(fileName);
+
+        if (outputFile.is_open()) {
+            outputFile << j.dump(4);
+            outputFile.close();
+            QMessageBox::information(nullptr, "Sucesso", "Arquivo criado com sucesso.");
+
+        } else {
+            QMessageBox::critical(nullptr, "Erro", "Erro ao abrir o arquivo para escrita.");
+
+        }
+
+        QFile file("routes.route");
+
+               /// @todo treat it
+        if (!file.open(QIODevice::WriteOnly | QIODevice::Text)) {
+            exit(0);
+        }
+
+        QTextStream outStream(&file);
+
+        for (const auto &link : this->schema->links) {
+            outStream << link.second->connections.begin->getId() << " ";
+            outStream << link.second->getId() << " ";
+            outStream << link.second->connections.end->getId() << "\n";
+        }
+
+        file.close();
     }
 
-    QFile file("routes.route");
+    run_simulation_window *window = new run_simulation_window();
+    window->show();
 
-           /// @todo treat it
-    if (!file.open(QIODevice::WriteOnly | QIODevice::Text)) {
-        exit(0);
-    }
+//    this->simulationWindow = new Simulation();
+//    simulationWindow->show();
 
-    QTextStream outStream(&file);
 
-    for (const auto &link : this->schema->links) {
-        outStream << link.second->connections.begin->getId() << " ";
-        outStream << link.second->getId() << " ";
-        outStream << link.second->connections.end->getId() << "\n";
-    }
-
-    file.close();
-    /* this->simulationWindow = new Simulation(); */
-    /* simulationWindow->show(); */
 }
 
 void DrawingTable::addIcons(std::vector<Connectable *> *items)
@@ -420,7 +443,13 @@ void DrawingTable::openWorkloadWindow()
     workloadwindow->show();
 }
 
+void DrawingTable::openSchedulerGeneratorClicked()
+{
+    SchedulerGenerator *generator = new SchedulerGenerator(this);
+    generator->show();
+    // running the scheduler generator ends the program.
 
+}
 Scene *DrawingTable::getScene()
 {
     return this->scene;

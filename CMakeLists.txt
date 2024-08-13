@@ -43,13 +43,13 @@ add_executable(ispd-exa-gui src/ispd-exa-gui.cpp
   src/window/simulation.cpp include/window/simulation.h forms/simulation.ui
   src/window/users.cpp include/window/users.h forms/userwindow.ui
   src/window/addworkloadwindow.cpp include/window/addworkloadwindow.h forms/addworkloadwindow.ui
-
+  src/window/run_simulation_window.cpp include/window/run_simulation_window.h forms/run_simulation_window.ui
   ## Component configuration window
   src/window/machineconfigurationwindow.cpp include/window/machineconfigurationwindow.h forms/machineconfigurationwindow.ui
   src/window/linkconfigurationwindow.cpp include/window/linkconfigurationwindow.h forms/linkconfigurationwindow.ui
   src/window/machinesetconfigurationwindow.cpp include/window/machinesetconfigurationwindow.h forms/machinesetconfigurationwindow.ui
   src/window/switchconfigurationwindow.cpp include/window/switchconfigurationwindow.h  forms/switchconfigurationwindow.ui
-
+    include/window/schedulergenerator.h src/window/schedulergenerator.cpp forms/schedulergenerator.ui
   # Components
   include/components/component.h 
   include/components/connectable.h 
